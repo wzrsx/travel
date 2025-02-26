@@ -1,0 +1,75 @@
+@media screen and (min-width: 1200px) {
+    
+}
+/* Для экранов меньше 992px */
+@media screen and (max-width: 991px) {
+    .burger {
+        display: block;
+    }
+
+    /* Скрываем список навигации по умолчанию */
+    .mainnav-list {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100px; /* Отступ от верхнего края */
+        left: 0;
+        width: 100%;
+        background-color: #4086a2; /* Фон меню */
+        align-items: center;
+        z-index: 1000;
+    }
+
+    /* Показываем список навигации при нажатии на чекбокс */
+    .burger-checkbox:checked ~ .mainnav-list {
+        display: flex;
+    }
+
+    /* Стили для пунктов меню */
+    .nav-item {
+        padding: 15px 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Разделитель между пунктами */
+        font-weight: 400;
+        font-size: 25px;
+    }
+    .mainnav-list li{
+        width: 100%;
+        text-align: center;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid white;
+    }
+    .mainnav-list li:first-child{
+        padding-top: 24px;
+    }
+    .mainnav-list li:last-child{
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    /* Убираем отступы у последнего пункта */
+    .nav-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Адаптируем header для мобильных устройств */
+    header {
+        margin-bottom: 50px; /* Уменьшаем отступ */
+    }
+}
+
+/* Для экранов больше 992px */
+@media screen and (min-width: 992px) {
+    
+}
+@media screen and (min-width: 768px) {
+    
+}
+@media screen and (min-width: 480px) {
+    
+}
+@media screen and (min-width: 320px) {
+    
+}

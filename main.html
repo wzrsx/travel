@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/adaptiv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>VibeRoutes</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
+            <label for="burger-checkbox" class="burger"></label>
+            <ul class="mainnav-list">
+                <li><a class="nav-item" href="#">Главная</a></li>
+                <li><a class="nav-item" href="#">Популярные маршруты</a></li>
+                <li><a class="nav-item" href="#">Создать маршрут</a></li>
+                <li><a class="nav-item" href="#">Мои маршруты</a></li>
+                <li><a class="nav-item" href="#">Контакты</a></li>
+                <li><a class="nav-item" href="#">О нас</a></li>
+            </ul>
+        </nav>
+    </header>   
+    <main>
+       <span class="banner">Найдите свой <br>
+        идеальный маршрут!</span>
+        <div class="search">
+            <input class="search-field" type="text">
+            <input class="search-btn" type="button" value="">
+        </div>
+        <div class="authorization">
+            <span class="sign-in" onclick="signInDialog.showModal()">Войти</span>
+            <span class="registration">Регистрация</span>
+        </div>
+        <dialog class="sign-in-dialog" id="signInDialog">
+            <form class="sign-in-dialog-form" id="signInForm">
+                <img class="logo-tree" src="style/logo/tree.svg" alt="">
+                <span class="form-text">Авторизация</span>
+                <input class="input-field email" type="email" name="" id="emailInput" placeholder="Введите почту">
+                <input class="input-field password" type="password" name="" id="passwordInput" placeholder="Введите пароль">
+                <button type="submit">Войти</button>
+                <span class="sign-in-dialog-form-registation">Регистрация</span>
+            </form>
+        </dialog>
+    </main> 
+    
+    <script src="scripts/script_main.js"></script>
+</body>
+</html>
