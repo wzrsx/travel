@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/adaptiv.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/reset.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Популярные маршруты</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
+            <label for="burger-checkbox" class="burger"></label>
+            <ul class="mainnav-list">
+                <li><a class="nav-item" href="../main.html">Главная</a></li>
+                <li><a class="nav-item current-page" href="">Популярные маршруты</a></li>
+                <li><a class="nav-item" href="create_route.html">Создать маршрут</a></li>
+                <li><a class="nav-item" href="client_routes.html">Мои маршруты</a></li>
+                <li><a class="nav-item" href="contacts.html">Контакты</a></li>
+                <li><a class="nav-item" href="about_us.html">О нас</a></li>
+                <li>
+                    <img src="style/logo/strelka.svg" alt="">
+                    <a class="nav-item" href="#">Sergey</a>
+                </li>
+            </ul>
+        </nav>
+    </header>   
+    <main>
+        <section class="popular-routes-block">
+            <h1>Популярные маршруты</h1>
+            <div class="slider-popular-routes">
+                <div class="slide">
+                  <div class="slide-content">
+                    <div class="slide-image">
+                      <img src="" alt="Slide Image">
+                    </div>
+                    <div class="slide-text">
+                        <div class="title-and-rating">
+                            <h2 class="title-route">Название маршрута</h2>
+                            <div class="rating">
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star">★</span>
+                              </div>
+                        </div>
+                      <h3 class="title-some-description">Краткое описание</h3>
+                      <p class="description-route">Описание маршрута. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
+                      <div class="buttons">
+                        <button class="btn route-btn">Перейти к маршруту</button>
+                        <button class="btn reviews-btn">Отзывы</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
+    </main>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
