@@ -9,6 +9,7 @@
     <title>VibeRoutes</title>
 </head>
 <body>
+    <div id="blurDiv"></div>
     <header>
         <nav>
             <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
@@ -31,8 +32,8 @@
             <input class="search-btn" type="button" value="">
         </div>
         <div class="authorization">
-            <span class="sign-in" onclick="signInDialog.showModal()">Войти</span>
-            <span class="registration" onclick="registrationDialog.showModal()">Регистрация</span>
+            <span class="sign-in" onclick="openSignInDialog()">Войти</span>
+            <span class="registration" onclick="openRegistrationDialog()">Регистрация</span>
         </div>
         <dialog class="sign-in-dialog" id="signInDialog">
             <form class="sign-in-dialog-form" id="signInForm">
@@ -42,7 +43,7 @@
                 <input class="input-field password" type="password" name="" id="signInPasswordInput" placeholder="Введите пароль">
                 <section class="autorize-register">
                     <button class="button-authorize" type="submit">Войти</button>
-                    <span class="sign-in-dialog-form-registation" onclick="signInDialog.close(); registrationDialog.showModal()">Регистрация</span>
+                    <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
                 </section>
             </form>
         </dialog>
@@ -56,12 +57,12 @@
 
                 <section class="register-autorize">
                     <button class="button-authorize" type="submit">Зарегистрироваться</button>
-                    <span class="sign-in-dialog-form-registation" onclick="registrationDialog.close(); signInDialog.showModal()">Вход</span>
+                    <span class="sign-in-dialog-form-registation" onclick="openSignInDialog()">Вход</span>
                 </section>
             </form>
         </dialog>
     </main> 
     
-    <script src="scripts/script_main.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
 </html>
