@@ -135,20 +135,20 @@ main{
     transform: rotate(-45deg);
     transition: bottom .3s, transform .3s .15s;
   }
-
-
-/*поебень с адаптивностью*/
-/*.sign-in-dialog{
-    width: 45vw;
-    height: 62.5vh;
+  .sign-in-dialog {
+    width: 90vw; /* 80% ширины экрана */
+    height: calc((450 / 650) * 90vw); /* Высота зависит от ширины */
+    max-width: 650px;
+    max-height: 500px;
     border-radius: 50px;
     border: none;
     background-color: #F5F6ED;
+    overflow: hidden;
 }
 .sign-in-dialog-form{
     display: flex;
+    height: 100%;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     font-size: 16px;
 }
@@ -158,39 +158,73 @@ main{
     display: block;
 }
 .form-text{
-    font-weight: 700;
+    text-transform: uppercase;
+    font-weight: 650;
     line-height: 1;
-    font-size: 3vw;
+    font-size: 52px;
+    margin-top: 2%;
 }
 .input-field{
-    width: 81.25%;
-    height: 6.77vh;
+    height: 12%;
+    width: 80%;
     border-radius: 20px;
     border: 1px solid black;
-    font-size: 1vw;
     text-transform: uppercase;
-    padding-left: 2vw;
     background-color: #e9f7d6;
     color: black;
     outline: none;
+    padding-left: 5%;
+    font-size: min(18px, 2vw);
+}
+.input-field::placeholder {
+    color: black; /* Цвет плейсхолдера */
+    font-size: min(18px, 2vw); /* Адаптивный размер шрифта плейсхолдера */
+    opacity: 1; /* Убедимся, что плейсхолдер не прозрачный */
 }
 .input-field.email{
-    margin-top: 5.625vh;
+    margin-top: 5%;
 }
 .input-field.password{
     margin-top: 1.15vh;
-}*/
-/* Медиа-запросы для дополнительных настроек на меньших экранах */
-/*@media (max-width: 600px) {
-    .sign-in-dialog{
-        width: 500px;
-    }
-    .form-text {
-        font-size: 8vw; 
-    }
-
-    .input-field {
-        height: 45px;
-        font-size: 14px; 
-    }
-}*/
+}
+.button-authorize {
+    grid-column: 2; /* Размещаем кнопку во второй колонке */
+    width: 110%; /* Ширина кнопки 80% от ширины колонки */
+    max-height: 80px; /* Высота адаптируется автоматически */
+    height: 100%;
+    background-color: #B7E1F8;
+    outline: none;
+    border-radius: 15px;
+    color: black;
+    text-transform: uppercase;
+    font-size: min(28px, 3vw); /* Адаптивный размер шрифта */
+    border: 0;
+    line-height: 0;
+    justify-self: center; /* Центрирование кнопки внутри колонки */
+    padding: 10px; /* Внутренние отступы */
+}
+.autorize-register{
+    align-items: center;
+    width: 100%;
+    height: 15%;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 10%;
+    display: grid;
+}
+.sign-in-dialog-form-registation {
+    align-items: center;
+    text-decoration: underline;
+    margin-left: 30%;
+    grid-column: 3; /* Размещаем текст в третьей колонке */
+    font-size: min(18px, 2vw); /* Адаптивный размер шрифта */
+    cursor: pointer;
+    justify-self: start; /* Выравнивание текста по левому краю колонки */
+}
+.register-autorize{
+    align-items: center;
+    width: 100%;
+    height: 15%;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 3%;
+    display: grid;
+}

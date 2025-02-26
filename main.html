@@ -32,16 +32,32 @@
         </div>
         <div class="authorization">
             <span class="sign-in" onclick="signInDialog.showModal()">Войти</span>
-            <span class="registration">Регистрация</span>
+            <span class="registration" onclick="registrationDialog.showModal()">Регистрация</span>
         </div>
         <dialog class="sign-in-dialog" id="signInDialog">
             <form class="sign-in-dialog-form" id="signInForm">
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Авторизация</span>
-                <input class="input-field email" type="email" name="" id="emailInput" placeholder="Введите почту">
-                <input class="input-field password" type="password" name="" id="passwordInput" placeholder="Введите пароль">
-                <button type="submit">Войти</button>
-                <span class="sign-in-dialog-form-registation">Регистрация</span>
+                <input class="input-field email" type="email" name="" id="signInEmailInput" placeholder="Введите почту">
+                <input class="input-field password" type="password" name="" id="signInPasswordInput" placeholder="Введите пароль">
+                <section class="autorize-register">
+                    <button class="button-authorize" type="submit">Войти</button>
+                    <span class="sign-in-dialog-form-registation" onclick="signInDialog.close(); registrationDialog.showModal()">Регистрация</span>
+                </section>
+            </form>
+        </dialog>
+        <dialog class="sign-in-dialog" id="registrationDialog">
+            <form class="sign-in-dialog-form" id="registrationForm">
+                <img class="logo-tree" src="style/logo/tree.svg" alt="">
+                <span class="form-text">Регистрация</span>
+                <input class="input-field email" type="email" name="" id="registrationEmailInput" placeholder="Введите почту">
+                <input class="input-field password" type="password" name="" id="registrationPasswordInput" placeholder="Введите пароль">
+                <input class="input-field password" type="password" name="" id="registrationPasswordInputRepeat" placeholder="Повторите пароль">
+
+                <section class="register-autorize">
+                    <button class="button-authorize" type="submit">Зарегистрироваться</button>
+                    <span class="sign-in-dialog-form-registation" onclick="registrationDialog.close(); signInDialog.showModal()">Вход</span>
+                </section>
             </form>
         </dialog>
     </main> 
