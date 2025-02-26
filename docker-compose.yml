@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    image: app_route
+    environment:
+      IP: 0.0.0.0
+      PORT: 5050
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: web_route
+      DB_PASSWORD: admin
+      DB_NAME: webRoutes
+      DB_SSLMODE: disable
+    ports:
+      - "5050:5050"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: web_route
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: webRoutes
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./internal/repositories/init_db:/docker-entrypoint-initdb.d
