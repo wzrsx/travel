@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"travel/internal/config"
 	"travel/internal/handlers"
-	"travel/internal/http_handlers"
 )
 
 type Server struct {
@@ -20,9 +19,8 @@ func NewServer() *Server {
 }
 
 func (s *Server) StartServe() error {
-	http.Handle("/", handlers.LoggingMiddleware(http.HandlerFunc(http_handlers.OpenFirstPage)))
-
-	http_handlers.SetDirs()
+	handlers.SetHandlers()
+	handlers.SetDirs()
 
 	fmt.Printf("Server listening on port %s...\n", s.Host)
 	if err := http.ListenAndServe(s.Host, nil); err != nil {

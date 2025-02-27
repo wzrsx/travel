@@ -1,17 +1,23 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
-	"time"
+	"travel/internal/http_handlers"
 )
 
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		log.Printf("Started %s %s", r.Method, r.URL.Path)
-		next.ServeHTTP(w, r)
-		log.Printf("Completed %s in %v", r.URL.Path, time.Since(start))
-	})
+func SetHandlers(){
+	http.HandleFunc("/", http_handlers.OpenFirstPage)
+	http.HandleFunc("/popular-routes", http_handlers.PopularRoutesHandler)
+	http.HandleFunc("/create-route", http_handlers.CreateRouteHandler)
+	http.HandleFunc("/client-routes", http_handlers.ClientRoutesHandler)
+	http.HandleFunc("/contacts", http_handlers.ContactsHandler)
+	http.HandleFunc("/about-us", http_handlers.AboutUsHandler)
+}
+
+func SetDirs() {
+	http.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir("./web"))))
+	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./web/style"))))
+	http.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir("./web/scripts"))))
+	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./web/pages"))))
 }
 
