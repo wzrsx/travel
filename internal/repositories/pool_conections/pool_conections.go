@@ -9,24 +9,25 @@ import (
 )
 
 type Pool_conections struct {
-	Pool *pgxpool.Pool
+	PoolConns *pgxpool.Pool
 }
 
-func (p *Pool_conections) Create_pool() error {
+func Create_pool() (Pool_conections, error) {
 	conf_DB := config.NewConfigDB() // Tafing data from configDB.go
+	var p Pool_conections
 
 	config, err := pgxpool.ParseConfig(conf_DB.ConnStr())
 	if err != nil {
-		return err
+		return Pool_conections{}, err
 	}
 	config.MaxConns = 10 // Устанавливаем максимальное число соединений в пуле
 
-	p.Pool, err = pgxpool.NewWithConfig(context.Background(), config)
+	p.PoolConns, err = pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
-		return err
+		return Pool_conections{}, err
 	}
-	defer p.Pool.Close()
+	defer p.PoolConns.Close()
 
 	log.Println("pool conections sucsessfuly setted")
-	return nil
+	return p, nil
 }

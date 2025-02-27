@@ -23,7 +23,11 @@
                 <li><a class="nav-item" href="/about-us">О нас</a></li>
                 <li>
                     <img src="style/logo/strelka.svg" alt="">
-                    <a class="nav-item" href="#" id="profilUser">Sergey</a>
+                    {{if .Username}}
+                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                    {{else}}
+                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                    {{end}}
                 </li>
             </ul>
         </nav>
@@ -40,13 +44,13 @@
             <span class="registration" onclick="openRegistrationDialog()">Регистрация</span>
         </div>
         <dialog class="sign-in-dialog" id="signInDialog">
-            <form class="sign-in-dialog-form" id="signInForm">
+            <form class="sign-in-dialog-form" id="signInForm" action="/authorize" method="POST">
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Авторизация</span>
-                <input class="input-field email" type="email" name="" id="signInEmailInput" placeholder="Введите почту">
-                <input class="input-field password" type="password" name="" id="signInPasswordInput" placeholder="Введите пароль">
+                <input class="input-field email" type="email" name="email" id="signInEmailInput" placeholder="Введите почту">
+                <input class="input-field password" type="password" name="password" id="signInPasswordInput" placeholder="Введите пароль">
                 <section class="autorize-register">
-                    <button class="button-authorize" type="submit">Войти</button>
+                    <button class="button-authorize" type="submit" onclick="Authorize()">Войти</button>
                     <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
                 </section>
             </form>

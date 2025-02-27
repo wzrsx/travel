@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"travel/internal/config"
 	"travel/internal/handlers"
+	"travel/internal/repositories/pool_conections"
 )
 
 type Server struct {
@@ -19,12 +19,17 @@ func NewServer() *Server {
 }
 
 func (s *Server) StartServe() error {
-	handlers.SetHandlers()
-	handlers.SetDirs()
+	pool, err := pool_conections.Create_pool()
+	if err != nil {
+		return err
+	}
+
+	app_handlers := handlers.NewAppHandlers(&pool)
+	app_handlers.SetHandlers()
+	app_handlers.SetDirs()
 
 	fmt.Printf("Server listening on port %s...\n", s.Host)
 	if err := http.ListenAndServe(s.Host, nil); err != nil {
-		log.Printf("Server failed to start: %v", err)
 		return fmt.Errorf("failed to start server: %w", err)
 	}
 

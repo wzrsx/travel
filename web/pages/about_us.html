@@ -24,7 +24,11 @@
                 <li><a class="nav-item current-page">О нас</a></li>
                 <li>
                     <img src="style/logo/strelka.svg" alt="">
-                    <a class="nav-item" href="#">Sergey</a>
+                    {{if .Username}}
+                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                    {{else}}
+                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                    {{end}}
                 </li>
             </ul>
         </nav>
