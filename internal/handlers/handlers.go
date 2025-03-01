@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"travel/internal/handlers/JWT"
 	"travel/internal/repositories/pool_conections"
 )
 
@@ -14,14 +15,14 @@ func NewAppHandlers(pool *pool_conections.Pool_conections) *AppHandlers {
 }
 
 func (a *AppHandlers) SetHandlers() {
-	http.Handle("/", JWTMiddleware(OpenFirstPage(a)))
-	http.Handle("/popular-routes", JWTMiddleware(PopularRoutesHandler(a)))
-	http.Handle("/create-route", JWTMiddleware(CreateRouteHandler(a)))
-	http.Handle("/client-routes", JWTMiddleware(ClientRoutesHandler(a)))
-	http.Handle("/contacts", JWTMiddleware(ContactsHandler(a)))
-	http.Handle("/about-us", JWTMiddleware(AboutUsHandler(a)))
+	http.Handle("/", JWT.JWTMiddleware(OpenFirstPage(a)))
+	http.Handle("/popular-routes", JWT.JWTMiddleware(PopularRoutesHandler(a)))
+	http.Handle("/create-route", JWT.JWTMiddleware(CreateRouteHandler(a)))
+	http.Handle("/client-routes", JWT.JWTMiddleware(ClientRoutesHandler(a)))
+	http.Handle("/contacts", JWT.JWTMiddleware(ContactsHandler(a)))
+	http.Handle("/about-us", JWT.JWTMiddleware(AboutUsHandler(a)))
 	http.Handle("/authorize", Authorize(a))
-	
+
 }
 
 func (a *AppHandlers) SetDirs() {

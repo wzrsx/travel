@@ -44,16 +44,16 @@
             <span class="registration" onclick="openRegistrationDialog()">Регистрация</span>
         </div>
         <dialog class="sign-in-dialog" id="signInDialog">
-            <form class="sign-in-dialog-form" id="signInForm" action="/authorize" method="POST">
+            <div class="sign-in-dialog-form" id="signInForm">
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Авторизация</span>
                 <input class="input-field email" type="email" name="email" id="signInEmailInput" placeholder="Введите почту">
                 <input class="input-field password" type="password" name="password" id="signInPasswordInput" placeholder="Введите пароль">
                 <section class="autorize-register">
                     <button class="button-authorize" type="submit" onclick="Authorize()">Войти</button>
-                    <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
+                    <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</spn>a
                 </section>
-            </form>
+            </div>
         </dialog>
         <dialog class="sign-in-dialog" id="registrationDialog">
             <form class="sign-in-dialog-form" id="registrationForm">

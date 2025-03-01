@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -26,8 +27,12 @@ func NewConfigDB() *ConfigDB {
 }
 
 func (c *ConfigDB) ConnStr() string {
+	log.Println(fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		c.User, c.Password, c.Host, c.Port, c.DBName, c.SSLMode,
+	))
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode,
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		c.User, c.Password, c.Host, c.Port, c.DBName, c.SSLMode,
 	)
 }

@@ -1,4 +1,4 @@
-package handlers
+package JWT
 
 import (
 	"context"

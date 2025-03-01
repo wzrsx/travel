@@ -1,14 +1,12 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 	"text/template"
-	"time"
-
-	"github.com/golang-jwt/jwt"
+	"travel/internal/handlers/JWT"
+	"travel/internal/repositories/queries"
 )
 
 type PageData struct {
@@ -19,11 +17,6 @@ type Credentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-type Claims struct {
-	Username string `json:"username"`
-	UserID   int    `json: "userID"`
-	jwt.StandardClaims
-}
 
 func Authorize(a *AppHandlers) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
@@ -33,12 +26,22 @@ func Authorize(a *AppHandlers) http.Handler {
 		}
 
 		// Декодируем JSON из тела запроса
+		// Проверяем Content-Type
+		contentType := r.Header.Get("Content-type")
+		if contentType != "application/json" {
+			http.Error(w, "Invalid Content-Type: ", http.StatusUnsupportedMediaType)
+			log.Printf("Content type: %s", contentType)
+			return
+		}
+
+		// Декодируем JSON из тела запроса
 		var creds Credentials
 		err := json.NewDecoder(r.Body).Decode(&creds)
 		if err != nil {
-			http.Error(w, "Bad request", http.StatusBadRequest)
+			http.Error(w, "Failed to decode JSON", http.StatusBadRequest)
 			return
 		}
+
 		if creds.Email == "" || creds.Password == "" {
 			log.Printf("Error decoding JSON: %v", err)
 			http.Error(w, "Email and password are required", http.StatusBadRequest)
@@ -46,51 +49,18 @@ func Authorize(a *AppHandlers) http.Handler {
 		}
 
 		// Делаем запрос в БД
-		conn, err := a.Pool.PoolConns.Acquire(context.Background())
+		user_auth_res := queries.NewUserAuthResult()
+		err = user_auth_res.AuthorizeQuery(creds.Email, creds.Password, a.Pool.PoolConns)
 		if err != nil {
-			http.Error(w, "Failed to acquire database connection", http.StatusInternalServerError)
-			return
+			log.Printf("Authorize Querry returns error: %v", err)
+			http.Error(w, "Authorize Querry error", http.StatusBadRequest)
 		}
-		defer conn.Release()
 
-		var userID int
-		var user_name string
-		err = conn.QueryRow(context.Background(), "SELECT id FROM users WHERE email = $1 AND password = $2", creds.Email, creds.Password).Scan(&userID, &user_name)
+		// устанавливаем Cookie с JWT
+		err = JWT.SetCookeJWT(w, user_auth_res.UserID, user_auth_res.Username)
 		if err != nil {
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-			return
+			http.Error(w, "Error set cookie JWT", http.StatusUnauthorized)
 		}
-
-		// ПЕРЕНЕСТИ ВСЕ ЭТО ВОТ ЧТО СНИЗУ В JWT
-		// |||||||||||||||||||||||||||||||||||||
-		claims := Claims{
-			Username: user_name, // Здесь вы можете использовать имя пользователя, полученное из запроса
-			UserID:   userID,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(24 * time.Hour).Unix(), // Время истечения токена
-			},
-		}
-		var mySigningKey = []byte("secret")
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString(mySigningKey)
-		if err != nil {
-			http.Error(w, "Could not create token", http.StatusInternalServerError)
-			return
-		}
-
-		// Создаем куку с JWT
-		cookie := http.Cookie{
-			Name:     "token",                        // Имя куки
-			Value:    tokenString,                    // Значение куки - JWT
-			Path:     "/",                            // Путь, для которого кука действительна
-			Expires:  time.Now().Add(24 * time.Hour), // Время истечения
-			HttpOnly: true,                           // Доступ только через HTTP (не доступен через JavaScript)
-			Secure:   false,                          // Установите true, если используете HTTPS
-		}
-
-		// Устанавливаем куку в ответ
-		http.SetCookie(w, &cookie)
 
 		w.WriteHeader(http.StatusOK)
 	}
@@ -106,7 +76,7 @@ func OpenFirstPage(a *AppHandlers) http.Handler {
 		}
 
 		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/main.html")
+		tmpl, err := template.ParseFiles("web/main.html")
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return
@@ -134,7 +104,7 @@ func PopularRoutesHandler(a *AppHandlers) http.Handler {
 		}
 
 		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/pages/popular_routes.html")
+		tmpl, err := template.ParseFiles("web/pages/popular_routes.html")
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return
@@ -163,7 +133,7 @@ func CreateRouteHandler(a *AppHandlers) http.Handler {
 		}
 
 		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/pages/create_route.html")
+		tmpl, err := template.ParseFiles("web/pages/create_route.html")
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return
@@ -192,7 +162,7 @@ func ClientRoutesHandler(a *AppHandlers) http.Handler {
 		}
 
 		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/pages/client_route.html")
+		tmpl, err := template.ParseFiles("web/pages/client_routes.html")
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return
@@ -221,7 +191,7 @@ func ContactsHandler(a *AppHandlers) http.Handler {
 		}
 
 		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/pages/contacts.html")
+		tmpl, err := template.ParseFiles("web/pages/contacts.html")
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return

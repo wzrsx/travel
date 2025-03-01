@@ -26,7 +26,11 @@ func Create_pool() (Pool_conections, error) {
 	if err != nil {
 		return Pool_conections{}, err
 	}
-	defer p.PoolConns.Close()
+
+	err = p.PoolConns.Ping(context.Background())
+	if err != nil {
+		log.Fatalf("Unable to ping database: %v", err)
+	}
 
 	log.Println("pool conections sucsessfuly setted")
 	return p, nil

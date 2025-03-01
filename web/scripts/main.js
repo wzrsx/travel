@@ -23,10 +23,10 @@ function Authorize(){
     
     console.log('Sending data:', data);
 
-    fetch('https://127.0.0.1/authorize', {
+    fetch('http://localhost:8080/authorize', {
         method: 'POST', // Метод запроса
         headers: {
-            'Content-Type': 'application/json' // Указываем, что отправляем JSON
+            'Content-Type': 'application/json' 
         },
         body: JSON.stringify(data) // Преобразуем объект в JSON-строку
     })
@@ -34,13 +34,10 @@ function Authorize(){
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        return response.json(); // Преобразуем ответ в JSON
-    })
-    .then(data => {
-        console.log('Success:', data); // Обработка успешного ответа
+        location.reload();
     })
     .catch((error) => {
-        console.error('Error:', error); // Обработка ошибок
+        console.log('Error:', error); // Обработка ошибок
     });
 }
 
