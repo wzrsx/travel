@@ -1,8 +1,17 @@
 @media screen and (min-width: 1200px) {
     
 }
+/* Для экранов меньше 1050px */
+@media screen and (max-width: 1050px) {
+    /*текст в слайдере*/
+    .title-route, .btn{
+        font-size: 15px;
+    }
+    
+}
 /* Для экранов меньше 991px */
 @media screen and (max-width: 991px) {
+    
     .burger {
         display: block;
     }

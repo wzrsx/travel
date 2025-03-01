@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../style/adaptiv.css">
     <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/adaptiv.css">
     <link rel="stylesheet" href="../style/reset.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Создать маршрут</title>
 </head>
@@ -34,6 +33,32 @@
         </nav>
     </header>   
     <main>
+        <h1>Как создать маршрут?</h1>
+        <form class="create-route-block">
+            <section class="location-route">
+                <p>1. Для начала  узнаем где находится маршрут</p>
+                <br>
+                <p>(Вы можете ввести город или любое другое место)</p>
+                <input type="text" class="input-route"/>
+            </section>
+            <section class="map-select-points">
+                <p>2. Теперь выберем на карте стартовую, конечную и, при желании, контрольные точки.</p>
+                <div class="map">
+                    ЗДЕСЬ ДОЛЖНА БЫТЬ КАРТА
+                </div>
+            </section>
+            <section class="name-route">
+                <p>3. Укажем название маршрута</p>
+                <input type="text" class="input-route"/>
+            </section>
+            <section class="about-route">
+                <p>4. Кратко опишите маршрут (не более 150 символов)</p>
+                <textarea class="input-route description" maxlength="150"></textarea>
+            </section>
+            <button type="submit" class="create-route-btn">
+                Создать маршрут
+            </button>
+        </div>
     </main>
     <script src="scripts/main.js"></script>
 </body>
