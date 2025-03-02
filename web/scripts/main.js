@@ -52,38 +52,49 @@ function openRegistrationDialog() {
     }
 }
 function registration(){
+    const username = 'Vitaly' //document.getElementById('registrationUsernameInput').value;
     const email = document.getElementById('registrationEmailInput').value;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const password = document.getElementById('registrationPasswordInput').value;
     const repeat_password = document.getElementById('registrationPasswordInputRepeat').value;
     const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (!emailRegex.test(email)){
-        //condition returning error with incorrect email format
+
+    // ВВЕСТИ НОРМАЛЬНОЕ ПОЛЕ ДЛЯ ОБРАБОТКИ ОШИБОК
+    // |||||||||||||||||||||||||||||||||||||||||||
+    if (!emailRegex.test(email)) {
+        alert("Ошибка: Некорректный формат email.");
         return;
     }
-    if (!password.length >= 5){
-        //condition returning error size of password
+
+    // Проверка длины пароля
+    if (password.length < 5) {
+        alert("Ошибка: Пароль должен содержать не менее 5 символов.");
         return;
     }
-    if (!specialCharRegex.test(password)){
-        //condition returning error special simbol absence
+
+    // Проверка наличия специального символа в пароле
+    if (!specialCharRegex.test(password)) {
+        alert("Ошибка: Пароль должен содержать хотя бы один специальный символ.");
         return;
     }
-    if (password != repeat_password) {
-        //condition returning error not matching passwords 
+
+    // Проверка совпадения паролей
+    if (password !== repeat_password) {
+        alert("Ошибка: Пароли не совпадают.");
         return;
     }
     const data = {
+        username: username,
         email: email,
         password: password
     };
-    fetch("http://localhost:8080/registration"),{
+    fetch("http://localhost:8080/registration",{
         method: 'POST',
         headers: {
             'Content-Type':'application/json'
         },
         body: JSON.stringify(data)
-    }
+    })
     .then (response =>{
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
