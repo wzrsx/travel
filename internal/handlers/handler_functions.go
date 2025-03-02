@@ -19,7 +19,7 @@ type Credentials struct {
 }
 
 func Authorize(a *AppHandlers) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
+	authorize := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -64,7 +64,18 @@ func Authorize(a *AppHandlers) http.Handler {
 
 		w.WriteHeader(http.StatusOK)
 	}
-	return http.HandlerFunc(fn)
+	return http.HandlerFunc(authorize)
+}
+
+func Registration(a *AppHandlers) http.Handler{
+	registration := func (w http.ResponseWriter, r *http.Request){
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		
+	}
+	return http.HandlerFunc(registration)
 }
 
 // Обработчик главной страницы
