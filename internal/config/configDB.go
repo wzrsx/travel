@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type ConfigDB struct {
@@ -15,7 +17,11 @@ type ConfigDB struct {
 	SSLMode  string
 }
 
-func NewConfigDB() *ConfigDB {
+func NewConfigDB() (*ConfigDB, error) {
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Error loading .env file")
+		return nil, err
+	}
 	return &ConfigDB{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
@@ -23,7 +29,7 @@ func NewConfigDB() *ConfigDB {
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   os.Getenv("DB_NAME"),
 		SSLMode:  os.Getenv("DB_SSLMODE"),
-	}
+	}, nil
 }
 
 func (c *ConfigDB) ConnStr() string {

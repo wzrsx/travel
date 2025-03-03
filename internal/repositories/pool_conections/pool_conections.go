@@ -12,19 +12,22 @@ type Pool_conections struct {
 	PoolConns *pgxpool.Pool
 }
 
-func Create_pool() (Pool_conections, error) {
-	conf_DB := config.NewConfigDB() // Tafing data from configDB.go
+func Create_pool() (*Pool_conections, error) {
+	conf_DB, err := config.NewConfigDB() // Tafing data from configDB.go
+	if err != nil{
+		return nil, err
+	}
 	var p Pool_conections
 
 	config, err := pgxpool.ParseConfig(conf_DB.ConnStr())
 	if err != nil {
-		return Pool_conections{}, err
+		return nil, err
 	}
 	config.MaxConns = 10 // Устанавливаем максимальное число соединений в пуле
 
 	p.PoolConns, err = pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
-		return Pool_conections{}, err
+		return nil, err
 	}
 
 	err = p.PoolConns.Ping(context.Background())
@@ -33,5 +36,5 @@ func Create_pool() (Pool_conections, error) {
 	}
 
 	log.Println("pool conections sucsessfuly setted")
-	return p, nil
+	return &p, nil
 }

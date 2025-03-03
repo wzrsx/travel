@@ -6,8 +6,11 @@ import (
 )
 
 func main() {
-	srv := server.NewServer()
-	err := srv.StartServe()
+	srv, err := server.NewServer()
+	if err != nil{
+		log.Fatalf("Error get env temporaries: %s", err.Error())
+	}
+	err = srv.StartServe()
 	if err != nil{
 		log.Fatalf("Error start server: %s", err.Error())
 		return

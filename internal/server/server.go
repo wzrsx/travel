@@ -12,10 +12,14 @@ type Server struct {
 	Host string
 }
 
-func NewServer() *Server {
-	return &Server{
-		Host: config.NewConfigIP().AdressStr(),
+func NewServer() (*Server, error) {
+	config, err := config.NewConfigIP()
+	if(err != nil){
+		return nil, err
 	}
+	return &Server{
+		Host: config.AdressStr(),
+	}, nil
 }
 
 func (s *Server) StartServe() error {
@@ -24,7 +28,7 @@ func (s *Server) StartServe() error {
 		return err
 	}
 
-	app_handlers := handlers.NewAppHandlers(&pool)
+	app_handlers := handlers.NewAppHandlers(pool)
 	app_handlers.SetHandlers()
 	app_handlers.SetDirs()
 

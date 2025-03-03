@@ -9,6 +9,7 @@ import (
 
 type RoutesInfoResults struct {
 	IdRoute      int
+	IdUser		 int
 	Name         string
 	Yandex_route string
 	Estimation   int8
@@ -36,11 +37,11 @@ func TakeRoutesInfoQueryPopular(pool *pgxpool.Pool) ([]RoutesInfoResults, error)
 		var path_to_photo string
 
 		if err := rows.Scan(&id_route, &name_route, &yandex_route, &estimation, &path_to_photo); err != nil {
-			return nil, fmt.Errorf("Error scan route info: ", err)
+			return nil, fmt.Errorf("Error scan route info: ", err.Error())
 		}
 		reviews, err := CreateReviews(id_route, pool)
 		if err != nil {
-			return nil, fmt.Errorf("Error append reviews to Route: ", err)
+			return nil, fmt.Errorf("Error append reviews to Route: ", err.Error())
 		}
 		routsInfo = append(routsInfo, RoutesInfoResults{
 			IdRoute:      id_route,
