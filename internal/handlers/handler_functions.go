@@ -79,7 +79,7 @@ func Registration(a *AppHandlers) http.Handler {
 
 		// Декодируем JSON из тела запроса
 		type CredentialsRegistration struct {
-			Username string `json: "username"`
+			Username string `json:"username"`
 			Email    string `json:"email"`
 			Password string `json:"password"`
 		}
@@ -146,6 +146,26 @@ func OpenFirstPage(a *AppHandlers) http.Handler {
 }
 
 func PopularRoutesHandler(a *AppHandlers) http.Handler {
+	routes, err := queries.TakeRoutesInfoQueryPopular(a.Pool.PoolConns)
+	if err != nil{
+		log.Printf("Error routes having: ", err)
+	}
+	for _, route := range routes {
+		log.Printf("Маршрут ID: %d", route.IdRoute)
+		log.Printf("Название: %s", route.Name)
+		log.Printf("Ссылка на Yandex: %s", route.Yandex_route)
+		log.Printf("Оценка: %d", route.Estimation)
+		log.Printf("Фото: %s", route.PathToPhoto)
+
+		// Вывод отзывов
+		log.Println("Отзывы:")
+		for _, review := range route.Reviews {
+			log.Printf("  Описание: %s", review.Description)
+			log.Printf("  Оценка: %d", review.Estimation)
+		}
+		log.Println("-----------------------------")
+	}
+	
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
 		username, ok := r.Context().Value("username").(string)
 		if !ok {
