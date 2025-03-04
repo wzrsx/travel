@@ -10,6 +10,7 @@ CREATE TABLE users (
 CREATE TABLE routes (
     id_route SERIAL PRIMARY KEY,
     route_name VARCHAR(20),
+    route_description VARCHAR(200),
     yandex_route VARCHAR(200) NOT NULL,
     estimation INTEGER,
     path_to_photo VARCHAR(100),

@@ -12,12 +12,17 @@ import (
 
 type PageData struct {
 	Username string
+	UserID   int
 }
 
 func check_username(w http.ResponseWriter, r *http.Request, web_file string) (*template.Template, *PageData, error) {
 	username, ok := r.Context().Value("username").(string)
 	if !ok {
 		username = ""
+	}
+	user_id, ok := r.Context().Value("userID").(int)
+	if !ok {
+		user_id = 0
 	}
 
 	// Если пользователь авторизирован - ему выставляется имя
@@ -29,6 +34,7 @@ func check_username(w http.ResponseWriter, r *http.Request, web_file string) (*t
 
 	data := PageData{
 		Username: username,
+		UserID:   user_id,
 	}
 
 	return tmpl, &data, nil
@@ -202,6 +208,42 @@ func CreateRouteHandler(a *AppHandlers) http.Handler {
 			log.Printf("%s", err.Error())
 			return
 		}
+		if r.Method == http.MethodPost {
+			contentType := r.Header.Get("Content-type")
+			if contentType != "application/json" {
+				http.Error(w, "Invalid Content-Type: ", http.StatusUnsupportedMediaType)
+				return
+			}
+
+			type CredentialsCreateRoute struct {
+				Yandex_route      string `json: "routeLink"`
+				Route_name        string `json: "route_name"`
+				Route_place       string `json: "route_place"`
+				Route_description string `json: "route_description"`
+			}
+			var creds CredentialsCreateRoute
+
+			err := json.NewDecoder(r.Body).Decode(&creds)
+			if err != nil {
+				log.Printf("Error decoding json by creating route: %s", err.Error())
+				return
+			}
+			if creds.Yandex_route == "" || creds.Route_name == "" || creds.Route_place == "" || creds.Route_description == "" {
+				log.Printf("Error decoding JSON: %s", err.Error())
+				http.Error(w, "Yandex_route is required", http.StatusBadRequest)
+				return
+			}
+
+			route := queries.CreateRouteStruct(creds.Yandex_route, creds.Route_name, creds.Route_place, creds.Route_description, data.UserID)
+			err = route.CreateNewRoute(a.Pool.PoolConns)
+			if err != nil {
+				log.Printf("Error query CreateNewRoute: %s", err.Error())
+				http.Error(w, "Error query CreateNewRoute", http.StatusBadRequest)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+		}
+
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
@@ -221,7 +263,7 @@ func ClientRoutesHandler(a *AppHandlers) http.Handler {
 			log.Printf("%s", err.Error())
 			return
 		}
-		
+
 		// Logic with take UsersRoutes
 		userID, ok := r.Context().Value("userID").(int)
 		if !ok {
@@ -258,7 +300,7 @@ func ClientRoutesHandler(a *AppHandlers) http.Handler {
 		if err != nil {
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
 			log.Printf("Failed to render template: %s", err.Error())
-			return 
+			return
 		}
 	}
 	return http.HandlerFunc(check_auth)
@@ -267,25 +309,15 @@ func ClientRoutesHandler(a *AppHandlers) http.Handler {
 // Обработчик для страницы "Контакты"
 func ContactsHandler(a *AppHandlers) http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		username, ok := r.Context().Value("username").(string)
-		if !ok {
-			username = ""
-		}
-
-		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("web/pages/contacts.html")
+		tmpl, data, err := check_username(w, r, "web/pages/contacts.html")
 		if err != nil {
-			http.Error(w, "Failed to load template", http.StatusInternalServerError)
+			log.Printf("%s", err.Error())
 			return
 		}
-
-		data := PageData{
-			Username: username,
-		}
-
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+			log.Printf("Failed to render template: %s", err.Error())
 			return
 		}
 	}
@@ -295,25 +327,15 @@ func ContactsHandler(a *AppHandlers) http.Handler {
 // Обработчик для страницы "О нас"
 func AboutUsHandler(a *AppHandlers) http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		username, ok := r.Context().Value("username").(string)
-		if !ok {
-			username = ""
-		}
-
-		// Если пользователь авторизирован - ему выставляется имя
-		tmpl, err := template.ParseFiles("./web/pages/about_us.html")
+		tmpl, data, err := check_username(w, r, "web/pages/about_us.html")
 		if err != nil {
-			http.Error(w, "Failed to load template", http.StatusInternalServerError)
+			log.Printf("%s", err.Error())
 			return
 		}
-
-		data := PageData{
-			Username: username,
-		}
-
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+			log.Printf("Failed to render template: %s", err.Error())
 			return
 		}
 	}
