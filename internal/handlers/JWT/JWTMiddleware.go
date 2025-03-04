@@ -34,7 +34,13 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		// Сохраняем данные пользователя в контекст запроса
 		claims := token.Claims.(jwt.MapClaims)
 		ctx := context.WithValue(r.Context(), "username", claims["username"])
-		ctx = context.WithValue(ctx, "email", claims["email"])
+
+		userID, ok := claims["userID"].(float64) // JWT числа сохраняются как float64
+		if !ok {
+			next.ServeHTTP(w, r)
+			return
+		}
+		ctx = context.WithValue(ctx, "userID", int(userID))
 		r = r.WithContext(ctx)
 
 		// Передаем запрос следующему обработчику

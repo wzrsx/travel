@@ -34,31 +34,33 @@
     </header>   
     <main>
         <h1>Как создать маршрут?</h1>
-        <form class="create-route-block">
+        <form class="create-route-block" id="create-route-form">
             <section class="location-route">
-                <p>1. Для начала  узнаем где находится маршрут</p>
+                <p>1. Для начала узнаем, где находится маршрут</p>
                 <br>
                 <p>(Вы можете ввести город или любое другое место)</p>
-                <input type="text" class="input-route"/>
+                <input type="text" id="location-input" class="input-route" />
             </section>
+
             <section class="map-select-points">
-                <p>2. Теперь выберем на карте стартовую, конечную и, при желании, контрольные точки.</p>
-                <div class="map">
-                    ЗДЕСЬ ДОЛЖНА БЫТЬ КАРТА
-                </div>
+                <p>2. Карта с маршрутом:</p>
+                <img src="https://static-maps.yandex.ru/1.x/?lang=ru_RU&ll=37.620070,55.753630&size=650,450&z=13&l=map&pt=37.620070,55.753630,pm2dbl" alt="Яндекс.Карта">
             </section>
+    
             <section class="name-route">
                 <p>3. Укажем название маршрута</p>
-                <input type="text" class="input-route"/>
+                <input type="text" id="route-name" class="input-route" placeholder="Название маршрута" required />
             </section>
+    
             <section class="about-route">
                 <p>4. Кратко опишите маршрут (не более 150 символов)</p>
-                <textarea class="input-route description" maxlength="150"></textarea>
+                <textarea id="route-description" class="input-route description" maxlength="150" placeholder="Описание маршрута" required></textarea>
             </section>
+    
             <button type="submit" class="create-route-btn">
                 Создать маршрут
             </button>
-        </div>
+        </form>
     </main>
     <script src="scripts/main.js"></script>
 </body>

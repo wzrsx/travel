@@ -7,13 +7,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Reviews struct{
+type Reviews struct {
 	Description string
-	Estimation int
+	Estimation  int
 }
-func CreateReviews (id_route int, pool *pgxpool.Pool) ([]Reviews, error){
+
+func CreateReviews(id_route int, pool *pgxpool.Pool) ([]Reviews, error) {
 	conn, err := pool.Acquire(context.Background())
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	defer conn.Release()
@@ -21,7 +22,7 @@ func CreateReviews (id_route int, pool *pgxpool.Pool) ([]Reviews, error){
 	rows, err := conn.Query(context.Background(), `
 		SELECT description, estimation
 		FROM reviews
-		WHERE (SELECT id_review from routes WHERE id_route = $1)`, id_route)
+		WHERE id_route = $1`, id_route)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,7 @@ func CreateReviews (id_route int, pool *pgxpool.Pool) ([]Reviews, error){
 		var description string
 		var estimation int
 		if err := rows.Scan(&description, &estimation); err != nil {
-			return nil, fmt.Errorf("Error scan Reviews: ", err)
+			return nil, fmt.Errorf("Error scan Reviews: %s", err.Error())
 		}
 		reviews = append(reviews, Reviews{
 			Description: description,

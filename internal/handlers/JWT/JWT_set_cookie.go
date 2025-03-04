@@ -13,9 +13,9 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func SetCookeJWT(w http.ResponseWriter, userID int, username string) error{
+func SetCookeJWT(w http.ResponseWriter, userID int, username string) error {
 	claims := Claims{
-		Username: username, // Здесь вы можете использовать имя пользователя, полученное из запроса
+		Username: username,
 		UserID:   userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(), // Время истечения токена

@@ -24,7 +24,7 @@ function authorize(){
     
     console.log('Sending data:', data);
 
-    fetch('http://localhost:8080/authorize', {
+    fetch('http://localhost:5050/authorize', {
         method: 'POST', // Метод запроса
         headers: {
             'Content-Type': 'application/json' 
@@ -88,7 +88,7 @@ function registration(){
         email: email,
         password: password
     };
-    fetch("http://localhost:8080/registration",{
+    fetch("http://localhost:5050/registration",{
         method: 'POST',
         headers: {
             'Content-Type':'application/json'
