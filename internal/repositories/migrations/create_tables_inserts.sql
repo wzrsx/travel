@@ -10,6 +10,7 @@ CREATE TABLE users (
 CREATE TABLE routes (
     id_route SERIAL PRIMARY KEY,
     route_name VARCHAR(20),
+    route_place VARCHAR(30),
     route_description VARCHAR(200),
     yandex_route VARCHAR(200) NOT NULL,
     estimation INTEGER,
@@ -41,3 +42,31 @@ INSERT INTO reviews (description, estimation, id_route) VALUES ('класс', 7,
 INSERT INTO reviews (description, estimation, id_route) VALUES ('супер', 9, 1);
 INSERT INTO reviews (description, estimation, id_route) VALUES ('кайф', 10, 3);
 
+
+
+ALTER TABLE routes ADD COLUMN last_selected TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+
+
+CREATE OR REPLACE FUNCTION update_last_updated()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.last_selected = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_select_last_updated
+BEFORE SELECT ON routes
+FOR EACH ROW
+EXECUTE FUNCTION update_last_selected();
+
+
+--Удаление каждые 24 часа
+CREATE EXTENSION pg_cron;
+
+SELECT cron.schedule(
+    'delete_old_routes', -- Имя задачи
+    'EVERY 12 HOURS',    -- Запускать каждые 12 часов
+    $$DELETE FROM routes WHERE last_updated < NOW() - INTERVAL '1 day'$$
+);

@@ -215,6 +215,7 @@ function saveRoute(routeLink, route_name, route_place, route_description) {
     .then(response => response.json())
     .then(data => {
         console.log('Ссылка сохранена:', data);
+        location.reload()
     })
     .catch(error => {
         console.error('Ошибка:', error);

@@ -15,8 +15,13 @@ type Route struct {
 }
 
 func CreateRouteStruct(yandex_route string, route_name string, route_place string, route_description string, userID int) *Route {
-	var r Route
-	return &r
+	return &Route{
+		Yandex_route:      yandex_route,
+		Route_name:        route_name,
+		Route_place:       route_place,
+		Route_description: route_description,
+		UserID:            userID,
+	}
 }
 
 func (r *Route) CreateNewRoute(pool *pgxpool.Pool) error {
@@ -26,7 +31,9 @@ func (r *Route) CreateNewRoute(pool *pgxpool.Pool) error {
 	}
 	defer conn.Release()
 
-	err = conn.QueryRow(context.Background(), "INSERT INTO routes (route_name, yandex_route, estimation, route_description, id_user) VALUES ($1, $2, $3, $4, $5)", r.Yandex_route, r.Route_name, r.Route_place, r.Route_description, r.UserID).Scan()
+	_, err = conn.Exec(context.Background(), `
+	INSERT INTO routes (route_name, yandex_route, estimation, route_place, route_description, id_user)
+	VALUES ($1, $2, $3, $4, $5, $6)`, r.Route_name, r.Yandex_route, 0, r.Route_place, r.Route_description, r.UserID)
 	if err != nil {
 		return err
 	}

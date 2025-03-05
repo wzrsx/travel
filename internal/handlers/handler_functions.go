@@ -202,13 +202,22 @@ func PopularRoutesHandler(a *AppHandlers) http.Handler {
 // Обработчик для страницы "Создать маршрут"
 func CreateRouteHandler(a *AppHandlers) http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		check_username(w, r, "web/pages/create_route.html")
-		tmpl, data, err := check_username(w, r, "web/pages/create_route.html")
+		check_username(w, r, "web/pages/main.html")
+		tmpl, data, err := check_username(w, r, "web/pages/main.html")
 		if err != nil {
 			log.Printf("%s", err.Error())
 			return
 		}
 		if r.Method == http.MethodPost {
+			if data.UserID == 0 {
+				err = tmpl.Execute(w, data)
+				if err != nil {
+					http.Error(w, "Failed to render template", http.StatusInternalServerError)
+					log.Printf("Failed to render template: %s", err.Error())
+					return
+				}
+				return
+			}
 			contentType := r.Header.Get("Content-type")
 			if contentType != "application/json" {
 				http.Error(w, "Invalid Content-Type: ", http.StatusUnsupportedMediaType)
@@ -216,10 +225,10 @@ func CreateRouteHandler(a *AppHandlers) http.Handler {
 			}
 
 			type CredentialsCreateRoute struct {
-				Yandex_route      string `json: "routeLink"`
-				Route_name        string `json: "route_name"`
-				Route_place       string `json: "route_place"`
-				Route_description string `json: "route_description"`
+				Yandex_route      string `json:"routeLink"`
+				Route_name        string `json:"route_name"`
+				Route_place       string `json:"route_place"`
+				Route_description string `json:"route_description"`
 			}
 			var creds CredentialsCreateRoute
 
@@ -233,7 +242,7 @@ func CreateRouteHandler(a *AppHandlers) http.Handler {
 				http.Error(w, "Yandex_route is required", http.StatusBadRequest)
 				return
 			}
-
+			log.Println(data.UserID)
 			route := queries.CreateRouteStruct(creds.Yandex_route, creds.Route_name, creds.Route_place, creds.Route_description, data.UserID)
 			err = route.CreateNewRoute(a.Pool.PoolConns)
 			if err != nil {
