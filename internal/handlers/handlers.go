@@ -23,6 +23,7 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/about-us", JWT.JWTMiddleware(AboutUsHandler(a)))
 	http.Handle("/authorize", Authorize(a))
 	http.Handle("/registration", Registration(a))
+	http.Handle("/save-route", JWT.JWTMiddleware(CreateRouteHandler(a)))
 
 }
 
