@@ -172,7 +172,7 @@ func PopularRoutesHandler(a *AppHandlers) http.Handler {
 		log.Printf("Название: %s", route.Name_route)
 		log.Printf("Ссылка на Yandex: %s", route.Yandex_route)
 		log.Printf("Оценка: %d", route.Estimation)
-		log.Printf("Фото: %s", route.PathToPhoto)
+		log.Printf("Фото: %s", route.PathToPhotoPreview)
 
 		// Вывод отзывов
 		log.Println("Отзывы:")
@@ -202,8 +202,7 @@ func PopularRoutesHandler(a *AppHandlers) http.Handler {
 // Обработчик для страницы "Создать маршрут"
 func CreateRouteHandler(a *AppHandlers) http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		check_username(w, r, "web/pages/main.html")
-		tmpl, data, err := check_username(w, r, "web/pages/main.html")
+		tmpl, data, err := check_username(w, r, "web/pages/create_route.html")
 		if err != nil {
 			log.Printf("%s", err.Error())
 			return
@@ -294,7 +293,7 @@ func ClientRoutesHandler(a *AppHandlers) http.Handler {
 			log.Printf("Название: %s", route.Name_route)
 			log.Printf("Ссылка на Yandex: %s", route.Yandex_route)
 			log.Printf("Оценка: %d", route.Estimation)
-			log.Printf("Фото: %s", route.PathToPhoto)
+			log.Printf("Фото: %s", route.PathToPhotoPreview)
 
 			// Вывод отзывов
 			log.Println("Отзывы:")

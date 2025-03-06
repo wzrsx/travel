@@ -8,13 +8,15 @@ import (
 )
 
 type RoutesInfoResults struct {
-	IdRoute      int
-	IdUser       int
-	Name_route   string
-	Yandex_route string
-	Estimation   int8
-	Reviews      []Reviews
-	PathToPhoto  string
+	IdRoute            int
+	IdUser             int // if we request routes by user
+	Name_route         string
+	Place_route        string
+	Yandex_route       string
+	Estimation         int8
+	Reviews            []Reviews
+	Photos             []Photo
+	PathToPhotoPreview string
 }
 
 func TakeRoutesInfoQueryPopular(pool *pgxpool.Pool) ([]RoutesInfoResults, error) {
@@ -25,31 +27,38 @@ func TakeRoutesInfoQueryPopular(pool *pgxpool.Pool) ([]RoutesInfoResults, error)
 	}
 	defer conn.Release()
 
-	rows, err := conn.Query(context.Background(), "SELECT id_route, route_name, yandex_route, estimation, path_to_photo from routes ORDER BY estimation DESC")
+	rows, err := conn.Query(context.Background(), "SELECT id_route, route_name, route_place, yandex_route, estimation, path_to_photo_preview from routes ORDER BY estimation DESC")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		var id_route int
 		var name_route string
+		var place_route string
 		var yandex_route string
 		var estimation int
-		var path_to_photo string
+		var path_to_photo_preview string
 
-		if err := rows.Scan(&id_route, &name_route, &yandex_route, &estimation, &path_to_photo); err != nil {
+		if err := rows.Scan(&id_route, &name_route, &place_route, &yandex_route, &estimation, &path_to_photo_preview); err != nil {
 			return nil, fmt.Errorf("Error scan route info: %s", err.Error())
 		}
 		reviews, err := CreateReviews(id_route, pool)
 		if err != nil {
 			return nil, fmt.Errorf("Error append reviews to Route: %s", err.Error())
 		}
+		photos, err := CreatePhotos(id_route, pool)
+		if err != nil {
+			return nil, fmt.Errorf("Error append photos to Route: %s", err.Error())
+		}
 		routsInfo = append(routsInfo, RoutesInfoResults{
-			IdRoute:      id_route,
-			Name_route:   name_route,
-			Yandex_route: yandex_route,
-			Estimation:   int8(estimation),
-			Reviews:      reviews,
-			PathToPhoto:  path_to_photo,
+			IdRoute:            id_route,
+			Name_route:         name_route,
+			Place_route:        place_route,
+			Yandex_route:       yandex_route,
+			Estimation:         int8(estimation),
+			Reviews:            reviews,
+			Photos:             photos,
+			PathToPhotoPreview: path_to_photo_preview,
 		})
 	}
 
@@ -68,8 +77,8 @@ func TakeUsersRoutesInfoQuery(pool *pgxpool.Pool, userID int) ([]RoutesInfoResul
 	defer conn.Release()
 
 	rows, err := conn.Query(context.Background(), `SELECT id_route, 
-													route_name, yandex_route, 
-													estimation, path_to_photo 
+													route_name, route_place, yandex_route, 
+													estimation, path_to_photo_preview 
 													from routes 
 													WHERE id_user = $1 
 													ORDER BY estimation DESC`, userID)
@@ -79,24 +88,31 @@ func TakeUsersRoutesInfoQuery(pool *pgxpool.Pool, userID int) ([]RoutesInfoResul
 	for rows.Next() {
 		var id_route int
 		var name_route string
+		var place_route string
 		var yandex_route string
 		var estimation int
-		var path_to_photo string
+		var path_to_photo_preview string
 
-		if err := rows.Scan(&id_route, &name_route, &yandex_route, &estimation, &path_to_photo); err != nil {
+		if err := rows.Scan(&id_route, &name_route, &place_route, &yandex_route, &estimation, &path_to_photo_preview); err != nil {
 			return nil, fmt.Errorf("Error scan route info: %s", err.Error())
 		}
 		reviews, err := CreateReviews(id_route, pool)
 		if err != nil {
 			return nil, fmt.Errorf("Error append reviews to Route: %s", err.Error())
 		}
+		photos, err := CreatePhotos(id_route, pool)
+		if err != nil {
+			return nil, fmt.Errorf("Error append photos to Route: %s", err.Error())
+		}
 		routsInfo = append(routsInfo, RoutesInfoResults{
-			IdRoute:      id_route,
-			Name_route:   name_route,
-			Yandex_route: yandex_route,
-			Estimation:   int8(estimation),
-			Reviews:      reviews,
-			PathToPhoto:  path_to_photo,
+			IdRoute:            id_route,
+			Name_route:         name_route,
+			Place_route:        place_route,
+			Yandex_route:       yandex_route,
+			Estimation:         int8(estimation),
+			Reviews:            reviews,
+			Photos:             photos,
+			PathToPhotoPreview: path_to_photo_preview,
 		})
 	}
 

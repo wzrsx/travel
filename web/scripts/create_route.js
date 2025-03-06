@@ -102,6 +102,8 @@ function init() {
                 startPoint = null;
                 updateRoute();
             });
+
+            updateRoute();
         } else if (!endPoint) {
             // Установка конечной точки
             endPoint = new ymaps.Placemark(coords, {
