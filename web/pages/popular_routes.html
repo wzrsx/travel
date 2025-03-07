@@ -34,16 +34,20 @@
         </nav>
     </header>   
     <main>
-      <section class="popular-routes-block">
-          <h1>Популярные маршруты</h1>
-          <div class="slider-popular-routes">
-            <button class="slider-arrow prev-arrow">&#10094;</button>
-              <div class="slide">
-                <div class="slide-content">
-                  <div class="slide-image">
-                    <img src="" alt="Slide Image">
+          <div class="title-and-select">
+            <h1>Популярные маршруты</h1>
+            <div class="select-all-routs">
+                <input type="checkbox" name="" id="showAllRouts">
+                <label for="showAllRouts">Все</h1>
+            </div>
+          </div>
+          <div class="routes-list">
+              <div class="route-item">
+                  <div class="route-image">
+                      <img src="../style/photo/photo-route-test.jpg" alt="Route Image">
                   </div>
-                  <div class="slide-text">
+                  <div class="route-content">
+                    <div class="route-text">
                       <div class="title-and-rating">
                           <h2 class="title-route">Название маршрута</h2>
                           <div class="rating">
@@ -52,25 +56,66 @@
                               <span class="star filled">★</span>
                               <span class="star filled">★</span>
                               <span class="star">★</span>
-                            </div>
+                          </div>
                       </div>
-                    <h3 class="title-some-description">Краткое описание</h3>
-                    <p class="description-route">Описание маршрута. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
-                    <div class="buttons">
-                      <button class="btn route-btn">Перейти к маршруту</button>
-                      <button class="btn reviews-btn">Отзывы</button>
+                      <h3 class="title-some-description">Краткое описание</h3>
+                      <p class="description-route">Описание маршрута. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
                     </div>
-                  </div>
+                    <div class="buttons">
+                            <button class="btn route-btn">Перейти к маршруту</button>
+                            <button class="btn reviews-btn">Отзывы</button>
+                    </div>
                 </div>
               </div>
-              
-              <button class="slider-arrow next-arrow">&#10095;</button>
+              <!-- Повторите блок route-item для каждого маршрута -->
+              <div class="route-item">
+                  <div class="route-image">
+                      <img src="" alt="Route Image">
+                  </div>
+                  <div class="route-text">
+                      <div class="title-and-rating">
+                          <h2 class="title-route">Название маршрута 2</h2>
+                          <div class="rating">
+                              <span class="star filled">★</span>
+                              <span class="star filled">★</span>
+                              <span class="star filled">★</span>
+                              <span class="star filled">★</span>
+                              <span class="star">★</span>
+                          </div>
+                      </div>
+                      <h3 class="title-some-description">Краткое описание 2</h3>
+                      <p class="description-route">Описание маршрута 2. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
+                      <div class="buttons">
+                          <button class="btn route-btn">Перейти к маршруту</button>
+                          <button class="btn reviews-btn">Отзывы</button>
+                      </div>
+                  </div>
+              </div>
+              <!-- Добавьте больше маршрутов по аналогии -->
+              <div class="route-item">
+                <div class="route-image">
+                    <img src="" alt="Route Image">
+                </div>
+                <div class="route-text">
+                    <div class="title-and-rating">
+                        <h2 class="title-route">Название маршрута 2</h2>
+                        <div class="rating">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <h3 class="title-some-description">Краткое описание 2</h3>
+                    <p class="description-route">Описание маршрута 2. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
+                    <div class="buttons">
+                        <button class="btn route-btn">Перейти к маршруту</button>
+                        <button class="btn reviews-btn">Отзывы</button>
+                    </div>
+                </div>
             </div>
-      </section>
-      <div class="information-about-display-routes">
-        Здесь представлены только N самых популярных маршутов. <br>
-        Для отображение всех выберите соответсвующий фильтр около заголовка
-      </span>
+          </div>
   </main>
     <script src="scripts/main.js"></script>
 </body>

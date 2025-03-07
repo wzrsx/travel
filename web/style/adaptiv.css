@@ -2,8 +2,8 @@
     
 }
 /* Для экранов меньше 1050px */
-@media screen and (max-width: 1050px) {
-    /*текст в слайдере*/
+@media screen and (max-width: 1170px) {
+    /*текст в листе маршруте*/
     .title-route, .btn{
         font-size: 15px;
     }
@@ -63,9 +63,15 @@
         border-bottom: none;
     }
 
-    /* Адаптируем header для мобильных устройств */
-    header {
-        margin-bottom: 50px; /* Уменьшаем отступ */
+    /*список маршрутов*/
+    .buttons{
+        margin-top: 80px;
+    }
+    .btn{
+        width: 60%;
+    }    
+    .reviews-btn{
+        text-align: center;
     }
 }
 
@@ -82,6 +88,39 @@
     .button-authorize {
         height: 80%;
     }
+
+    /*список маршрутов*/
+    .route-content{
+        width: 95%;
+    }
+    .route-item {
+        flex-direction: column; 
+    }
+
+    .route-image {
+        width: 95%; 
+        height: auto;
+        object-fit: contain;
+        margin-right: 0; 
+        margin-top: 10px;
+        border: 2px solid #F6F3D8;
+    }
+    .route-text{
+        width: 100%;
+    }
+    .title-and-rating{
+        width: 100%;
+        border: none;
+    }
+    .title-some-description,
+    .description-route {
+        display: none;
+    }
+
+    .buttons {
+        margin-top: 10px;
+    }
+
 }
 @media screen and (max-width: 480px) {
     .form-text{
@@ -96,6 +135,21 @@
     .button-authorize {
         height: 60%;
     }
+    /*список маршрутов*/
+    h1{
+        font-size: 20px;
+    }
+    .buttons{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .btn{
+        width: 85%;
+    }
+    .reviews-btn{
+        max-width: 333px;
+    }
 }
 @media screen and (max-width: 375px) {
     .form-text{
@@ -109,5 +163,5 @@
     }
     .button-authorize {
         height: 40%;
-    }
+    }    
 }

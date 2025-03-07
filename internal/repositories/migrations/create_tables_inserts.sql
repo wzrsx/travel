@@ -34,7 +34,7 @@ CREATE TABLE photos (
     path_to_photo VARCHAR(200),
     id_route INTEGER,
     CONSTRAINT fk_photos_routes FOREIGN KEY (id_route) REFERENCES routes(id_route)
-)
+);
 -- Users
 INSERT INTO users (username, email, password) VALUES ('vasiliy', 'vasiliy.rybakov.06@mail.ru', 'admin');
 INSERT INTO users (username, email, password) VALUES ('vitaliy', 'vitaliy@gmail.com', '20.06.2006');

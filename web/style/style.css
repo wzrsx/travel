@@ -233,8 +233,11 @@ h1{
     font-size: min(18px, 2vw); /* Адаптивный размер шрифта плейсхолдера */
     opacity: 1; /* Убедимся, что плейсхолдер не прозрачный */
 }
-.input-field.email{
+.input-field.name{
     margin-top: 5%;
+}
+.input-field.email{
+    margin-top: 1.15vh;
 }
 .input-field.password{
     margin-top: 1.15vh;
@@ -299,15 +302,48 @@ h1{
 .nav-item.current-page:after {
     width: 100%;
 }
-.slider-popular-routes {
-    max-width: 1300px;
-    margin: 0 auto;
-    overflow: hidden;
-    position: relative;
+
+.title-and-select{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.title-and-select h1{
+    grid-column: 2;
+}
+.select-all-routs {
+    display: flex; 
+    justify-content: right; 
+    margin-right: 150px;
+    grid-column: 3;
     margin-top: 35px;
 }
+.select-all-routs input{
+    transform: scale(2);
+    margin-right: 10px;
+    accent-color: #CEE9E8;
+}
 
-.slide {
+.select-all-routs label{
+    font-size: 30px;
+    font-weight: 600;
+    color: #CEE9E8;
+    text-transform: uppercase;
+}
+
+
+.routes-list {
+    max-width: 1300px;
+    height: 85%;
+    margin: 0 auto;
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column; 
+    gap: 20px; 
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.route-item {
     width: 100%;
     height: 375px;
     display: flex;
@@ -323,30 +359,36 @@ h1{
     height: 100%;
 }
 
-.slide-image {
-    width: 50%;
-    height: 100%;
+.route-image {
+    width: 47%;
+    height: 95%;
     overflow: hidden;
+    margin-right: 15px;
+    border-radius: 10px;
 }
 
-.slide-image img {
+.route-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.slide-text {
+.route-text {
+    
+}
+.route-content{
+    height: 100%;
     width: 50%;
     display: flex;
     flex-direction: column;
 }
+
 
 .rating {}
 
 .star {
     font-size: 24px;
     color: #ccc;
-    cursor: pointer;
 }
 
 .star.filled {
@@ -389,8 +431,9 @@ h1{
 .buttons {
     display: flex;
     gap: 10px;
-    margin-top: auto;
+    margin-top: 100px;
     margin-bottom: 20px;
+    justify-content: center;
 }
 
 .btn {
@@ -423,10 +466,6 @@ h1{
     margin-top: 120px;
     color: #B7E1F8;
     font-size: 25px;
-}
-
-.popular-routes-block {
-    position: relative;
 }
 
 /* Добавленные стили для стрелок */
