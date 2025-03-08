@@ -7,11 +7,17 @@
     .title-route, .btn{
         font-size: 15px;
     }
+    .select-all-routs{
+        margin-right: 100px;
+    }
     
 }
 /* Для экранов меньше 991px */
 @media screen and (max-width: 991px) {
-    
+    h1{
+        padding-top: 25px;
+        font-size: 25px;
+    }
     .burger {
         display: block;
     }
@@ -62,7 +68,18 @@
     .nav-item:last-child {
         border-bottom: none;
     }
-
+    /*чекбокс*/
+    .select-all-routs{
+        margin-right: 80px;
+    }
+    .select-all-routs input{
+        transform: scale(1.5);
+    }
+    .select-all-routs label{
+        font-size: 22px;
+        font-weight: 600;
+        margin-top: 2px;
+    }
     /*список маршрутов*/
     .buttons{
         margin-top: 80px;
@@ -73,9 +90,23 @@
     .reviews-btn{
         text-align: center;
     }
+    .about-us-text{
+        font-size: 25px;
+    }
+    .contacts-text{
+        font-size: 25px;
+    }
+    .instruction-for-forget-pass{
+        margin-top: 25px;
+    }
 }
 
 @media screen and (max-width: 768px) {
+    h1{
+        padding-top: 15px;
+        font-size: 20px;
+    }
+    
     .form-text{
         font-size: 40px;
     }
@@ -120,7 +151,44 @@
     .buttons {
         margin-top: 10px;
     }
-
+    /*чекбокс*/
+    .title-and-select{
+        display: flex;
+        flex-direction: column;
+    }
+    .select-all-routs input{
+        transform: scale(1);
+    }
+    .select-all-routs label{
+        margin-top: 1px;
+        font-size: 15px;
+    }
+    .select-all-routs{
+        margin-top: 5px;
+        margin-right: 0;
+        justify-content: center;
+    }
+    .about-us-text{
+        font-size: 20px;
+    }
+    .contacts-text{
+        font-size: 20px;
+        margin-left: 0;
+        text-align: center;
+    }
+    /*создать маршрут*/
+    .create-route-block{
+        font-size: 17px;
+        padding: 10px;
+        height: 89%;
+        margin-top: 10px;
+    }
+    .create-route-block section{
+        margin-top: 15px;
+    }
+    .instruction-for-forget-pass{
+        margin-top: 15px;
+    }
 }
 @media screen and (max-width: 480px) {
     .form-text{
@@ -150,6 +218,28 @@
     .reviews-btn{
         max-width: 333px;
     }
+    .about-us-text{
+        font-size: 15px;
+    }
+    .contacts-text{
+        font-size: 15px;
+    }
+    .create-route-block{
+        font-size: 15px;
+    }
+    .input-route{
+        border-radius: 10px;
+        height: 45px;
+    }
+    .create-route-btn{
+        height: 60px;
+    }
+    .banner{
+        font-size: 60px;
+    }
+    .main-page-content{
+        margin-top: 150px;
+    }
 }
 @media screen and (max-width: 375px) {
     .form-text{
@@ -164,4 +254,10 @@
     .button-authorize {
         height: 40%;
     }    
+    .banner{
+        font-size: 50px;
+    }
+    .main-page-content{
+        margin-top: 100px;
+    }
 }

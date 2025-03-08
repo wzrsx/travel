@@ -1,5 +1,6 @@
 const signInDialog = document.getElementById('signInDialog');
 const registrationDialog = document.getElementById('registrationDialog');
+const forgetPassDialog = document.getElementById('forgetPassDialog');
 const blurDiv = document.getElementById('blurDiv');
 // const IP = process.env.IP; перемнные среды
 
@@ -51,6 +52,23 @@ function openRegistrationDialog() {
         registrationDialog.showModal(); // Открываем диалог регистрации
     }
 }
+
+function openForgetPassDialog() {
+    // Закрываем диалог авторизации, если он открыт
+    if (signInDialog.open) {
+        signInDialog.close();
+    }
+    // Закрываем диалог регистрации, если он открыт
+    if (registrationDialog.open) {
+        registrationDialog.close();
+    }
+    // Добавляем класс размытия, если диалог восстановления пароля не открыт
+    if (!forgetPassDialog.open) {
+        blurDiv.classList.add('blur');
+        forgetPassDialog.showModal(); // Открываем диалог восстановления пароля
+    }
+}
+
 function registration(){
     const username = 'Vitaly' //document.getElementById('registrationUsernameInput').value;
     const email = document.getElementById('registrationEmailInput').value;
@@ -108,13 +126,19 @@ function registration(){
 
 // Закрытие диалогов и удаление размытия
 signInDialog.addEventListener('close', () => {
-    if (!registrationDialog.open) {
+    if (!registrationDialog.open && !forgetPassDialog.open) {
         blurDiv.classList.remove('blur'); // Удаляем класс размытия, если ни один диалог не открыт
     }
 });
 
 registrationDialog.addEventListener('close', () => {
-    if (!signInDialog.open) {
+    if (!signInDialog.open && !forgetPassDialog.open) {
+        blurDiv.classList.remove('blur'); // Удаляем класс размытия, если ни один диалог не открыт
+    }
+});
+
+forgetPassDialog.addEventListener('close', () => {
+    if (!signInDialog.open && !registrationDialog.open) {
         blurDiv.classList.remove('blur'); // Удаляем класс размытия, если ни один диалог не открыт
     }
 });

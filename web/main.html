@@ -51,7 +51,12 @@
                 <input class="input-field password" type="password" name="password" id="signInPasswordInput" placeholder="Введите пароль">
                 <section class="autorize-register">
                     <button class="button-authorize" type="submit" onclick="authorize()">Войти</button>
-                    <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
+                    <div>
+                        <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
+                        <br>
+                        <br>
+                        <span class="sign-in-dialog-form-registation forget-pass" onclick="openForgetPassDialog()">Забыли пароль?</span>
+                    </div>
                 </section>
             </div>
         </dialog>
@@ -68,6 +73,18 @@
                     <button class="button-authorize" type="submit" onclick="registration()">Зарегистрироваться</button>
                     <span class="sign-in-dialog-form-registation" onclick="openSignInDialog()">Вход</span>
                 </section>
+            </form>
+        </dialog>
+        <dialog class="sign-in-dialog" id="forgetPassDialog">
+            <form class="sign-in-dialog-form" id="forgetPassForm">
+                <img class="logo-tree" src="style/logo/tree.svg" alt="">
+                <span class="form-text">Восстановление пароля</span>
+                <span class="instruction-for-forget-pass">Для восстановления пароля введите свою электронную почту</span>
+                <input class="input-field email" type="text" name="" id="forgetPassEmailInput" placeholder="Введите почту">
+                <section class="register-autorize">
+                    <button class="button-authorize" type="submit" onclick="resetPass()">Сбросить</button>
+                </section>
+                
             </form>
         </dialog>
     </main> 
