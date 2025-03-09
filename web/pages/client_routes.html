@@ -35,32 +35,43 @@
     </header>   
     <main>
         <h1>Мои маршруты</h1>
+        <div class="title-and-select">
+            <div class="select-all-routs">
+                <input type="checkbox" name="" id="showAllRouts">
+                <label for="showAllRouts">Все</h1>
+            </div>
+        </div>
         <div class="routes-list">
+            {{range .RoutesInfo}}
             <div class="route-item">
                 <div class="route-image">
-                    <img src="../style/photo/photo-route-test.jpg" alt="Route Image">
+                    <img src="{{.PathToPhotoPreview}}" alt="Route Image">
                 </div>
                 <div class="route-content">
-                  <div class="route-text">
-                    <div class="title-and-rating">
-                        <h2 class="title-route">Название маршрута</h2>
-                        <div class="rating">
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
+                    <div class="route-text">
+                        <div class="title-and-rating">
+                            <h2 class="title-route">{{.Name_route}}</h2>
+                            <div class="rating">
+                                {{$currentRoute := .}} <!-- Сохраняем текущий маршрут в переменную -->
+                                {{range $i := seq 5}}
+                                    {{if le $i $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
+                                        <span class="star filled">★</span>
+                                    {{else}}
+                                        <span class="star">★</span>
+                                    {{end}}
+                                {{end}}
+                            </div>
                         </div>
+                        <h3 class="title-some-description">Краткое описание</h3>
+                        <p class="description-route">{{.Description_route}}</p>
                     </div>
-                    <h3 class="title-some-description">Краткое описание</h3>
-                    <p class="description-route">Описание маршрута. Здесь может быть краткое описание того, что вас ждет на этом маршруте.</p>
-                  </div>
-                  <div class="buttons">
-                          <button class="btn route-btn">Перейти к маршруту</button>
-                          <button class="btn reviews-btn">Отзывы</button>
-                  </div>
-              </div>
+                    <div class="buttons">
+                        <button class="btn route-btn" data-route-id="{{.IdRoute}}">Перейти к маршруту</button>
+                        <button class="btn reviews-btn" data-route-id="{{.IdRoute}}">Отзывы</button>
+                    </div>
+                </div>
             </div>
+            {{end}}
         </div>
     </main>
     <script src="scripts/main.js"></script>

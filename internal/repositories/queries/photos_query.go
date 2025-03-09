@@ -21,7 +21,7 @@ func CreatePhotos(id_route int, pool *pgxpool.Pool) ([]Photo, error) {
 
 	rows, err := conn.Query(context.Background(), `
 		SELECT id_photo, path_to_photo
-		FROM reviews
+		FROM photos
 		WHERE id_route = $1`, id_route)
 	if err != nil {
 		return nil, err

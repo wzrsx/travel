@@ -40,6 +40,24 @@ func check_username(w http.ResponseWriter, r *http.Request, web_file string) (*t
 	return tmpl, &data, nil
 
 }
+func check_username_data(w http.ResponseWriter, r *http.Request) (*PageData, error) {
+	username, ok := r.Context().Value("username").(string)
+	if !ok {
+		username = ""
+	}
+	user_id, ok := r.Context().Value("userID").(int)
+	if !ok {
+		user_id = 0
+	}
+
+	data := PageData{
+		Username: username,
+		UserID:   user_id,
+	}
+
+	return &data, nil
+
+}
 
 func Authorize(a *AppHandlers) http.Handler {
 	authorize := func(w http.ResponseWriter, r *http.Request) {
@@ -163,39 +181,57 @@ func OpenFirstPage(a *AppHandlers) http.Handler {
 }
 
 func PopularRoutesHandler(a *AppHandlers) http.Handler {
-	routes, err := queries.TakeRoutesInfoQueryPopular(a.Pool.PoolConns)
-	if err != nil {
-		log.Printf("Error routes having: %v", err)
-	}
-	for _, route := range routes {
-		log.Printf("Маршрут ID: %d", route.IdRoute)
-		log.Printf("Название: %s", route.Name_route)
-		log.Printf("Ссылка на Yandex: %s", route.Yandex_route)
-		log.Printf("Оценка: %d", route.Estimation)
-		log.Printf("Фото: %s", route.PathToPhotoPreview)
-
-		// Вывод отзывов
-		log.Println("Отзывы:")
-		for _, review := range route.Reviews {
-			log.Printf("  Описание: %s", review.Description)
-			log.Printf("  Оценка: %d", review.Estimation)
-		}
-		log.Println("-----------------------------")
+	// Определяем функцию seq
+	funcMap := template.FuncMap{
+		"seq": func(n int) []int {
+			var sequence []int
+			for i := 1; i <= n; i++ {
+				sequence = append(sequence, i)
+			}
+			return sequence
+		},
 	}
 
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		tmpl, data, err := check_username(w, r, "web/pages/popular_routes.html")
+		// Парсим шаблон с функцией seq
+		tmpl := template.Must(template.New("popular_routes.html").Funcs(funcMap).ParseFiles("web/pages/popular_routes.html"))
+
+		// Получаем данные пользователя
+		data, err := check_username_data(w, r)
 		if err != nil {
-			log.Printf("%s", err.Error())
+			log.Printf("Failed to check username: %v", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		err = tmpl.Execute(w, data)
+
+		// Получаем данные маршрутов
+		routes, err := queries.TakeRoutesInfoQueryPopular(a.Pool.PoolConns)
 		if err != nil {
+			log.Printf("Failed to get routes data: %v", err)
+			http.Error(w, "Failed to fetch routes", http.StatusInternalServerError)
+			return
+		}
+
+		// Подготавливаем данные для шаблона
+		dataWithRoutes := struct {
+			Username   string
+			UserID     int
+			RoutesInfo []queries.RoutesInfoResults
+		}{
+			Username:   data.Username,
+			UserID:     data.UserID,
+			RoutesInfo: routes,
+		}
+
+		// Рендерим шаблон
+		err = tmpl.Execute(w, dataWithRoutes)
+		if err != nil {
+			log.Printf("Failed to render template: %v", err)
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
-			log.Printf("Failed to render template: %s", err.Error())
 			return
 		}
 	}
+
 	return http.HandlerFunc(check_auth)
 }
 
@@ -264,50 +300,53 @@ func CreateRouteHandler(a *AppHandlers) http.Handler {
 
 // Обработчик для страницы "Мои маршруты"
 func ClientRoutesHandler(a *AppHandlers) http.Handler {
+	// Определяем функцию seq
+	funcMap := template.FuncMap{
+		"seq": func(n int) []int {
+			var sequence []int
+			for i := 1; i <= n; i++ {
+				sequence = append(sequence, i)
+			}
+			return sequence
+		},
+	}
 
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		tmpl, data, err := check_username(w, r, "web/pages/client_routes.html")
+		// Парсим шаблон с функцией seq
+		tmpl := template.Must(template.New("client_routes.html").Funcs(funcMap).ParseFiles("web/pages/client_routes.html"))
+
+		// Получаем данные пользователя
+		data, err := check_username_data(w, r)
 		if err != nil {
-			log.Printf("%s", err.Error())
+			log.Printf("Failed to check username: %v", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
 
-		// Logic with take UsersRoutes
-		userID, ok := r.Context().Value("userID").(int)
-		if !ok {
-			log.Println("error not ok")
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				http.Error(w, "Failed to render template", http.StatusInternalServerError)
-			}
+		// Получаем данные маршрутов
+		routes, err := queries.TakeUsersRoutesInfoQuery(a.Pool.PoolConns, data.UserID)
+		if err != nil {
+			log.Printf("Failed to get routes data: %v", err)
+			http.Error(w, "Failed to fetch routes", http.StatusInternalServerError)
 			return
 		}
 
-		routes, err := queries.TakeUsersRoutesInfoQuery(a.Pool.PoolConns, userID)
-		if err != nil {
-			log.Printf("Error routes having: %v", err)
+		// Подготавливаем данные для шаблона
+		dataWithRoutes := struct {
+			Username   string
+			UserID     int
+			RoutesInfo []queries.RoutesInfoResults
+		}{
+			Username:   data.Username,
+			UserID:     data.UserID,
+			RoutesInfo: routes,
 		}
 
-		for _, route := range routes {
-			log.Printf("Маршрут ID: %d", route.IdRoute)
-			log.Printf("Название: %s", route.Name_route)
-			log.Printf("Ссылка на Yandex: %s", route.Yandex_route)
-			log.Printf("Оценка: %d", route.Estimation)
-			log.Printf("Фото: %s", route.PathToPhotoPreview)
-
-			// Вывод отзывов
-			log.Println("Отзывы:")
-			for _, review := range route.Reviews {
-				log.Printf("  Описание: %s", review.Description)
-				log.Printf("  Оценка: %d", review.Estimation)
-			}
-			log.Println("-----------------------------")
-		}
-
-		err = tmpl.Execute(w, data)
+		// Рендерим шаблон
+		err = tmpl.Execute(w, dataWithRoutes)
 		if err != nil {
+			log.Printf("Failed to render template: %v", err)
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
-			log.Printf("Failed to render template: %s", err.Error())
 			return
 		}
 	}

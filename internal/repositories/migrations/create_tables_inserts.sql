@@ -41,40 +41,11 @@ INSERT INTO users (username, email, password) VALUES ('vitaliy', 'vitaliy@gmail.
 INSERT INTO users (username, email, password) VALUES ('sergey', 'serzh.rybakov.06@mail.ru', 'admin');
 
 -- Routes
-INSERT INTO routes (route_name, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Москва-Пасад', 'yandex.ru', 7, 'sadf/asdad/asd/asd/', 1);
-INSERT INTO routes (route_name, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Питер-карелия', 'yandex.ru', 9, 'sadf/asdad/asd/asd/', 2);
-INSERT INTO routes (route_name, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Брюссель', 'yandex.ru', 3, 'sadf/asdad/asd/asd/', 3);
+INSERT INTO routes (route_name, route_place, route_description, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Москва-Пасад','Москва-Пасад','Москва-Пасад', 'yandex.ru', 4, 'sadf/asdad/asd/asd/', 1);
+INSERT INTO routes (route_name, route_place, route_description, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Москва-Пасад','Москва-Пасад','Москва-Пасад', 'yandex.ru', 4, 'sadf/asdad/asd/asd/', 2);
+INSERT INTO routes (route_name, route_place, route_description, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Москва-Пасад','Москва-Пасад','Москва-Пасад', 'yandex.ru', 4, 'sadf/asdad/asd/asd/', 3);
 
 -- Reviews
 INSERT INTO reviews (description, estimation, id_route) VALUES ('класс', 7, 1);
 INSERT INTO reviews (description, estimation, id_route) VALUES ('супер', 9, 1);
 INSERT INTO reviews (description, estimation, id_route) VALUES ('кайф', 10, 3);
-
-
-
-ALTER TABLE routes ADD COLUMN last_selected TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-
-
-
-CREATE OR REPLACE FUNCTION update_last_updated()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.last_selected = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_select_last_updated
-BEFORE SELECT ON routes
-FOR EACH ROW
-EXECUTE FUNCTION update_last_selected();
-
-
---Удаление каждые 24 часа
-CREATE EXTENSION pg_cron;
-
-SELECT cron.schedule(
-    'delete_old_routes', -- Имя задачи
-    'EVERY 12 HOURS',    -- Запускать каждые 12 часов
-    $$DELETE FROM routes WHERE last_updated < NOW() - INTERVAL '1 day'$$
-);
