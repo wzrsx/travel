@@ -12,7 +12,7 @@ CREATE TABLE routes (
     route_name VARCHAR(20),
     route_place VARCHAR(30),
     route_description VARCHAR(200),
-    yandex_route VARCHAR(200) NOT NULL,
+    yandex_route VARCHAR(500) NOT NULL,
     estimation INTEGER,
     path_to_photo_preview VARCHAR(100),
     id_user INTEGER,
@@ -23,7 +23,9 @@ CREATE TABLE routes (
 CREATE TABLE reviews (
     id_review SERIAL PRIMARY KEY,
     description VARCHAR(200),
+    username VARCHAR(20),
     estimation INTEGER,
+    date_review TIMESTAMP,
     id_route INTEGER,
     CONSTRAINT fk_reviews_routes FOREIGN KEY (id_route) REFERENCES routes(id_route)
 );
@@ -46,6 +48,11 @@ INSERT INTO routes (route_name, route_place, route_description, yandex_route, es
 INSERT INTO routes (route_name, route_place, route_description, yandex_route, estimation, path_to_photo_preview, id_user) VALUES ('Москва-Пасад','Москва-Пасад','Москва-Пасад', 'yandex.ru', 4, 'sadf/asdad/asd/asd/', 3);
 
 -- Reviews
-INSERT INTO reviews (description, estimation, id_route) VALUES ('класс', 7, 1);
-INSERT INTO reviews (description, estimation, id_route) VALUES ('супер', 9, 1);
-INSERT INTO reviews (description, estimation, id_route) VALUES ('кайф', 10, 3);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('sergey', 'класс', 1, NOW(), 1);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vitalya', 'супер', 4, NOW(), 1);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vasiliy', 'кайф', 3, NOW(), 3);
+
+-- Photos
+INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 1);
+INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 2);
+INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 3);

@@ -8,30 +8,90 @@
     <link rel="stylesheet" href="../style/adaptiv.css">
     <link rel="stylesheet" href="../style/reset.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>Название маршрута</title>
-    <style>    
-        
-      </style>
-      <script defer src="../scripts/simple-adaptive-slider.js"></script>
-      <script>
+    <title>{{.Route_name}}</title>
+    <style>
+        /* Стили для карты */
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+    <script defer src="../scripts/simple-adaptive-slider.js"></script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
-          // активация слайдера
-          new ItcSimpleSlider('.itcss-1', {
-            loop: true,
-            autoplay: true,
-            swipe: true
-          });
+            // активация слайдера
+            new ItcSimpleSlider('.itcss-1', {
+                loop: true,
+                autoplay: true,
+                swipe: true
+            });
         });
         document.addEventListener('DOMContentLoaded', () => {
-          // активация слайдера
-          new ItcSimpleSlider('.itcss-2', {
-            loop: false,
-            autoplay: true,
-            swipe: true
-          });
+            // активация слайдера
+            new ItcSimpleSlider('.itcss-2', {
+                loop: false,
+                autoplay: true,
+                swipe: true
+            });
         });
-      </script>
-    </head>
+    </script>
+    <script>
+        // Передаем данные из Go в JavaScript
+        const yandexRoute = {
+            points: "{{.RouteLink}}", // Ссылка на карту
+            mode: "pedestrian" // Тип маршрута
+        };
+        console.log("Yandex Route Points:", yandexRoute.points); // Отладочный вывод
+    </script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=921d0de2-2f0b-41fb-924e-b07e4c7d230a&lang=ru_RU"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            ymaps.ready(init);
+
+            function init() {
+                // Разбираем ссылку
+                const urlParams = new URLSearchParams(yandexRoute.points.split('?')[1]);
+                const rtext = urlParams.get('rtext'); // Координаты точек
+                const rtt = urlParams.get('rtt'); // Тип маршрута
+
+                if (!rtext) {
+                    console.error("Не удалось извлечь координаты из ссылки.");
+                    return;
+                }
+
+                // Разделяем координаты на все точки
+                const points = rtext.split('~').map(point => {
+                    const [lat, lon] = point.split(',');
+                    return [parseFloat(lat), parseFloat(lon)];
+                });
+
+                if (points.length < 2) {
+                    console.error("Для построения маршрута нужно минимум две точки.");
+                    return;
+                }
+
+                // Создаем карту
+                const map = new ymaps.Map('map', {
+                    center: points[0], // Центр карты (первая точка)
+                    zoom: 10 // Масштаб
+                });
+
+                // Создаем маршрут
+                const multiRoute = new ymaps.multiRouter.MultiRoute({
+                    referencePoints: points, // Все точки маршрута
+                    params: {
+                        routingMode: rtt === 'pd' ? 'pedestrian' : 'auto' // Тип маршрута
+                    }
+                }, {
+                    boundsAutoApply: true // Автоматически подгонять карту под маршрут
+                });
+
+                // Добавляем маршрут на карту
+                map.geoObjects.add(multiRoute);
+            }
+        });
+    </script>
+</head>
 <body>
     <header>
         <nav>
@@ -56,26 +116,19 @@
         </nav>
     </header>  
     <main>
-        <h1>Название маршрута</h1>
+        <h1>{{.Route_name}}</h1>
         <div class="content-route">
             <div class="content-route-right">
                 <!-- Разметка слайдера (html код) -->
                 <div class="itcss itcss-1">
                     <div class="itcss__wrapper">
-                    <div class="itcss__items">
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div style="height: 350px; background: #3f51b5;"></div>
+                        <div class="itcss__items">
+                            {{range .Route_photos}}
+                                <div class="itcss__item">
+                                    <img src="{{.PhotoPath}}" alt="Фото маршрута" style="height: 350px; width: 100%; object-fit: cover;">
+                                </div>
+                            {{end}}
                         </div>
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div style="height: 350px; background: #607d8b;"></div>
-                        </div>
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div style="height: 350px; background: #f44336;"></div>
-                        </div>
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div style="height: 350px; background: #4caf50;"></div>
-                        </div>
-                    </div>
                     </div>
                     <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
                     <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
@@ -85,23 +138,21 @@
                         <img class="logo-about-route" src="../style/logo/distance.svg" alt="" width="50px">
                         <div class="about-route-text">
                             <p>Расстояние</p>
-                            <p>** км</p>
+                            <p>{{.Route_estimation}} км</p>
                         </div>
-                        
                     </div>
                     <div class="about time-route">
                         <img class="logo-about-route" src="../style/logo/time.svg" alt="" width="50px">
                         <div class="about-route-text">
                             <p>Время прохождения</p>
-                            <p>hh:mm</p>
+                            <p>hh:mm</p> <!-- Замените на реальные данные, если они есть -->
                         </div>
-                        
                     </div>
                     <div class="about rayting-route">
                         <img src="../style/logo/star.svg" alt="" class="logo-about-route" width="50px">
                         <div class="about-route-text">
                             <p>Рейтинг</p>
-                            <p>*.*</p>
+                            <p>{{.Route_estimation}}</p> <!-- Замените на реальные данные, если они есть -->
                         </div>
                     </div>
                 </div>
@@ -109,43 +160,32 @@
             <div class="content-route-left">
                 <p class="title-route-description">Описание:</p>
                 <br>
-                <span class="route-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis cum laboriosam, natus, perferendis veritatis illum voluptatum facilis id consequatur, doloremque sed vel quidem eos. Nulla architecto velit nihil mollitia obcaecati. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta blanditiis labore dolore! Repudiandae enim possimus fuga officiis optio neque molestiae laborum cumque excepturi ut, sapiente laudantium aliquam dignissimos saepe rerum. Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident pariatur eveniet non ipsam officiis, qui maiores odio libero et eaque incidunt debitis ut praesentium ea quaerat perferendis voluptas, earum voluptatibus.</span>
+                <span class="route-description">{{.Route_description}}</span>
                 <p class="title-route-description reviews">Отзывы:</p>
                 <div class="itcss itcss-2">
                     <div class="itcss__wrapper">
-                    <div class="itcss__items">
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div class="item-review">
-                                <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px">
-                                <p class="user-name">Username</p>
-                                <div class="rating">
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
+                        <div class="itcss__items">
+                            {{range .Route_reviews}}
+                                <div class="itcss__item">
+                                    <div class="item-review">
+                                        <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px">
+                                        <p class="user-name">{{.Username}}</p>
+                                        <div class="rating">
+                                            {{$currentRoute := .}} <!-- Сохраняем текущий маршрут в переменную -->
+                                                {{range $i := seq 5}}
+                                                    {{if le $i $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
+                                                        <span class="star filled">★</span>
+                                                    {{else}}
+                                                        <span class="star">★</span>
+                                                    {{end}}
+                                            {{end}}
+                                        </div>
+                                        <p class="text-review">{{.Description}}</p>
+                                        <p class="date-review">{{.Date}}</p>
+                                    </div>
                                 </div>
-                                <p class="text-review">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore vel laboriosam, alias rerum obcaecati eius soluta odio, natus expedita similique impedit, sit necessitatibus eos architecto explicabo nulla dicta corrupti mollitia!</p>
-                                <p class="date-review">dd-mm-yyyy</p>
-                            </div>
+                            {{end}}
                         </div>
-                        
-                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
-                            <div class="item-review">
-                                <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px">
-                                <p class="user-name">Username</p>
-                                <div class="rating">
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                    <span class="star filled">★</span>
-                                </div>
-                                <p class="text-review">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore vel laboriosam, alias rerum obcaecati eius soluta odio, natus expedita similique impedit, sit necessitatibus eos architecto explicabo nulla dicta corrupti mollitia!</p>
-                                <p class="date-review">dd-mm-yyyy</p>
-                            </div>
-                        </div>
-                    </div>
                     </div>
                     <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
                     <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
@@ -153,7 +193,9 @@
             </div>       
         </div>
         <h1>Карта маршрута</h1>
-        <div class="map"></div>
+        <div class="map">
+            <div id="map"></div> <!-- Контейнер для карты -->
+        </div>
         <div class="btns">
             <button class="btn-route estimate">Оценить маршрут</button>
             <button class="btn-route edit-route">Редактировать</button>

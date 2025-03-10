@@ -214,12 +214,21 @@ function saveRoute(routeLink, route_name, route_place, route_description) {
             route_description: route_description
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('Ссылка сохранена:', data);
-        location.reload()
+        alert('Маршрут успешно создан!');
+        location.reload();
     })
     .catch(error => {
         console.error('Ошибка:', error);
+        alert('Ошибка при сохранении маршрута: ' + error.message);
     });
 }

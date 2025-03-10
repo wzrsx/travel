@@ -39,3 +39,5 @@ func (r *Route) CreateNewRoute(pool *pgxpool.Pool) error {
 	}
 	return nil
 }
+
+
