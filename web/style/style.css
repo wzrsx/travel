@@ -27,7 +27,7 @@ main{
     background: linear-gradient(#53595A, #232323 25%);
     border-radius: 30px 30px 0px 0px;
     transition: all 1s ease;
-    overflow: hidden;
+    overflow: auto;
 }
 
 h1{
@@ -668,4 +668,128 @@ h1{
     font-weight: 600;
     margin: 0 auto;
     margin-top: 20px;
+}
+
+/*маршрут*/
+.itcss__items {
+    counter-reset: slide;
+  }
+
+.itcss__item {
+    counter-increment: slide;
+}
+
+.itcss__item>div::before {
+    content: counter(slide);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #fff;
+    font-style: italic;
+    font-size: 32px;
+    font-weight: bold;
+}
+.content-route{
+    display: flex;
+    margin-top: 50px;
+}
+.content-route-right{
+    width: 40%;
+    margin-left: 100px;
+}
+.content-route-left{
+    width: 60%;
+}
+.info-about-route{
+    margin-left: 25px;
+    margin-top: 10px;
+}
+.about{
+    display: flex;
+    margin-top: 25px;
+    color: #d6d6d6;
+}
+.about p{
+    padding-top: 3px;
+    padding-left: 5px;
+}
+.about-route-text{
+    display: flex;
+    flex-direction: column;
+}
+.about.distance-route{
+
+}
+.about.time-route{
+
+}
+.about.rayting-route{
+
+}
+.logo-about-route{
+}
+
+.title-route-description{
+    color: #719EA7;
+    font-weight: 500;
+    font-size: 28px;
+}
+.route-description{
+    color: #CEE9E8;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.5;
+}
+.title-route-description.reviews{
+    display: block;
+    margin-top: 15px;
+}
+.itcss-1{
+    max-width: 600px;
+}
+.itcss-2{
+   margin-top: 25px;
+}
+.item-review{
+    position: relative;
+    width: 95%;
+    height: 300px;
+    border-radius: 20px;
+    border: 3px solid #F6F3D8;
+    color: #53595A;
+    padding: 25px;
+}
+.user-photo{
+    border-radius: 50%;
+}
+.text-review{
+    padding-top: 5px;
+}
+.date-review{
+    position: absolute; 
+    bottom: 10px;
+    right: 25px;
+}
+.btns{
+    display: flex;
+    justify-content: space-around;
+    padding-top: 55px;
+    height: 50px;
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 150px;
+}
+.btn-route{
+    height: 65px;
+    width: 40%;
+    font-size: 22px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 15px;
+}
+.estimate{
+    background-color: #FCF890;
+}
+.edit-route{
+    background-color: #B7E1F8;
 }

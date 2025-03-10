@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/simple-adaptive-slider.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/adaptiv.css">
+    <link rel="stylesheet" href="../style/reset.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Название маршрута</title>
+    <style>    
+        
+      </style>
+      <script defer src="../scripts/simple-adaptive-slider.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          // активация слайдера
+          new ItcSimpleSlider('.itcss-1', {
+            loop: true,
+            autoplay: true,
+            swipe: true
+          });
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+          // активация слайдера
+          new ItcSimpleSlider('.itcss-2', {
+            loop: false,
+            autoplay: true,
+            swipe: true
+          });
+        });
+      </script>
+    </head>
+<body>
+    <header>
+        <nav>
+            <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
+            <label for="burger-checkbox" class="burger"></label>
+            <ul class="mainnav-list">
+                <li><a class="nav-item" href="/">Главная</a></li>
+                <li><a class="nav-item">Популярные маршруты</a></li>
+                <li><a class="nav-item" href="/create-route">Создать маршрут</a></li>
+                <li><a class="nav-item" href="/client-routes">Мои маршруты</a></li>
+                <li><a class="nav-item" href="/contacts">Контакты</a></li>
+                <li><a class="nav-item" href="/about-us">О нас</a></li>
+                <li>
+                    <img src="style/logo/strelka.svg" alt="">
+                    {{if .Username}}
+                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                    {{else}}
+                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                    {{end}}
+                </li>
+            </ul>
+        </nav>
+    </header>  
+    <main>
+        <h1>Название маршрута</h1>
+        <div class="content-route">
+            <div class="content-route-right">
+                <!-- Разметка слайдера (html код) -->
+                <div class="itcss itcss-1">
+                    <div class="itcss__wrapper">
+                    <div class="itcss__items">
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div style="height: 350px; background: #3f51b5;"></div>
+                        </div>
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div style="height: 350px; background: #607d8b;"></div>
+                        </div>
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div style="height: 350px; background: #f44336;"></div>
+                        </div>
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div style="height: 350px; background: #4caf50;"></div>
+                        </div>
+                    </div>
+                    </div>
+                    <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
+                    <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
+                </div>
+                <div class="info-about-route">
+                    <div class="about distance-route">
+                        <img class="logo-about-route" src="../style/logo/distance.svg" alt="" width="50px">
+                        <div class="about-route-text">
+                            <p>Расстояние</p>
+                            <p>** км</p>
+                        </div>
+                        
+                    </div>
+                    <div class="about time-route">
+                        <img class="logo-about-route" src="../style/logo/time.svg" alt="" width="50px">
+                        <div class="about-route-text">
+                            <p>Время прохождения</p>
+                            <p>hh:mm</p>
+                        </div>
+                        
+                    </div>
+                    <div class="about rayting-route">
+                        <img src="../style/logo/star.svg" alt="" class="logo-about-route" width="50px">
+                        <div class="about-route-text">
+                            <p>Рейтинг</p>
+                            <p>*.*</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-route-left">
+                <p class="title-route-description">Описание:</p>
+                <br>
+                <span class="route-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis cum laboriosam, natus, perferendis veritatis illum voluptatum facilis id consequatur, doloremque sed vel quidem eos. Nulla architecto velit nihil mollitia obcaecati. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta blanditiis labore dolore! Repudiandae enim possimus fuga officiis optio neque molestiae laborum cumque excepturi ut, sapiente laudantium aliquam dignissimos saepe rerum. Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident pariatur eveniet non ipsam officiis, qui maiores odio libero et eaque incidunt debitis ut praesentium ea quaerat perferendis voluptas, earum voluptatibus.</span>
+                <p class="title-route-description reviews">Отзывы:</p>
+                <div class="itcss itcss-2">
+                    <div class="itcss__wrapper">
+                    <div class="itcss__items">
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div class="item-review">
+                                <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px">
+                                <p class="user-name">Username</p>
+                                <div class="rating">
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                </div>
+                                <p class="text-review">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore vel laboriosam, alias rerum obcaecati eius soluta odio, natus expedita similique impedit, sit necessitatibus eos architecto explicabo nulla dicta corrupti mollitia!</p>
+                                <p class="date-review">dd-mm-yyyy</p>
+                            </div>
+                        </div>
+                        
+                        <div class="itcss__item"><!--В этих блоках контент слайдера-->
+                            <div class="item-review">
+                                <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px">
+                                <p class="user-name">Username</p>
+                                <div class="rating">
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                </div>
+                                <p class="text-review">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore vel laboriosam, alias rerum obcaecati eius soluta odio, natus expedita similique impedit, sit necessitatibus eos architecto explicabo nulla dicta corrupti mollitia!</p>
+                                <p class="date-review">dd-mm-yyyy</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
+                    <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
+                </div>
+            </div>       
+        </div>
+        <h1>Карта маршрута</h1>
+        <div class="map"></div>
+        <div class="btns">
+            <button class="btn-route estimate">Оценить маршрут</button>
+            <button class="btn-route edit-route">Редактировать</button>
+        </div>
+    </main>
+</body>
+</html>
