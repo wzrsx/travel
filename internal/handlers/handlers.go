@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"travel/internal/handlers/JWT"
+	"travel/internal/handlers/handler_functions"
 	"travel/internal/repositories/pool_conections"
 )
 
@@ -15,16 +16,16 @@ func NewAppHandlers(pool *pool_conections.Pool_conections) *AppHandlers {
 }
 
 func (a *AppHandlers) SetHandlers() {
-	http.Handle("/", JWT.JWTMiddleware(OpenFirstPage(a)))
-	http.Handle("/popular-routes", JWT.JWTMiddleware(PopularRoutesHandler(a)))
-	http.Handle("/create-route", JWT.JWTMiddleware(CreateRouteHandler(a)))
-	http.Handle("/client-routes", JWT.JWTMiddleware(ClientRoutesHandler(a)))
-	http.Handle("/contacts", JWT.JWTMiddleware(ContactsHandler(a)))
-	http.Handle("/about-us", JWT.JWTMiddleware(AboutUsHandler(a)))
-	http.Handle("/authorize", Authorize(a))
-	http.Handle("/registration", Registration(a))
-	http.Handle("/save-route", JWT.JWTMiddleware(CreateRouteHandler(a)))
-	http.Handle("/route", JWT.JWTMiddleware(OpenRoutePage(a)))
+	http.Handle("/", JWT.JWTMiddleware(handler_functions.OpenFirstPage(a.Pool)))
+	http.Handle("/popular-routes", JWT.JWTMiddleware(handler_functions.PopularRoutesHandler(a.Pool)))
+	http.Handle("/create-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
+	http.Handle("/client-routes", JWT.JWTMiddleware(handler_functions.ClientRoutesHandler(a.Pool)))
+	http.Handle("/contacts", JWT.JWTMiddleware(handler_functions.ContactsHandler(a.Pool)))
+	http.Handle("/about-us", JWT.JWTMiddleware(handler_functions.AboutUsHandler(a.Pool)))
+	http.Handle("/authorize", handler_functions.Authorize(a.Pool))
+	http.Handle("/registration", handler_functions.Registration(a.Pool))
+	http.Handle("/save-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
+	http.Handle("/route", JWT.JWTMiddleware(handler_functions.OpenRoutePage(a.Pool)))
 
 }
 

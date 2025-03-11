@@ -14,6 +14,13 @@ function openSignInDialog() {
     }
 }
 
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('openLoginDialog')) {
+        openSignInDialog();
+    }
+};
+
 function authorize(){
     const email = document.getElementById('signInEmailInput').value;
     const password = document.getElementById('signInPasswordInput').value;
@@ -36,7 +43,7 @@ function authorize(){
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        location.reload();
+        location.href = "/";
     })
     .catch((error) => {
         console.log('Error:', error); // Обработка ошибок
