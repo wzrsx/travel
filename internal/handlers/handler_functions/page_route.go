@@ -12,7 +12,6 @@ import (
 	"travel/internal/repositories/queries"
 )
 
-
 type DataRoute struct {
 	UserID            int
 	Username          string
@@ -23,14 +22,6 @@ type DataRoute struct {
 	Route_estimation  string
 	Route_photos      []queries.Photo
 	Route_reviews     []queries.Review
-}
-
-type CredentialsCreateRoute struct {
-	RouteLink         string `json:"routeLink"`
-	Route_name        string `json:"route_name"`
-	Route_place       string `json:"route_place"`
-	Route_description string `json:"route_description"`
-	Route_estimation  string `json:"route_estimation"`
 }
 
 func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
@@ -74,6 +65,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 
 			// Перенаправляем с параметрами
 			http.Redirect(w, r, redirectURL, http.StatusSeeOther)
+			w.WriteHeader(http.StatusTemporaryRedirect)
 			return
 		}
 
@@ -141,6 +133,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 			Route_photos:      photos,
 			Route_reviews:     reviews,
 		}
+		log.Print(dataRoute.Route_photos)
 
 		err = tmpl.Execute(w, dataRoute)
 		if err != nil {
@@ -148,6 +141,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 			http.Error(w, "Failed to render template", http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 	}
 	return http.HandlerFunc(check_auth)
 }

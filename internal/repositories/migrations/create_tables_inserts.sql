@@ -49,7 +49,10 @@ INSERT INTO routes (route_name, route_place, route_description, yandex_route, es
 
 -- Reviews
 INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('sergey', 'класс', 1, NOW(), 1);
-INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vitalya', 'супер', 4, NOW(), 1);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vitalya', 'супер', 4, NOW(), 2);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vasiliy', 'кайф', 3, NOW(), 3);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('sergey', 'класс', 1, NOW(), 1);
+INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vitalya', 'супер', 4, NOW(), 2);
 INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vasiliy', 'кайф', 3, NOW(), 3);
 
 -- Photos

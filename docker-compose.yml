@@ -15,6 +15,6 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: webRoutes
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - ./internal/repositories/migrations:/docker-entrypoint-initdb.d

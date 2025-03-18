@@ -8,6 +8,9 @@
 .itcss {
   position: relative;
   max-width: 1000px;
+  margin: 0 auto; /* Центрирование слайдера */
+  padding: 0 50px; /* Добавляем отступы для кнопок */
+  overflow: visible; /* Разрешаем кнопкам выходить за пределы */
 }
 
 /* стили для wrapper */
@@ -67,7 +70,7 @@
 }
 
 .itcss__btn_prev {
-  left: 0;
+  left: -50px;
 }
 
 .itcss__btn_next {
