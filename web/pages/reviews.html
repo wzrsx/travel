@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/adaptiv.css">
+    <link rel="stylesheet" href="../style/reset.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Отзывы</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
+            <label for="burger-checkbox" class="burger"></label>
+            <ul class="mainnav-list">
+                <li><a class="nav-item" href="/">Главная</a></li>
+                <li><a class="nav-item" href="/popular-routes">Популярные маршруты</a></li>
+                <li><a class="nav-item" href="/create-route">Создать маршрут</a></li>
+                <li><a class="nav-item">Мои маршруты</a></li>
+                <li><a class="nav-item" href="/contacts">Контакты</a></li>
+                <li><a class="nav-item" href="/about-us">О нас</a></li>
+                <li>
+                    <img src="style/logo/strelka.svg" alt="">
+                    {{if .Username}}
+                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                    {{else}}
+                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                    {{end}}
+                </li>
+            </ul>
+        </nav>
+    </header>   
+    <main>
+        <div id="blurDiv"></div>
+        <h1>Отзывы</h1>
+        <h2>Название маршрута</h2>
+        <div class="reviews-list">
+            <div class="sort-container">
+                <select id="sortSelect">
+                    <option value="desc">Сначала положительные</option>
+                    <option value="asc">Сначала отрицательные</option>
+                </select>
+            </div>
+            <div class="review-item">
+                <div class="review-item-user-info">
+                    <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
+                    <div class="review-item-user-info-mark">
+                        <span class="user-name">username</span>
+                        <div>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <p class="review-item-date">
+                        dd-mm-yyyy
+                    </p>
+                </div>
+                <p class="review-item-text">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
+                </p>
+               <div class="review-item-photos" id="scrollable">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+               </div>
+               <dialog id="modal" class="modal-img">
+                <div class="close" id="closeButtonModalImg">&times;</div>
+                <div class="prev" id="prevButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Предыдущий">
+                </div>
+                <img class="modal-content" id="modal-img">
+                <div class="next" id="nextButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Следующий">
+                </div>
+                <div id="caption"></div>
+                </dialog>
+            </div>
+            <div class="review-item">
+                <div class="review-item-user-info">
+                    <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
+                    <div class="review-item-user-info-mark">
+                        <span class="user-name">username</span>
+                        <div>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <p class="review-item-date">
+                        dd-mm-yyyy
+                    </p>
+                </div>
+                <p class="review-item-text">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
+                </p>
+               <div class="review-item-photos" id="scrollable">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+               </div>
+               <dialog id="modal" class="modal-img">
+                <div class="close" id="closeButtonModalImg">&times;</div>
+                <div class="prev" id="prevButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Предыдущий">
+                </div>
+                <img class="modal-content" id="modal-img">
+                <div class="next" id="nextButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Следующий">
+                </div>
+                <div id="caption"></div>
+                </dialog>
+            </div>
+            <div class="review-item">
+                <div class="review-item-user-info">
+                    <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
+                    <div class="review-item-user-info-mark">
+                        <span class="user-name">username</span>
+                        <div>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <p class="review-item-date">
+                        dd-mm-yyyy
+                    </p>
+                </div>
+                <p class="review-item-text">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
+                </p>
+               <div class="review-item-photos" id="scrollable">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+               </div>
+               <dialog id="modal" class="modal-img">
+                <div class="close" id="closeButtonModalImg">&times;</div>
+                <div class="prev" id="prevButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Предыдущий">
+                </div>
+                <img class="modal-content" id="modal-img">
+                <div class="next" id="nextButtonModalImg">
+                    <img src="../style/logo/arrow.svg" alt="Следующий">
+                </div>
+                <div id="caption"></div>
+                </dialog>
+            </div>
+        </div>
+    </main>
+    <script src="../scripts/reviews.js" ></script>
+</body>
+</html>

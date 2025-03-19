@@ -116,6 +116,9 @@
     .title-route-description{
         font-size: 24px;
     }
+    .review-item{
+        border: 2px solid #F6F3D8;
+    }
 }
 
 @media screen and (max-width: 768px) {
