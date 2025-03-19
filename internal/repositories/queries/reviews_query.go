@@ -15,7 +15,16 @@ type Review struct {
 	Date        string
 }
 
-func CreateReviews(id_route int, pool *pgxpool.Pool) ([]Review, error) {
+func ConstructReview(username string, description string, estimation int, date string) *Review {
+	return &Review{
+		Username:    username,
+		Description: description,
+		Estimation:  estimation,
+		Date:        date,
+	}
+}
+
+func TakeReviews(id_route int, pool *pgxpool.Pool) ([]Review, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
 		return nil, err
@@ -54,5 +63,27 @@ func CreateReviews(id_route int, pool *pgxpool.Pool) ([]Review, error) {
 	}
 
 	return reviews, nil
+}
 
+func (rev *Review) CreateReview(id_route int, pool *pgxpool.Pool) error {
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
+	rows, err := conn.Query(context.Background(), `
+		INSERT INTO reviews 
+		(username, description, estimation, date_review, id_route) 
+		VALUES ($1, $2, $3, $4, $5);`, rev.Username, rev.Description, rev.Estimation, rev.Date, id_route)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	if err := rows.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -56,6 +56,6 @@ INSERT INTO reviews (username, description, estimation, date_review, id_route) V
 INSERT INTO reviews (username, description, estimation, date_review, id_route) VALUES ('vasiliy', 'кайф', 3, NOW(), 3);
 
 -- Photos
-INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 1);
-INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 2);
-INSERT INTO photos (path_to_photo, id_route) VALUES ('asdfasdad/sdasdad/asd', 3);
+INSERT INTO photos (path_to_photo, id_route) VALUES ('web/photos/e88267a222de3b152d6aced055fc84a7.jpg', 1);
+INSERT INTO photos (path_to_photo, id_route) VALUES ('web/photos/e88267a222de3b152d6aced055fc84a7.jpg', 2);
+INSERT INTO photos (path_to_photo, id_route) VALUES ('web/photos/e88267a222de3b152d6aced055fc84a7.jpg', 3);

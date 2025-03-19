@@ -54,7 +54,7 @@ func CreateRouteHandler(p *pool_conections.Pool_conections) http.Handler {
 			}
 
 			// Создаем маршрут
-			route := queries.CreateRouteStruct(creds.Yandex_route, creds.Route_name, creds.Route_place, creds.Route_description, data.UserID)
+			route := queries.ConstructRoute(creds.Yandex_route, creds.Route_name, creds.Route_place, creds.Route_description, data.UserID)
 			err = route.CreateNewRoute(p.PoolConns)
 			if err != nil {
 				log.Printf("Error query CreateNewRoute: %s", err.Error())
