@@ -22,12 +22,22 @@
     <script defer src="../scripts/simple-adaptive-slider.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // активация слайдера
-        new ItcSimpleSlider(".itcss-1", {
-          loop: true,
-          autoplay: true,
-          swipe: true,
-        });
+        const sliderElement = document.querySelector(".itcss-1");
+        const items = sliderElement.querySelectorAll(".itcss__item");
+
+        if (items.length > 1) {
+          // Инициализация слайдера только если элементов больше одного
+          new ItcSimpleSlider(".itcss-1", {
+            loop: true,
+            autoplay: true,
+            swipe: true,
+          });
+        } else {
+          // Если элемент только один, отключаем автопереключение и другие функции
+          const item = items[0];
+          item.style.opacity = 1; // Убедимся, что изображение видно
+          item.style.transform = "translate3D(0px, 0px, 0.1px)"; // Устанавливаем начальное положение
+        }
       });
       document.addEventListener("DOMContentLoaded", () => {
         // активация слайдера
@@ -95,7 +105,7 @@
           );
 
           // Добавляем маршрут на карту
-         
+
           console.log("Координаты точек:", points);
           console.log("Yandex Route Points:", yandexRoute.points);
           console.log("Тип маршрута (rtt):", rtt);
@@ -167,7 +177,6 @@
           });
           map.geoObjects.add(multiRoute);
         }
-
       });
     </script>
   </head>
@@ -209,12 +218,13 @@
                   <img
                     src="{{.PhotoPath}}"
                     alt="Фото маршрута"
-                    style="height: 350px; width: 100%; object-fit: cover"
+                    style="height: 100%; width: 100%; object-fit: cover"
                   />
                 </div>
                 {{end}}
               </div>
             </div>
+            {{if gt (len .Route_photos) 1}}
             <button
               class="itcss__btn itcss__btn_prev"
               role="button"
@@ -225,6 +235,7 @@
               role="button"
               data-slide="next"
             ></button>
+            {{end}}
           </div>
           <div class="info-about-route">
             <div class="about distance-route">
@@ -304,6 +315,7 @@
                 {{end}}
               </div>
             </div>
+            {{if gt (len .Route_photos) 1}}
             <button
               class="itcss__btn itcss__btn_prev"
               role="button"
@@ -314,6 +326,7 @@
               role="button"
               data-slide="next"
             ></button>
+            {{end}}
           </div>
         </div>
       </div>

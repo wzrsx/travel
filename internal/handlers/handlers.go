@@ -34,4 +34,5 @@ func (a *AppHandlers) SetDirs() {
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./web/style"))))
 	http.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir("./web/scripts"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./web/pages"))))
+	http.Handle("/photos/", http.StripPrefix("/photos/", http.FileServer(http.Dir("./web/photos"))))
 }
