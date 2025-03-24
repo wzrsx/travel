@@ -89,11 +89,17 @@
             <form class="sign-in-dialog-form" id="forgetPassForm">
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Восстановление пароля</span>
-                <span class="instruction-for-forget-pass">Для восстановления пароля введите свою электронную почту</span>
+                <span class="instruction-for-forget-pass" id="supportTextforgetPassForm">Для восстановления пароля введите свою электронную почту</span>
                 <input class="input-field email" type="text" name="" id="forgetPassEmailInput" placeholder="Введите почту">
                 <span class="error-message" id="emailForgetPassError" style="color: red; display: none;">error message</span>
+                <input class="input-field code" type="number" name="" id="confirmationCodeInput" placeholder="Введите код подтверждения" style="display: none; margin-top: 1.15vh;">
+                <span class="error-message" id="codeForgetPassError" style="color: red; display: none;">error message</span>
+                <input class="input-field pass" type="password" name="" id="newPassInput" placeholder="Введите новый пароль" style="display: none; margin-top: 1.15vh;">
+                <span class="error-message" id="passForgetPassError" style="color: red; display: none;">error message</span>
                 <section class="register-autorize">
-                    <button class="button-authorize" type="submit" onclick="resetPass()">Сбросить</button>
+                    <button class="button-authorize" type="submit" onclick="resetPass()" id="resetPassButton">Сбросить</button>
+                    <button class="button-authorize" type="submit" onclick="confirmCode()" id="confirmCodeButton" style="display: none;">Подтвердить</button>
+                    <button class="button-authorize" type="submit" onclick="setNewPass()" id="setNewPassButton" style="display: none;">Сохранить</button>
                 </section>
                 
             </form>

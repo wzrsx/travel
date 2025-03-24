@@ -50,7 +50,7 @@ func Authorize(p *pool_conections.Pool_conections) http.Handler {
 			if err.Error() == "email not found" {
 				http.Error(w, "Invalid email", http.StatusNotFound)
 			}else if err.Error() == "pass invalid"{
-				http.Error(w, "Invalid email", http.StatusUnauthorized)
+				http.Error(w, "Invalid pass", http.StatusUnauthorized)
 			} else {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 			}
