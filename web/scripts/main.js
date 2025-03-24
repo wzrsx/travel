@@ -11,6 +11,8 @@ const passwordRegistration = document.getElementById('registrationPasswordInput'
 const passwordrepeatRegistration = document.getElementById('registrationPasswordInputRepeat');
 const usernameRegistration = document.getElementById('registrationNameInput');
 const emailForgetPass = document.getElementById('forgetPassEmailInput');
+const confirmationCode = document.getElementById('confirmationCodeInput');
+const newPass = document.getElementById('newPassInput');
 //ошибки регистрации
 const nameRegistrationError = document.getElementById('nameRegistrationError');
 const emailRegistrationError = document.getElementById('emailRegistrationError');
@@ -21,6 +23,8 @@ const emailSignInError = document.getElementById('emailSignInError');
 const passwordSignInError = document.getElementById('passwordSignInError');
 //ошибки "забыли пароль"
 const emailForgetPassError = document.getElementById('emailForgetPassError');
+const codeForgetPassError = document.getElementById('codeForgetPassError');
+const passForgetPassError = document.getElementById('passForgetPassError');
 
 function openSignInDialog() {
     if (registrationDialog.open) {
@@ -136,6 +140,9 @@ function openForgetPassDialog() {
     if (!forgetPassDialog.open) {
         blurDiv.classList.add('blur');
         forgetPassDialog.showModal(); // Открываем диалог восстановления пароля
+        if(!emailForgetPass.value.trim()){
+            emailForgetPass.style.borderColor = ''; // Убираем цвет рамки
+        }
     }
 }
 
@@ -146,7 +153,6 @@ function registration(){
     const email = emailRegistration.value.trim();
     const password = passwordRegistration.value;
     const repeat_password = passwordrepeatRegistration.value;
-    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
     if (!username) {
         nameRegistrationError.innerText = 'Пожалуйста, введите имя.';
@@ -159,31 +165,19 @@ function registration(){
         return;
     }
 
-    if (!password) {
-        passwordRegistrationError.innerText = 'Пожалуйста, введите пароль.';
-        passwordRegistrationError.style.display = 'block';
-        return;
-    }
     if (!isEmailValid(email)) {
         emailRegistrationError.innerText = 'Неккоректный формат почты.';
         emailRegistrationError.style.display = 'block';
         return;
     }
-
-    // Проверка длины пароля
-    if (password.length < 5) {
-        passwordRegistrationError.innerText = 'Пароль должен содержать не менее 5 символов.';
-        passwordRegistrationError.style.display = 'block';
+    if(!isPassValid(password, passwordRegistrationError, passwordRegistration)){
         return;
     }
-
-    // Проверка наличия специального символа в пароле
-    if (!specialCharRegex.test(password)) {
-        passwordRegistrationError.innerText = 'Пароль должен содержать хотя бы один специальный символ.';
-        passwordRegistrationError.style.display = 'block';
+    if (!repeat_password) {
+        repeatPasswordRegistrationError.innerText = 'Пожалуйста, повторите пароль.';
+        repeatPasswordRegistrationError.style.display = 'block';
         return;
     }
-
     // Проверка совпадения паролей
     if (password !== repeat_password) {
         repeatPasswordRegistrationError.innerText = 'Пароли не совпадают.';
@@ -226,15 +220,43 @@ function resetPass(){
         emailForgetPassError.style.display = 'block';
         return;
     }
+    //ПРОВЕРИТЬ НАЛИЧИЕ ПОЧТЫ В БД
+    showCodeInput();
 }
 function showCodeInput() {
-    const dialog = document.getElementById('forgetPassDialog');
-    dialog.innerHTML = `
-        <input type="text" class="input-field" id="confirmationCodeInput" placeholder="Введите код подтверждения">
-        <button type="button" onclick="confirmCode()">Подтвердить</button>
-    `;
+    emailForgetPass.style.display = 'none';
+    document.getElementById('supportTextforgetPassForm').innerText = "Введите код подтверждения";
+    confirmationCode.style.display = 'block';
+    document.getElementById('resetPassButton').style.display = 'none';
+    document.getElementById('confirmCodeButton').style.display = 'block';
 }
-
+function confirmCode(){
+    event.preventDefault();
+    if(!confirmationCode.value.trim()){
+        codeForgetPassError.style.display = 'block';
+        codeForgetPassError.innerText = "Пожалуйста, введите код подтверждения."
+        return;
+    }
+    //ПРОВЕРКА КОДА
+    if(true){
+        showPassInput();
+    }
+}
+function showPassInput() {
+    confirmationCode.style.display = 'none';
+    document.getElementById('supportTextforgetPassForm').innerText = "Введите новый пароль";
+    newPass.style.display = 'block';
+    document.getElementById('confirmCodeButton').style.display = 'none';
+    document.getElementById('setNewPassButton').style.display = 'block';
+}
+function setNewPass(){
+    event.preventDefault();
+    if (!isPassValid(newPass.value, passForgetPassError, newPass)){
+        return;
+    }
+    //ОТПРАВКА ЗАПРОСА В БД НА ОБНОВЛЕНИЕ
+    forgetPassDialog.close();    
+}
 // Закрытие диалогов и удаление размытия
 signInDialog.addEventListener('close', () => {
     if (!registrationDialog.open && !forgetPassDialog.open) {
@@ -278,4 +300,30 @@ function resetRegistrationErrors(){
 function resetSignInErrors(){
     emailSignInError.style.display = 'none';
     passwordSignInError.style.display = 'none';
+}
+//проверка пароля
+function isPassValid(value, field, input){
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!value) {
+        field.innerText = 'Пожалуйста, введите пароль.';
+        field.style.display = 'block';
+        input.style.borderColor = 'red';
+        return false;
+    }
+    // Проверка длины пароля
+    if (value.length < 5) {
+        field.innerText = 'Пароль должен содержать не менее 5 символов.';
+        field.style.display = 'block';
+        input.style.borderColor = 'red';
+        return false;
+    }
+
+    // Проверка наличия специального символа в пароле
+    if (!specialCharRegex.test(value)) {
+        field.innerText = 'Пароль должен содержать хотя бы один специальный символ.';
+        field.style.display = 'block';
+        input.style.borderColor = 'red';
+        return false;
+    }
+    return true;
 }
