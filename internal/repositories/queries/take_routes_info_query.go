@@ -29,7 +29,13 @@ func TakeRoutesInfoQueryPopular(pool *pgxpool.Pool) ([]RoutesInfoResults, error)
 	}
 	defer conn.Release()
 
-	rows, err := conn.Query(context.Background(), "SELECT id_route, route_name, route_place, yandex_route, route_description, estimation, path_to_photo_preview from routes ORDER BY estimation DESC")
+	rows, err := conn.Query(context.Background(), `SELECT id_route, route_name,
+													 route_place, yandex_route, 
+													 route_description, 
+													 estimation, 
+													 path_to_photo_preview 
+													 FROM routes
+													 ORDER BY estimation DESC`)
 	if err != nil {
 		return nil, err
 	}
