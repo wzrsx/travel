@@ -40,4 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработчик изменения чекбокса
     showAllCheckbox.addEventListener('change', filterRoutes);
     filterRoutes();
+    
 });
+function openSignInDialog(){
+    location.href = "http://localhost:5050/?openLoginDialog=true";
+}

@@ -41,8 +41,10 @@
             <input class="search-btn" type="button" value="">
         </div>
         <div class="authorization">
+            {{if .IsNotAuth}}
             <span class="sign-in" onclick="openSignInDialog()">Войти</span>
             <span class="registration" onclick="openRegistrationDialog()">Регистрация</span>
+            {{end}}
         </div>
         <dialog class="sign-in-dialog" id="signInDialog">
             <div class="sign-in-dialog-form" id="signInForm">

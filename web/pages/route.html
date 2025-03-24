@@ -1,302 +1,348 @@
 <!DOCTYPE html>
 <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../style/simple-adaptive-slider.css" />
+    <link rel="stylesheet" href="../style/style.css" />
+    <link rel="stylesheet" href="../style/adaptiv.css" />
+    <link rel="stylesheet" href="../style/reset.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>{{.Route_name}}</title>
+    <style>
+      /* Стили для карты */
+      #map {
+        width: 100%;
+        height: 400px;
+      }
+    </style>
+    <script defer src="scripts/simple-adaptive-slider.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sliderElement = document.querySelector(".itcss-1");
+        const items = sliderElement.querySelectorAll(".itcss__item");
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../style/simple-adaptive-slider.css" />
-  <link rel="stylesheet" href="../style/style.css" />
-  <link rel="stylesheet" href="../style/adaptiv.css" />
-  <link rel="stylesheet" href="../style/reset.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet" />
-  <title>{{.Route_name}}</title>
-  <style>
-    /* Стили для карты */
-    #map {
-      width: 100%;
-      height: 400px;
-    }
-  </style>
-  <script defer src="scripts/simple-adaptive-slider.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const sliderElement = document.querySelector(".itcss-1");
-      const items = sliderElement.querySelectorAll(".itcss__item");
-
-      if (items.length > 1) {
-        // Инициализация слайдера только если элементов больше одного
-        new ItcSimpleSlider(".itcss-1", {
-          loop: true,
+        if (items.length > 1) {
+          // Инициализация слайдера только если элементов больше одного
+          new ItcSimpleSlider(".itcss-1", {
+            loop: true,
+            autoplay: true,
+            swipe: true,
+          });
+        } else {
+          // Если элемент только один, отключаем автопереключение и другие функции
+          const item = items[0];
+          item.style.opacity = 1; // Убедимся, что изображение видно
+          item.style.transform = "translate3D(0px, 0px, 0.1px)"; // Устанавливаем начальное положение
+        }
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        // активация слайдера
+        new ItcSimpleSlider(".itcss-2", {
+          loop: false,
           autoplay: true,
           swipe: true,
         });
-      } else {
-        // Если элемент только один, отключаем автопереключение и другие функции
-        const item = items[0];
-        item.style.opacity = 1; // Убедимся, что изображение видно
-        item.style.transform = "translate3D(0px, 0px, 0.1px)"; // Устанавливаем начальное положение
-      }
-    });
-    document.addEventListener("DOMContentLoaded", () => {
-      // активация слайдера
-      new ItcSimpleSlider(".itcss-2", {
-        loop: false,
-        autoplay: true,
-        swipe: true,
       });
-    });
-  </script>
-  <script>
-    // Передаем данные из Go в JavaScript
-    const yandexRoute = {
-      points: "{{.RouteLink}}", // Ссылка на карту
-      mode: "pedestrian", // Тип маршрута
-    };
-    console.log("Yandex Route Points:", yandexRoute.points); // Отладочный вывод
-  </script>
-  <script src="https://api-maps.yandex.ru/2.1/?apikey=921d0de2-2f0b-41fb-924e-b07e4c7d230a&lang=ru_RU"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      ymaps.ready(init);
+    </script>
+    <script>
+      // Передаем данные из Go в JavaScript
+      const yandexRoute = {
+        points: "{{.RouteLink}}", // Ссылка на карту
+        mode: "pedestrian", // Тип маршрута
+      };
+      console.log("Yandex Route Points:", yandexRoute.points); // Отладочный вывод
+    </script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=921d0de2-2f0b-41fb-924e-b07e4c7d230a&lang=ru_RU"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        ymaps.ready(init);
 
-      function init() {
-        // Разбираем ссылку
-        const urlParams = new URLSearchParams(
-          yandexRoute.points.split("?")[1]
-        );
-        const rtext = urlParams.get("rtext"); // Координаты точек
-        const rtt = urlParams.get("rtt"); // Тип маршрута
+        function init() {
+          // Разбираем ссылку
+          const urlParams = new URLSearchParams(
+            yandexRoute.points.split("?")[1]
+          );
+          const rtext = urlParams.get("rtext"); // Координаты точек
+          const rtt = urlParams.get("rtt"); // Тип маршрута
 
-        if (!rtext) {
-          console.error("Не удалось извлечь координаты из ссылки.");
-          return;
-        }
+          if (!rtext) {
+            console.error("Не удалось извлечь координаты из ссылки.");
+            return;
+          }
 
-        // Разделяем координаты на все точки
-        const points = rtext.split("~").map((point) => {
-          const [lat, lon] = point.split(",");
-          return [parseFloat(lat), parseFloat(lon)];
-        });
+          // Разделяем координаты на все точки
+          const points = rtext.split("~").map((point) => {
+            const [lat, lon] = point.split(",");
+            return [parseFloat(lat), parseFloat(lon)];
+          });
 
-        if (points.length < 2) {
-          console.error("Для построения маршрута нужно минимум две точки.");
-          return;
-        }
+          if (points.length < 2) {
+            console.error("Для построения маршрута нужно минимум две точки.");
+            return;
+          }
 
-        // Создаем карту
-        const map = new ymaps.Map("map", {
-          center: points[0], // Центр карты (первая точка)
-          zoom: 10, // Масштаб
-        });
+          // Создаем карту
+          const map = new ymaps.Map("map", {
+            center: points[0], // Центр карты (первая точка)
+            zoom: 10, // Масштаб
+          });
 
-        // Создаем маршрут с указанием типа (пешеходный)
-        const multiRoute = new ymaps.multiRouter.MultiRoute(
-          {
-            referencePoints: points, // Все точки маршрута
-            params: {
-              routingMode: "pedestrian", // Тип маршрута (пешеходный)
+          // Создаем маршрут с указанием типа (пешеходный)
+          const multiRoute = new ymaps.multiRouter.MultiRoute(
+            {
+              referencePoints: points, // Все точки маршрута
+              params: {
+                routingMode: "pedestrian", // Тип маршрута (пешеходный)
+              },
             },
-          },
-          {
-            boundsAutoApply: true, // Автоматически подгонять карту под маршрут
-          }
-        );
-
-        // Добавляем маршрут на карту
-
-        console.log("Координаты точек:", points);
-        console.log("Yandex Route Points:", yandexRoute.points);
-        console.log("Тип маршрута (rtt):", rtt);
-        console.log("Карта инициализирована:", map);
-        multiRoute.model.events.add("requestsuccess", function () {
-          console.log("Событие 'requestsuccess' сработало.");
-          const routes = multiRoute.getRoutes();
-          console.log(
-            "Количество маршрутов:",
-            routes ? routes.length : "undefined"
-          );
-        });
-        multiRoute.model.events.add("requestfail", function (error) {
-          console.error("Ошибка при построении маршрута:", error);
-        });
-        // Обрабатываем успешное построение маршрута
-        multiRoute.model.events.add("requestsuccess", function () {
-          console.log("Маршрут успешно построен.");
-
-          // Получаем активный маршрут (не через getRoutes())
-          const activeRoute = multiRoute.getActiveRoute();
-
-          if (!activeRoute) {
-            console.error("Активный маршрут не найден.");
-            return;
-          }
-
-          // Получаем свойства маршрута
-          const properties = activeRoute.properties.getAll();
-
-          // Проверяем наличие данных
-          if (!properties.distance || !properties.duration) {
-            console.error("Данные о расстоянии или времени отсутствуют.");
-            return;
-          }
-
-          // Расстояние в метрах (преобразуем в км)
-          const distanceMeters = properties.distance.value;
-          const distanceKm = (distanceMeters / 1000).toFixed(2);
-
-          // Время в секундах (преобразуем в часы:минуты)
-          const durationSeconds = properties.duration.value;
-          const hours = Math.floor(durationSeconds / 3600);
-          const minutes = Math.floor((durationSeconds % 3600) / 60);
-          const timeString = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-
-          // Обновляем DOM
-          const distanceElement = document.querySelector(
-            ".about.distance-route .about-route-text p:last-child"
-          );
-          const timeElement = document.querySelector(
-            ".about.time-route .about-route-text p:last-child"
+            {
+              boundsAutoApply: true, // Автоматически подгонять карту под маршрут
+            }
           );
 
-          if (distanceElement && timeElement) {
-            distanceElement.textContent = `${distanceKm} км`;
-            timeElement.textContent = timeString;
-          } else {
-            console.error("Элементы для отображения расстояния или времени не найдены.");
-          }
-        });
+          // Добавляем маршрут на карту
 
-        // Обрабатываем ошибки при построении маршрута
-        multiRoute.model.events.add("requestfail", function () {
-          console.error("Ошибка при построении маршрута.");
-        });
-        map.geoObjects.add(multiRoute);
-      }
-    });
-  </script>
-</head>
+          console.log("Координаты точек:", points);
+          console.log("Yandex Route Points:", yandexRoute.points);
+          console.log("Тип маршрута (rtt):", rtt);
+          console.log("Карта инициализирована:", map);
+          multiRoute.model.events.add("requestsuccess", function () {
+            console.log("Событие 'requestsuccess' сработало.");
+            const routes = multiRoute.getRoutes();
+            console.log(
+              "Количество маршрутов:",
+              routes ? routes.length : "undefined"
+            );
+          });
+          multiRoute.model.events.add("requestfail", function (error) {
+            console.error("Ошибка при построении маршрута:", error);
+          });
+          // Обрабатываем успешное построение маршрута
+          multiRoute.model.events.add("requestsuccess", function () {
+            console.log("Маршрут успешно построен.");
 
-<body>
-  <header>
-    <nav>
-      <input type="checkbox" id="burger-checkbox" class="burger-checkbox" />
-      <label for="burger-checkbox" class="burger"></label>
-      <ul class="mainnav-list">
-        <li><a class="nav-item" href="/">Главная</a></li>
-        <li>
-          <a class="nav-item" href="/popular-routes">Популярные маршруты</a>
-        </li>
-        <li><a class="nav-item" href="/create-route">Создать маршрут</a></li>
-        <li><a class="nav-item" href="/client-routes">Мои маршруты</a></li>
-        <li><a class="nav-item" href="/contacts">Контакты</a></li>
-        <li><a class="nav-item" href="/about-us">О нас</a></li>
-        <li>
-          <img src="style/logo/strelka.svg" alt="" />
-          {{if .Username}}
-          <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
-          {{else}}
-          <a class="nav-item" href="#" id="profilUser">Войти</a>
-          {{end}}
-        </li>
-      </ul>
-    </nav>
-  </header>
-  <main>
-    <h1>{{.Route_name}}</h1>
-    <div class="content-route">
-      <div class="content-route-right">
-        <!-- Разметка слайдера (html код) -->
-        <div class="itcss itcss-1">
-          <div class="itcss__wrapper">
-            <div class="itcss__items">
-              {{range .Route_photos}}
-              <div class="itcss__item">
-                <img src="{{.PhotoPath}}" alt="Фото маршрута" style="height: 100%; width: 100%; object-fit: cover" />
-              </div>
-              {{end}}
-            </div>
-          </div>
-          {{if gt (len .Route_photos) 1}}
-          <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
-          <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
-          {{end}}
-        </div>
-        <div class="info-about-route">
-          <div class="about distance-route">
-            <img class="logo-about-route" src="../style/logo/distance.svg" alt="" width="50px" />
-            <div class="about-route-text">
-              <p>Расстояние</p>
-              <p>км</p>
-              <!-- Сюда будет вставлено расстояние -->
-            </div>
-          </div>
-          <div class="about time-route">
-            <img class="logo-about-route" src="../style/logo/time.svg" alt="" width="50px" />
-            <div class="about-route-text">
-              <p>Время прохождения</p>
-              <p>hh:mm</p>
-              <!-- Сюда будет вставлено время -->
-            </div>
-          </div>
-          <div class="about rayting-route">
-            <img src="../style/logo/star.svg" alt="" class="logo-about-route" width="50px" />
-            <div class="about-route-text">
-              <p>Рейтинг</p>
-              <p>{{.Route_estimation}}</p>
-              <!-- Сюда будет вставлена оценка -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-route-left">
-        <p class="title-route-description">Описание:</p>
-        <br />
-        <span class="route-description">{{.Route_description}}</span>
-        <p class="title-route-description reviews">Отзывы:</p>
-        <div class="itcss itcss-2">
-          <div class="itcss__wrapper">
-            <div class="itcss__items">
-              {{range .Route_reviews}}
-              <div class="itcss__item">
-                <div class="item-review">
-                  <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px" />
-                  <p class="user-name">{{.Username}}</p>
-                  <div class="rating">
-                    {{$currentRoute := .}}
-                    <!-- Сохраняем текущий маршрут в переменную -->
-                    {{range $i := seq 5}} {{if le $i
-                    $currentRoute.Estimation}}
-                    <!-- Используем $currentRoute.Estimation -->
-                    <span class="star filled">★</span>
-                    {{else}}
-                    <span class="star">★</span>
-                    {{end}} {{end}}
-                  </div>
-                  <p class="text-review">{{.Description}}</p>
-                  <p class="date-review">{{.Date}}</p>
+            // Получаем активный маршрут (не через getRoutes())
+            const activeRoute = multiRoute.getActiveRoute();
+
+            if (!activeRoute) {
+              console.error("Активный маршрут не найден.");
+              return;
+            }
+
+            // Получаем свойства маршрута
+            const properties = activeRoute.properties.getAll();
+
+            // Проверяем наличие данных
+            if (!properties.distance || !properties.duration) {
+              console.error("Данные о расстоянии или времени отсутствуют.");
+              return;
+            }
+
+            // Расстояние в метрах (преобразуем в км)
+            const distanceMeters = properties.distance.value;
+            const distanceKm = (distanceMeters / 1000).toFixed(2);
+
+            // Время в секундах (преобразуем в часы:минуты)
+            const durationSeconds = properties.duration.value;
+            const hours = Math.floor(durationSeconds / 3600);
+            const minutes = Math.floor((durationSeconds % 3600) / 60);
+            const timeString = `${hours.toString().padStart(2, "0")}:${minutes
+              .toString()
+              .padStart(2, "0")}`;
+
+            // Обновляем DOM
+            const distanceElement = document.querySelector(
+              ".about.distance-route .about-route-text p:last-child"
+            );
+            const timeElement = document.querySelector(
+              ".about.time-route .about-route-text p:last-child"
+            );
+
+            if (distanceElement && timeElement) {
+              distanceElement.textContent = `${distanceKm} км`;
+              timeElement.textContent = timeString;
+            } else {
+              console.error(
+                "Элементы для отображения расстояния или времени не найдены."
+              );
+            }
+          });
+
+          // Обрабатываем ошибки при построении маршрута
+          multiRoute.model.events.add("requestfail", function () {
+            console.error("Ошибка при построении маршрута.");
+          });
+          map.geoObjects.add(multiRoute);
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <input type="checkbox" id="burger-checkbox" class="burger-checkbox" />
+        <label for="burger-checkbox" class="burger"></label>
+        <ul class="mainnav-list">
+          <li><a class="nav-item" href="/">Главная</a></li>
+          <li>
+            <a class="nav-item" href="/popular-routes">Популярные маршруты</a>
+          </li>
+          <li><a class="nav-item" href="/create-route">Создать маршрут</a></li>
+          <li><a class="nav-item" href="/client-routes">Мои маршруты</a></li>
+          <li><a class="nav-item" href="/contacts">Контакты</a></li>
+          <li><a class="nav-item" href="/about-us">О нас</a></li>
+          <li>
+            <img src="style/logo/strelka.svg" alt="" />
+            {{if .Username}}
+            <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+            {{else}}
+            <a class="nav-item" href="#" id="profilUser">Войти</a>
+            {{end}}
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h1>{{.Route_name}}</h1>
+      <div class="content-route">
+        <div class="content-route-right">
+          <!-- Разметка слайдера (html код) -->
+          <div class="itcss itcss-1">
+            <div class="itcss__wrapper">
+              <div class="itcss__items">
+                {{range .Route_photos}}
+                <div class="itcss__item">
+                  <img
+                    src="{{.PhotoPath}}"
+                    alt="Фото маршрута"
+                    style="height: 100%; width: 100%; object-fit: cover"
+                  />
                 </div>
+                {{end}}
               </div>
-              {{end}}
+            </div>
+            {{if gt (len .Route_photos) 1}}
+            <button
+              class="itcss__btn itcss__btn_prev"
+              role="button"
+              data-slide="prev"
+            ></button>
+            <button
+              class="itcss__btn itcss__btn_next"
+              role="button"
+              data-slide="next"
+            ></button>
+            {{end}}
+          </div>
+          <div class="info-about-route">
+            <div class="about distance-route">
+              <img
+                class="logo-about-route"
+                src="../style/logo/distance.svg"
+                alt=""
+                width="50px"
+              />
+              <div class="about-route-text">
+                <p>Расстояние</p>
+                <p>км</p>
+                <!-- Сюда будет вставлено расстояние -->
+              </div>
+            </div>
+            <div class="about time-route">
+              <img
+                class="logo-about-route"
+                src="../style/logo/time.svg"
+                alt=""
+                width="50px"
+              />
+              <div class="about-route-text">
+                <p>Время прохождения</p>
+                <p>hh:mm</p>
+                <!-- Сюда будет вставлено время -->
+              </div>
+            </div>
+            <div class="about rayting-route">
+              <img
+                src="../style/logo/star.svg"
+                alt=""
+                class="logo-about-route"
+                width="50px"
+              />
+              <div class="about-route-text">
+                <p>Рейтинг</p>
+                <p>{{.Route_estimation}}</p>
+                <!-- Сюда будет вставлена оценка -->
+              </div>
             </div>
           </div>
-          {{if gt (len .Route_reviews) 1}}
-          <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
-          <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
-          {{end}}
+        </div>
+        <div class="content-route-left">
+          <p class="title-route-description">Описание:</p>
+          <br />
+          <span class="route-description">{{.Route_description}}</span>
+          <p class="title-route-description reviews">Отзывы:</p>
+          <div class="itcss itcss-2">
+            <div class="itcss__wrapper">
+              <div class="itcss__items">
+                {{range .Route_reviews}}
+                <div class="itcss__item">
+                  <div class="item-review">
+                    <img
+                      src="../style/photo/user-test.png"
+                      alt=""
+                      class="user-photo"
+                      width="75px"
+                    />
+                    <p class="user-name">{{.Username}}</p>
+                    <div class="rating">
+                      {{$currentRoute := .}}
+                      <!-- Сохраняем текущий маршрут в переменную -->
+                      {{range $i := seq 5}} {{if le $i
+                      $currentRoute.Estimation}}
+                      <!-- Используем $currentRoute.Estimation -->
+                      <span class="star filled">★</span>
+                      {{else}}
+                      <span class="star">★</span>
+                      {{end}} {{end}}
+                    </div>
+                    <p class="text-review">{{.Description}}</p>
+                    <p class="date-review">{{.Date}}</p>
+                  </div>
+                </div>
+                {{end}}
+              </div>
+            </div>
+            {{if gt (len .Route_reviews) 1}}
+            <button
+              class="itcss__btn itcss__btn_prev"
+              role="button"
+              data-slide="prev"
+            ></button>
+            <button
+              class="itcss__btn itcss__btn_next"
+              role="button"
+              data-slide="next"
+            ></button>
+            {{end}}
+          </div>
         </div>
       </div>
-    </div>
-    <h1>Карта маршрута</h1>
-    <div class="map">
-      <div id="map"></div>
-      <!-- Контейнер для карты -->
-    </div>
-    <div class="btns">
-      <button class="btn-route estimate">Оценить маршрут</button>
-      <button class="btn-route edit-route">Редактировать</button>
-    </div>
-  </main>
-</body>
-
+      <h1>Карта маршрута</h1>
+      <div class="map">
+        <div id="map"></div>
+        <!-- Контейнер для карты -->
+      </div>
+      <div class="btns">
+        <button class="btn-route estimate">Оценить маршрут</button>
+        {{if .ShowEditBtn}}
+        <button class="btn-route edit-route">Редактировать</button>
+        {{end}}
+      </div>
+    </main>
+  </body>
 </html>

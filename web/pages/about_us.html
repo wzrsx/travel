@@ -9,6 +9,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>О нас</title>
+    <script>
+        function openSignInDialog(){
+            location.href = "http://localhost:5050/?openLoginDialog=true";
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -27,7 +32,7 @@
                     {{if .Username}}
                         <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
                     {{else}}
-                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                    <a class="nav-item" href="#" id="profilUser" onclick="openSignInDialog()">Войти</a>
                     {{end}}
                 </li>
             </ul>
@@ -43,6 +48,5 @@
             Здесь вы найдете самые популярные и самые интересные маршруты в россии!
         </span>
     </main>
-    <script src="scripts/main.js"></script>
 </body>
 </html>

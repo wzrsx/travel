@@ -32,6 +32,10 @@ func ClientRoutesHandler(p *pool_conections.Pool_conections) http.Handler {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
+		if data.UserID == 0 {
+			http.Redirect(w, r, "/?openLoginDialog=true", http.StatusSeeOther)
+			return
+		}
 
 		// Получаем данные маршрутов
 		routes, err := queries.TakeUsersRoutesInfoQuery(p.PoolConns, data.UserID)

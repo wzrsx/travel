@@ -22,6 +22,7 @@ type DataRoute struct {
 	Route_estimation  string
 	Route_photos      []queries.Photo
 	Route_reviews     []queries.Review
+	ShowEditBtn       bool // Показывать ли кнопку редактирования
 }
 
 func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
@@ -38,12 +39,13 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
 		// Обработка GET-запроса
 		if r.Method == http.MethodGet {
+
 			routeID := r.URL.Query().Get("route_id")
 			if routeID == "" {
 				http.Error(w, "Route ID is required", http.StatusBadRequest)
 				return
 			}
-			
+
 			routeIDInt, err := strconv.Atoi(routeID)
 			if err != nil {
 				log.Printf("Invalid route ID: %v", err)
@@ -51,24 +53,24 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				return
 			}
 
-			// Получаем информацию о маршруте
-			queryTakeRoute, err := queries.TakeRouteInfo(routeIDInt, p.PoolConns)
-			if err != nil {
-				log.Printf("Error Take Route info: %v", err)
-				http.Error(w, "Error Take Route info", http.StatusInternalServerError)
-				return
-			}
-
 			// Проверяем, есть ли уже параметры маршрута в URL
-			if r.URL.Query().Get("route_name") == "" || r.URL.Query().Get("route_place") == "" || r.URL.Query().Get("routeLink") == "" || r.URL.Query().Get("route_description") == "" || r.URL.Query().Get("route_estimation") == "" {
+			if r.URL.Query().Get("route_name") == "" || r.URL.Query().Get("route_place") == "" || r.URL.Query().Get("routeLink") == "" || r.URL.Query().Get("route_description") == "" || r.URL.Query().Get("route_estimation") == "" || r.URL.Query().Get("userid") == "" {
 				// Формируем URL с параметрами
-				redirectURL := fmt.Sprintf("/route?route_id=%s&route_name=%s&route_place=%s&routeLink=%s&route_description=%s&route_estimation=%s",
+				// Получаем информацию о маршруте
+				queryTakeRoute, err := queries.TakeRouteInfo(routeIDInt, p.PoolConns)
+				if err != nil {
+					log.Printf("Error Take Route info: %v", err)
+					http.Error(w, "Error Take Route info", http.StatusInternalServerError)
+					return
+				}
+				redirectURL := fmt.Sprintf("/route?route_id=%s&route_name=%s&route_place=%s&routeLink=%s&route_description=%s&route_estimation=%s&userid=%s",
 					url.QueryEscape(routeID),
 					url.QueryEscape(queryTakeRoute.Route_name),
 					url.QueryEscape(queryTakeRoute.Route_place),
 					url.QueryEscape(queryTakeRoute.Yandex_route),
 					url.QueryEscape(queryTakeRoute.Route_description),
 					url.QueryEscape(strconv.Itoa(queryTakeRoute.Route_estimation)),
+					url.QueryEscape(strconv.Itoa(queryTakeRoute.UserID)),
 				)
 
 				// Перенаправляем с параметрами
@@ -128,6 +130,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				Route_estimation:  r.URL.Query().Get("route_estimation"),
 				Route_photos:      photos,
 				Route_reviews:     reviews,
+				ShowEditBtn:       r.URL.Query().Get("userid") == strconv.Itoa(data.UserID),
 			}
 
 			err = tmpl.Execute(w, dataRoute)
@@ -158,19 +161,21 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 			}
 
 			// Формируем URL с параметрами
-			redirectURL := fmt.Sprintf("/route?route_id=%s&route_name=%s&route_place=%s&routeLink=%s&route_description=%s&route_estimation=%s",
+			redirectURL := fmt.Sprintf("/route?route_id=%s&route_name=%s&route_place=%s&routeLink=%s&route_description=%s&route_estimation=%s&userid=%s",
 				url.QueryEscape(routeID),
 				url.QueryEscape(queryTakeRoute.Route_name),
 				url.QueryEscape(queryTakeRoute.Route_place),
 				url.QueryEscape(queryTakeRoute.Yandex_route),
 				url.QueryEscape(queryTakeRoute.Route_description),
 				url.QueryEscape(strconv.Itoa(queryTakeRoute.Route_estimation)),
+				url.QueryEscape(strconv.Itoa(queryTakeRoute.UserID)),
 			)
 
 			// Перенаправляем с параметрами
 			http.Redirect(w, r, redirectURL, http.StatusSeeOther)
 			return
 		}
+
 	}
 
 	return http.HandlerFunc(check_auth)

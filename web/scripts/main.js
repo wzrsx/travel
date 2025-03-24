@@ -267,6 +267,7 @@ function onInput(event) {
 function isEmailValid(value) {
     return EMAIL_REGEXP.test(value);
 }
+
 //сброс ошибок регистрации
 function resetRegistrationErrors(){
     nameRegistrationError.style.display = 'none';
