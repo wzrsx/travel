@@ -77,7 +77,7 @@ function openForgetPassDialog() {
 }
 
 function registration(){
-    const username = 'Vitaly' //document.getElementById('registrationUsernameInput').value;
+    const username = document.getElementById('registrationNameInput').value;
     const email = document.getElementById('registrationEmailInput').value;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const password = document.getElementById('registrationPasswordInput').value;
