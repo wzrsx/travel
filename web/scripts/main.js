@@ -10,11 +10,17 @@ const passwordSignIn = document.getElementById('signInPasswordInput');
 const passwordRegistration = document.getElementById('registrationPasswordInput');
 const passwordrepeatRegistration = document.getElementById('registrationPasswordInputRepeat');
 const usernameRegistration = document.getElementById('registrationNameInput');
+const emailForgetPass = document.getElementById('forgetPassEmailInput');
 //ошибки регистрации
 const nameRegistrationError = document.getElementById('nameRegistrationError');
 const emailRegistrationError = document.getElementById('emailRegistrationError');
 const passwordRegistrationError = document.getElementById('passRegistrationError');
 const repeatPasswordRegistrationError = document.getElementById('repeatPassRegistrationError');
+//ошибки входа
+const emailSignInError = document.getElementById('emailSignInError');
+const passwordSignInError = document.getElementById('passwordSignInError');
+//ошибки "забыли пароль"
+const emailForgetPassError = document.getElementById('emailForgetPassError');
 
 function openSignInDialog() {
     if (registrationDialog.open) {
@@ -35,15 +41,15 @@ window.onload = function() {
     if (urlParams.has('openLoginDialog')) {
         openSignInDialog();
     }
+    // Добавляем обработчики событий
+    emailSignIn.addEventListener('input', onInput);
+    emailRegistration.addEventListener('input', onInput);
+    emailForgetPass.addEventListener('input', onInput);
 };
 
 function authorize(){
     // Сброс ошибок
-    const emailSignInError = document.getElementById('emailSignInError');
-    const passwordSignInError = document.getElementById('passwordSignInError');
-
-    emailSignInError.style.display = 'none';
-    passwordSignInError.style.display = 'none';
+    resetSignInErrors();
 
     const emailValue = emailSignIn.value.trim(); // Убираем пробелы
     const passwordValue = passwordSignIn.value.trim(); // Убираем пробелы
@@ -80,13 +86,26 @@ function authorize(){
         body: JSON.stringify(data) // Преобразуем объект в JSON-строку
     })
     .then(response => {
-        if (!response.ok) {
+        if (response.ok) {
+            // юзер есть
+            location.href = "/";
+        } else if (response.status === 401) {
+            // email есть, пароль неверный
+            passwordSignInError.innerText = 'Неверный пароль.';
+            passwordSignInError.style.display = 'block';
+            passwordSignIn.style.borderColor = 'red';
+        } else if (response.status === 404) {
+            // email нету в бд
+            emailSignInError.innerText = 'Пользователь с таким email не найден.';
+            emailSignInError.style.display = 'block';
+            emailSignIn.style.borderColor = 'red';
+        } else {
+            // Обработка других ошибок
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        location.href = "/";
     })
     .catch((error) => {
-        console.log('Error:', error); // Обработка ошибок
+        console.log('Error:', error); 
     });
 }
 
@@ -121,36 +140,53 @@ function openForgetPassDialog() {
 }
 
 function registration(){
-    //ДОБАВИТЬ СБРОС ОШИБОК
-    const username = usernameRegistration.value;
-    const email = emailRegistration.value;
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    resetRegistrationErrors();
+    const username = usernameRegistration.value.trim();
+    const email = emailRegistration.value.trim();
     const password = passwordRegistration.value;
     const repeat_password = passwordrepeatRegistration.value;
     const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
+    if (!username) {
+        nameRegistrationError.innerText = 'Пожалуйста, введите имя.';
+        nameRegistrationError.style.display = 'block';
+        return;
+    }
+    if (!email) {
+        emailRegistrationError.innerText = 'Пожалуйста, введите почту.';
+        emailRegistrationError.style.display = 'block';
+        return;
+    }
+
+    if (!password) {
+        passwordRegistrationError.innerText = 'Пожалуйста, введите пароль.';
+        passwordRegistrationError.style.display = 'block';
+        return;
+    }
     if (!isEmailValid(email)) {
-        emailRegistrationError.innerText = 'Ошибка: Некорректный формат email.';
+        emailRegistrationError.innerText = 'Неккоректный формат почты.';
         emailRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка длины пароля
     if (password.length < 5) {
-        passwordRegistrationError.innerText = 'Ошибка: Пароль должен содержать не менее 5 символов.';
+        passwordRegistrationError.innerText = 'Пароль должен содержать не менее 5 символов.';
         passwordRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка наличия специального символа в пароле
     if (!specialCharRegex.test(password)) {
-        passwordRegistrationError.innerText = 'Ошибка: Пароль должен содержать хотя бы один специальный символ.';
+        passwordRegistrationError.innerText = 'Пароль должен содержать хотя бы один специальный символ.';
         passwordRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка совпадения паролей
     if (password !== repeat_password) {
-        repeatPasswordRegistrationError.innerText = 'Ошибка: Пароли не совпадают.';
+        repeatPasswordRegistrationError.innerText = 'Пароли не совпадают.';
         repeatPasswordRegistrationError.style.display = 'block';
         return;
     }
@@ -176,6 +212,28 @@ function registration(){
         console.log('Error: ', error);
     })
 }
+function resetPass(){
+    emailForgetPassError.style.display = 'none';
+    event.preventDefault();
+    const email = emailForgetPass.value.trim();
+    if(!email){
+        emailForgetPassError.innerText = 'Пожалуйста, введите почту.';
+        emailForgetPassError.style.display = 'block';
+        return;
+    }
+    if (!isEmailValid(email)) {
+        emailForgetPassError.innerText = 'Неккоректный формат почты.';
+        emailForgetPassError.style.display = 'block';
+        return;
+    }
+}
+function showCodeInput() {
+    const dialog = document.getElementById('forgetPassDialog');
+    dialog.innerHTML = `
+        <input type="text" class="input-field" id="confirmationCodeInput" placeholder="Введите код подтверждения">
+        <button type="button" onclick="confirmCode()">Подтвердить</button>
+    `;
+}
 
 // Закрытие диалогов и удаление размытия
 signInDialog.addEventListener('close', () => {
@@ -198,8 +256,10 @@ forgetPassDialog.addEventListener('close', () => {
 
 function onInput(event) {
     const field = event.target;
+    const errorMessageElement = event.target.nextElementSibling;
     if (isEmailValid(field.value)) {
         field.style.borderColor = 'green';
+        errorMessageElement.style.display = 'none';
     } else {
         field.style.borderColor = 'red';
     }
@@ -207,5 +267,15 @@ function onInput(event) {
 function isEmailValid(value) {
     return EMAIL_REGEXP.test(value);
 }
-emailSignIn.addEventListener('input', onInput);
-emailRegistration.addEventListener('input', onInput);
+//сброс ошибок регистрации
+function resetRegistrationErrors(){
+    nameRegistrationError.style.display = 'none';
+    emailRegistrationError.style.display = 'none';
+    passwordRegistrationError.style.display = 'none';
+    repeatPasswordRegistrationError.style.display = 'none';
+}
+//сброс ошибок входа
+function resetSignInErrors(){
+    emailSignInError.style.display = 'none';
+    passwordSignInError.style.display = 'none';
+}

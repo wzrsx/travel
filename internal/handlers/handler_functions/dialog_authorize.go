@@ -47,7 +47,14 @@ func Authorize(p *pool_conections.Pool_conections) http.Handler {
 		err = user_auth_res.AuthorizeQuery(creds.Email, creds.Password, p.PoolConns)
 		if err != nil {
 			log.Printf("Authorize Querry returns error: %v", err)
-			http.Error(w, "Authorize Querry error", http.StatusBadRequest)
+			if err.Error() == "email not found" {
+				http.Error(w, "Invalid email", http.StatusNotFound)
+			}else if err.Error() == "pass invalid"{
+				http.Error(w, "Invalid email", http.StatusUnauthorized)
+			} else {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+			}
+			return
 		}
 
 		// устанавливаем Cookie с JWT
