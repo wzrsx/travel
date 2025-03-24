@@ -49,8 +49,11 @@
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Авторизация</span>
                 <input class="input-field email" type="email" name="email" id="signInEmailInput" placeholder="Введите почту">
+                <span class="error-message" id="emailSignInError" style="color: red; display: none;">error message</span>
                 <input class="input-field password" type="password" name="password" id="signInPasswordInput" placeholder="Введите пароль">
-                <section class="autorize-register">
+                <span class="error-message" id="passwordSignInError" style="color: red; display: none;">error message</span> <!--в js меняешь на дисплей блок-->
+                <!--и надо также в js поле в котором ошибка обвести в красный-->
+                <section class="autorize-register">                    
                     <button class="button-authorize" type="submit" onclick="authorize()">Войти</button>
                     <div>
                         <span class="sign-in-dialog-form-registation" onclick="openRegistrationDialog()">Регистрация</span>
@@ -66,9 +69,13 @@
                 <img class="logo-tree" src="style/logo/tree.svg" alt="">
                 <span class="form-text">Регистрация</span>
                 <input class="input-field name" type="text" name="" id="registrationNameInput" placeholder="Введите имя">
+                <span class="error-message" id="nameRegistrationError" style="color: red; display: none;">error message</span>
                 <input class="input-field email" type="email" name="" id="registrationEmailInput" placeholder="Введите почту">
+                <span class="error-message" id="emailRegistrationError" style="color: red; display: none;">error message</span>
                 <input class="input-field password" type="password" name="" id="registrationPasswordInput" placeholder="Введите пароль">
+                <span class="error-message" id="passRegistrationError" style="color: red; display: none;">error message</span>
                 <input class="input-field password" type="password" name="" id="registrationPasswordInputRepeat" placeholder="Повторите пароль">
+                <span class="error-message" id="repeatPassRegistrationError" style="color: red; display: none;">error message</span>
 
                 <section class="register-autorize">
                     <button class="button-authorize" type="submit" onclick="registration()">Зарегистрироваться</button>
@@ -82,6 +89,7 @@
                 <span class="form-text">Восстановление пароля</span>
                 <span class="instruction-for-forget-pass">Для восстановления пароля введите свою электронную почту</span>
                 <input class="input-field email" type="text" name="" id="forgetPassEmailInput" placeholder="Введите почту">
+                <span class="error-message" id="emailForgetPassError" style="color: red; display: none;">error message</span>
                 <section class="register-autorize">
                     <button class="button-authorize" type="submit" onclick="resetPass()">Сбросить</button>
                 </section>

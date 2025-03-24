@@ -270,6 +270,7 @@ h2{
     line-height: 0;
     justify-self: center; /* Центрирование кнопки внутри колонки */
     padding: 10px; /* Внутренние отступы */
+    cursor: pointer;
 }
 .autorize-register{
     align-items: center;

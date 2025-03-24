@@ -2,7 +2,19 @@ const signInDialog = document.getElementById('signInDialog');
 const registrationDialog = document.getElementById('registrationDialog');
 const forgetPassDialog = document.getElementById('forgetPassDialog');
 const blurDiv = document.getElementById('blurDiv');
-// const IP = process.env.IP; перемнные среды
+const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+//инпуты
+const emailSignIn = document.getElementById('signInEmailInput');
+const emailRegistration = document.getElementById('registrationEmailInput');
+const passwordSignIn = document.getElementById('signInPasswordInput');
+const passwordRegistration = document.getElementById('registrationPasswordInput');
+const passwordrepeatRegistration = document.getElementById('registrationPasswordInputRepeat');
+const usernameRegistration = document.getElementById('registrationNameInput');
+//ошибки регистрации
+const nameRegistrationError = document.getElementById('nameRegistrationError');
+const emailRegistrationError = document.getElementById('emailRegistrationError');
+const passwordRegistrationError = document.getElementById('passRegistrationError');
+const repeatPasswordRegistrationError = document.getElementById('repeatPassRegistrationError');
 
 function openSignInDialog() {
     if (registrationDialog.open) {
@@ -11,6 +23,10 @@ function openSignInDialog() {
     if (!signInDialog.open) {
         blurDiv.classList.add('blur'); // Добавляем класс размытия только если диалог не открыт
         signInDialog.showModal(); // Открываем диалог авторизации
+        // Сбрасываем цвет рамки поля email при открытии диалога если она пустая
+        if(!emailSignIn.value.trim()){
+            emailSignIn.style.borderColor = ''; // Убираем цвет рамки
+        }
     }
 }
 
@@ -22,12 +38,36 @@ window.onload = function() {
 };
 
 function authorize(){
-    const email = document.getElementById('signInEmailInput').value;
-    const password = document.getElementById('signInPasswordInput').value;
+    // Сброс ошибок
+    const emailSignInError = document.getElementById('emailSignInError');
+    const passwordSignInError = document.getElementById('passwordSignInError');
+
+    emailSignInError.style.display = 'none';
+    passwordSignInError.style.display = 'none';
+
+    const emailValue = emailSignIn.value.trim(); // Убираем пробелы
+    const passwordValue = passwordSignIn.value.trim(); // Убираем пробелы
+
+    if (!emailValue) {
+        emailSignInError.innerText = 'Пожалуйста, введите почту.';
+        emailSignInError.style.display = 'block';
+        return;
+    }
+
+    if (!passwordValue) {
+        passwordSignInError.innerText = 'Пожалуйста, введите пароль.';
+        passwordSignInError.style.display = 'block';
+        return;
+    }
+    if(!isEmailValid(emailSignIn.value)){
+        emailSignInError.innerText = 'Неккоректный формат почты.';
+        emailSignInError.style.display = 'block';
+        return;
+    }
 
     const data = {
-        email: email,
-        password: password
+        email: emailValue,
+        password: passwordValue
     };
     
     console.log('Sending data:', data);
@@ -50,6 +90,7 @@ function authorize(){
     });
 }
 
+
 function openRegistrationDialog() {
     if (signInDialog.open) {
         signInDialog.close(); // Закрываем диалог авторизации, если он открыт
@@ -57,6 +98,9 @@ function openRegistrationDialog() {
     if (!registrationDialog.open) {
         blurDiv.classList.add('blur'); // Добавляем класс размытия только если диалог не открыт
         registrationDialog.showModal(); // Открываем диалог регистрации
+        if(!emailRegistration.value.trim()){
+            emailRegistration.style.borderColor = ''; // Убираем цвет рамки
+        }
     }
 }
 
@@ -77,35 +121,37 @@ function openForgetPassDialog() {
 }
 
 function registration(){
-    const username = document.getElementById('registrationNameInput').value;
-    const email = document.getElementById('registrationEmailInput').value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const password = document.getElementById('registrationPasswordInput').value;
-    const repeat_password = document.getElementById('registrationPasswordInputRepeat').value;
+    //ДОБАВИТЬ СБРОС ОШИБОК
+    const username = usernameRegistration.value;
+    const email = emailRegistration.value;
+    const password = passwordRegistration.value;
+    const repeat_password = passwordrepeatRegistration.value;
     const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
-    // ВВЕСТИ НОРМАЛЬНОЕ ПОЛЕ ДЛЯ ОБРАБОТКИ ОШИБОК
-    // |||||||||||||||||||||||||||||||||||||||||||
-    if (!emailRegex.test(email)) {
-        alert("Ошибка: Некорректный формат email.");
+    if (!isEmailValid(email)) {
+        emailRegistrationError.innerText = 'Ошибка: Некорректный формат email.';
+        emailRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка длины пароля
     if (password.length < 5) {
-        alert("Ошибка: Пароль должен содержать не менее 5 символов.");
+        passwordRegistrationError.innerText = 'Ошибка: Пароль должен содержать не менее 5 символов.';
+        passwordRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка наличия специального символа в пароле
     if (!specialCharRegex.test(password)) {
-        alert("Ошибка: Пароль должен содержать хотя бы один специальный символ.");
+        passwordRegistrationError.innerText = 'Ошибка: Пароль должен содержать хотя бы один специальный символ.';
+        passwordRegistrationError.style.display = 'block';
         return;
     }
 
     // Проверка совпадения паролей
     if (password !== repeat_password) {
-        alert("Ошибка: Пароли не совпадают.");
+        repeatPasswordRegistrationError.innerText = 'Ошибка: Пароли не совпадают.';
+        repeatPasswordRegistrationError.style.display = 'block';
         return;
     }
     const data = {
@@ -149,3 +195,17 @@ forgetPassDialog.addEventListener('close', () => {
         blurDiv.classList.remove('blur'); // Удаляем класс размытия, если ни один диалог не открыт
     }
 });
+
+function onInput(event) {
+    const field = event.target;
+    if (isEmailValid(field.value)) {
+        field.style.borderColor = 'green';
+    } else {
+        field.style.borderColor = 'red';
+    }
+}
+function isEmailValid(value) {
+    return EMAIL_REGEXP.test(value);
+}
+emailSignIn.addEventListener('input', onInput);
+emailRegistration.addEventListener('input', onInput);
