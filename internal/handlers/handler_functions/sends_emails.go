@@ -29,22 +29,12 @@ type attemptInfo struct {
 func SendEmailMessageWithCode() http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			data, err := check_username_data(w, r)
-			if err != nil {
-				log.Printf("Error check user: %v", err)
-				return
-			}
-			if data.UserID == 0 {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
-
 			type CredentialsSendEmail struct {
 				Email string `json:"email"`
 			}
 
 			var creds CredentialsSendEmail
-			err = json.NewDecoder(r.Body).Decode(&creds)
+			err := json.NewDecoder(r.Body).Decode(&creds)
 			if err != nil {
 				http.Error(w, "Failed to decode JSON", http.StatusBadRequest)
 				return
@@ -108,6 +98,10 @@ func SendEmailMessageWithCode() http.Handler {
 				message += fmt.Sprintf("%s: %s\r\n", k, v)
 			}
 			message += "\r\n" + body
+			log.Println(EmailData.SmtpHost + ":" + EmailData.SmtpPort)
+			log.Println(auth)
+			log.Println(EmailData.Sender)
+			log.Println(EmailData.Password)
 
 			// Отправка письма
 			err = smtp.SendMail(

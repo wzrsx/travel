@@ -23,5 +23,5 @@ func ExistsEmail(email string, pool *pgxpool.Pool) error{
 		return errors.New("email exists")
 	}
 
-	return errors.New("OK")
+	return nil
 }

@@ -27,7 +27,7 @@ func CheckEmailIntoDB(pool *pool_conections.Pool_conections) http.Handler {
 			case "email exists":
 				w.WriteHeader(http.StatusOK)
 				return
-			case "OK":
+			case "":
 				w.WriteHeader(409)
 				return
 			default:

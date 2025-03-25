@@ -33,7 +33,7 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/route", JWT.JWTMiddleware(handler_functions.OpenRoutePage(a.Pool)))
 
 	http.Handle("/check/email", handler_functions.CheckEmailIntoDB(a.Pool))
-	http.Handle("/send_to_email/pass_code", JWT.JWTMiddleware(handler_functions.SendEmailMessageWithCode()))
+	http.Handle("/send_to_email/pass_code", handler_functions.SendEmailMessageWithCode())
 
 }
 

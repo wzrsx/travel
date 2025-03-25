@@ -22,7 +22,7 @@ func NewConfigEmail() (*ConfigEmail, error) {
 	return &ConfigEmail{
 		Sender:   os.Getenv("GMAIL"),
 		Password: os.Getenv("GMAIL_PASSWD"),
-		SmtpHost: os.Getenv("SMTPHOST"),
-		SmtpPort: os.Getenv("SMTPPORT"),
+		SmtpHost: os.Getenv("SMTP_HOST"),
+		SmtpPort: os.Getenv("SMTP_PORT"),
 	}, nil
 }
