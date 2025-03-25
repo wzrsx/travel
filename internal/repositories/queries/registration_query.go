@@ -2,6 +2,7 @@ package queries
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -22,7 +23,16 @@ func (ur *UserRegistrationResult) RegistrationQuery(username string, email strin
 		return err
 	}
 	defer conn.Release()
+	// Проверка наличия почты в базе данных
+	var exists bool
+	err = conn.QueryRow(context.Background(), "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)", email).Scan(&exists)
+	if err != nil {
+		return err
+	}
 
+	if exists {
+		return errors.New("email exists")
+	}
 	err = conn.QueryRow(context.Background(), "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id_user", username, email, password).Scan(&ur.UserID)
 	if err != nil {
 		return err

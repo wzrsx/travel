@@ -45,8 +45,12 @@ func Registration(p *pool_conections.Pool_conections) http.Handler {
 		user_reg_res := queries.NewUserRegistrationResult()
 		err = user_reg_res.RegistrationQuery(creds.Username, creds.Email, creds.Password, p.PoolConns)
 		if err != nil {
+			if err.Error() == "email exists" {
+				http.Error(w, "Email exists", http.StatusConflict)
+			}
 			log.Printf("Registration Querry returns error: %v", err)
 			http.Error(w, "Registration Querry error", http.StatusBadRequest)
+			return
 		}
 
 		// устанавливаем Cookie с JWT

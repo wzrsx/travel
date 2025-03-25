@@ -187,10 +187,17 @@ function registration(){
         body: JSON.stringify(data)
     })
     .then (response =>{
-        if (!response.ok) {
+        if (response.ok) {
+            location.reload();
+        }
+        else if(response.status === 409){
+            //email уже есть
+            showError(emailRegistrationError, "Пользователь с таким email уже зарегистрирован.");
+            emailRegistration.style.borderColor = 'red';
+        }
+        else{
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        location.reload();
     })
     .catch ((error)=>{
         console.log('Error: ', error);
