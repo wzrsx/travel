@@ -236,7 +236,7 @@ function resetPass(){
             })
             .then(response =>{
                 if(!response.ok){
-                    showError(emailForgetPassError, response.error); response.error
+                    showError(emailForgetPassError, "Ошибка отправки письма");
                     return;
                 }
                 showCodeInput();
