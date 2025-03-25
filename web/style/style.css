@@ -941,3 +941,22 @@ h2{
 .prev:hover, .next:hover {
     filter: brightness(0) saturate(100%) invert(56%) sepia(11%) saturate(1237%) hue-rotate(145deg) brightness(91%) contrast(87%);
 }
+.code-input-block{
+    height: 12%;
+    width: 80%;
+    display: none;
+    justify-content: center;
+    margin-top: 1.25vh;
+}
+.code-input{
+    width: 10%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: #e9f7d6;
+    border: 1px solid black;
+    outline: none;
+    color: black;
+    font-size: min(28px, 2vw);
+    text-align: center;
+    margin: 0 3px;
+}

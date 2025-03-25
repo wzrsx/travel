@@ -11,7 +11,7 @@ const passwordRegistration = document.getElementById('registrationPasswordInput'
 const passwordrepeatRegistration = document.getElementById('registrationPasswordInputRepeat');
 const usernameRegistration = document.getElementById('registrationNameInput');
 const emailForgetPass = document.getElementById('forgetPassEmailInput');
-const confirmationCode = document.getElementById('confirmationCodeInput');
+const confirmationCode = document.getElementById('confirmationCode');
 const newPass = document.getElementById('newPassInput');
 //ошибки регистрации
 const nameRegistrationError = document.getElementById('nameRegistrationError');
@@ -252,26 +252,14 @@ function resetPass(){
 function showCodeInput() {
     emailForgetPass.style.display = 'none';
     document.getElementById('supportTextforgetPassForm').innerText = "Введите код подтверждения";
-    confirmationCode.style.display = 'block';
+    confirmationCode.style.display = 'flex';
     document.getElementById('resetPassButton').style.display = 'none';
-    document.getElementById('confirmCodeButton').style.display = 'block';
 }
-function confirmCode(){
-    event.preventDefault();
-    if(!confirmationCode.value.trim()){
-        showError(codeForgetPassError, "Пожалуйста, введите код подтверждения.");
-        return;
-    }
-    //ПРОВЕРКА КОДА
-    if(true){
-        showPassInput();
-    }
-}
+
 function showPassInput() {
     confirmationCode.style.display = 'none';
     document.getElementById('supportTextforgetPassForm').innerText = "Введите новый пароль";
     newPass.style.display = 'block';
-    document.getElementById('confirmCodeButton').style.display = 'none';
     document.getElementById('setNewPassButton').style.display = 'block';
 }
 function setNewPass(){
@@ -353,4 +341,43 @@ function isPassValid(value, field, input){
 function showError(field, text){
     field.innerText = text;
     field.style.display = 'block';
+}
+//переход к некст инпуту кода 
+function moveToNext(currentInput, nextInputId) {
+    // Если текущее поле не пустое, перемещаем фокус на следующее поле
+    if (currentInput.value.length >= 1 && nextInputId) {
+        document.getElementById(nextInputId).focus();
+    }
+}
+
+//проверка на число
+function isNumberKey(evt) {
+    const charCode = (evt.which) ? evt.which : evt.keyCode;
+    // Разрешаем только цифры (0-9)
+    if (charCode < 48 || charCode > 57) {
+        evt.preventDefault(); // Запрещаем ввод
+        return false;
+    }
+    return true;
+}
+//проверяем 6 инпутов 
+function checkAllFilled() {
+    const inputs = document.querySelectorAll('#confirmationCode .code-input');//получаем все инпуты внутри блока 
+    const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+    
+    if (allFilled) {
+        const code = Array.from(inputs).map(input => input.value).join('');
+        //ТУТ ПРОВЕРКА С СГЕНЕРИРОВАННЫМ КОДОМ
+        if(true){
+            showPassInput();
+        }else{
+            showError(codeForgetPassError, "Неверный код.");
+            inputs.forEach(input => {
+                input.style.borderColor = 'red'; 
+                input.style.background = '#ffcccc';
+            });
+        }
+    }
+    
+    return allFilled;
 }

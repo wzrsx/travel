@@ -92,13 +92,19 @@
                 <span class="instruction-for-forget-pass" id="supportTextforgetPassForm">Для восстановления пароля введите свою электронную почту</span>
                 <input class="input-field email" type="text" name="" id="forgetPassEmailInput" placeholder="Введите почту">
                 <span class="error-message" id="emailForgetPassError" style="color: red; display: none;">error message</span>
-                <input class="input-field code" type="number" name="" id="confirmationCodeInput" placeholder="Введите код подтверждения" style="display: none; margin-top: 1.15vh;">
-                <span class="error-message" id="codeForgetPassError" style="color: red; display: none;">error message</span>
+                <div class="code-input-block" id="confirmationCode">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 'inputCode2'); checkAllFilled()" id="inputCode1" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode0')?.focus(); checkAllFilled() }">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 'inputCode3'); checkAllFilled()" id="inputCode2" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode1')?.focus(); checkAllFilled() }">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 'inputCode4'); checkAllFilled()" id="inputCode3" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode2')?.focus(); checkAllFilled() }">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 'inputCode5'); checkAllFilled()" id="inputCode4" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode3')?.focus(); checkAllFilled() }">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 'inputCode6'); checkAllFilled()" id="inputCode5" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode4')?.focus(); checkAllFilled() }">
+                    <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, null); checkAllFilled()" id="inputCode6" onkeypress="return isNumberKey(event)" onkeydown="if(event.key === 'Backspace') { this.value = ''; document.getElementById('inputCode5')?.focus(); checkAllFilled() }">
+                </div>
+                <span class="error-message" id="codeForgetPassError" style="color: red; display: none; margin-top: 5px;">error message</span>
                 <input class="input-field pass" type="password" name="" id="newPassInput" placeholder="Введите новый пароль" style="display: none; margin-top: 1.15vh;">
                 <span class="error-message" id="passForgetPassError" style="color: red; display: none;">error message</span>
                 <section class="register-autorize">
                     <button class="button-authorize" type="submit" onclick="resetPass()" id="resetPassButton">Сбросить</button>
-                    <button class="button-authorize" type="submit" onclick="confirmCode()" id="confirmCodeButton" style="display: none;">Подтвердить</button>
                     <button class="button-authorize" type="submit" onclick="setNewPass()" id="setNewPassButton" style="display: none;">Сохранить</button>
                 </section>
                 
