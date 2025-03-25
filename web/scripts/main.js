@@ -59,19 +59,16 @@ function authorize(){
     const passwordValue = passwordSignIn.value.trim(); // Убираем пробелы
 
     if (!emailValue) {
-        emailSignInError.innerText = 'Пожалуйста, введите почту.';
-        emailSignInError.style.display = 'block';
+        showError(emailSignInError, "Пожалуйста, введите почту.");
         return;
     }
 
     if (!passwordValue) {
-        passwordSignInError.innerText = 'Пожалуйста, введите пароль.';
-        passwordSignInError.style.display = 'block';
+        showError(passwordSignInError, "Пожалуйста, введите пароль.");
         return;
     }
     if(!isEmailValid(emailSignIn.value)){
-        emailSignInError.innerText = 'Неккоректный формат почты.';
-        emailSignInError.style.display = 'block';
+        showError(emailSignInError, "Неккоректный формат почты.");
         return;
     }
 
@@ -95,13 +92,11 @@ function authorize(){
             location.href = "/";
         } else if (response.status === 401) {
             // email есть, пароль неверный
-            passwordSignInError.innerText = 'Неверный пароль.';
-            passwordSignInError.style.display = 'block';
+            showError(passwordSignInError, "Неверный пароль");
             passwordSignIn.style.borderColor = 'red';
         } else if (response.status === 404) {
             // email нету в бд
-            emailSignInError.innerText = 'Пользователь с таким email не найден.';
-            emailSignInError.style.display = 'block';
+            showError(emailSignInError, "Пользователь с таким email не найден.");
             emailSignIn.style.borderColor = 'red';
         } else {
             // Обработка других ошибок
@@ -155,33 +150,28 @@ function registration(){
     const repeat_password = passwordrepeatRegistration.value;
 
     if (!username) {
-        nameRegistrationError.innerText = 'Пожалуйста, введите имя.';
-        nameRegistrationError.style.display = 'block';
+        showError(nameRegistrationError, "Пожалуйста, введите имя.");
         return;
     }
     if (!email) {
-        emailRegistrationError.innerText = 'Пожалуйста, введите почту.';
-        emailRegistrationError.style.display = 'block';
+        showError(emailRegistrationError, "Пожалуйста, введите почту.");
         return;
     }
 
     if (!isEmailValid(email)) {
-        emailRegistrationError.innerText = 'Неккоректный формат почты.';
-        emailRegistrationError.style.display = 'block';
+        showError(emailRegistrationError, "Неккоректный формат почты.");
         return;
     }
     if(!isPassValid(password, passwordRegistrationError, passwordRegistration)){
         return;
     }
     if (!repeat_password) {
-        repeatPasswordRegistrationError.innerText = 'Пожалуйста, повторите пароль.';
-        repeatPasswordRegistrationError.style.display = 'block';
+        showError(repeatPasswordRegistrationError, "Пожалуйста, повторите пароль.");
         return;
     }
     // Проверка совпадения паролей
     if (password !== repeat_password) {
-        repeatPasswordRegistrationError.innerText = 'Пароли не совпадают.';
-        repeatPasswordRegistrationError.style.display = 'block';
+        showError(repeatPasswordRegistrationError, "Пароли не совпадают.");
         return;
     }
     const data = {
@@ -211,13 +201,11 @@ function resetPass(){
     event.preventDefault();
     const email = emailForgetPass.value.trim();
     if(!email){
-        emailForgetPassError.innerText = 'Пожалуйста, введите почту.';
-        emailForgetPassError.style.display = 'block';
+        showError(emailForgetPassError, "Пожалуйста, введите почту.");
         return;
     }
     if (!isEmailValid(email)) {
-        emailForgetPassError.innerText = 'Неккоректный формат почты.';
-        emailForgetPassError.style.display = 'block';
+        showError(emailForgetPassError, "Неккоректный формат почты.");
         return;
     }
     //ПРОВЕРИТЬ НАЛИЧИЕ ПОЧТЫ В БД
@@ -233,8 +221,7 @@ function showCodeInput() {
 function confirmCode(){
     event.preventDefault();
     if(!confirmationCode.value.trim()){
-        codeForgetPassError.style.display = 'block';
-        codeForgetPassError.innerText = "Пожалуйста, введите код подтверждения."
+        showError(codeForgetPassError, "Пожалуйста, введите код подтверждения.");
         return;
     }
     //ПРОВЕРКА КОДА
@@ -305,25 +292,26 @@ function resetSignInErrors(){
 function isPassValid(value, field, input){
     const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     if (!value) {
-        field.innerText = 'Пожалуйста, введите пароль.';
-        field.style.display = 'block';
+        showError(field, "Пожалуйста, введите пароль.");
         input.style.borderColor = 'red';
         return false;
     }
     // Проверка длины пароля
     if (value.length < 5) {
-        field.innerText = 'Пароль должен содержать не менее 5 символов.';
-        field.style.display = 'block';
+        showError(field, "Пароль должен содержать не менее 5 символов.");
         input.style.borderColor = 'red';
         return false;
     }
 
     // Проверка наличия специального символа в пароле
     if (!specialCharRegex.test(value)) {
-        field.innerText = 'Пароль должен содержать хотя бы один специальный символ.';
-        field.style.display = 'block';
+        showError(field, "Пароль должен содержать хотя бы один специальный символ.");
         input.style.borderColor = 'red';
         return false;
     }
     return true;
+}
+function showError(field, text){
+    field.innerText = text;
+    field.style.display = 'block';
 }
