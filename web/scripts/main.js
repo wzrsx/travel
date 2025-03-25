@@ -215,8 +215,39 @@ function resetPass(){
         showError(emailForgetPassError, "Неккоректный формат почты.");
         return;
     }
-    //ПРОВЕРИТЬ НАЛИЧИЕ ПОЧТЫ В БД
-    showCodeInput();
+    const data = {
+        email: email
+    };
+    fetch('http://localhost:5050/check/email', {
+        method: 'POST', // Метод запроса
+        headers: {
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(data) // Преобразуем объект в JSON-строку
+    })
+    .then(response => {
+        if (response.ok){
+            fetch('http://localhost:5050/send_to_email/pass_code', {
+                method: 'POST', // Метод запроса
+                headers: {
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data) // Преобразуем объект в JSON-строку
+            })
+            .then(response =>{
+                if(!response.ok){
+                    showError(emailForgetPassError, "Ошибка отправки письма");
+                    return;
+                }
+                showCodeInput();
+            })
+            
+        }
+        else if(response.status == 409){
+            showError(emailForgetPassError, "Пользователя с такой почтой не существует.");
+        }
+    })
+    
 }
 function showCodeInput() {
     emailForgetPass.style.display = 'none';

@@ -7,6 +7,11 @@ import (
 	"travel/internal/repositories/pool_conections"
 )
 
+type codeData struct {
+	Email string
+	Code  string
+}
+
 type AppHandlers struct {
 	Pool *pool_conections.Pool_conections
 }
@@ -16,7 +21,7 @@ func NewAppHandlers(pool *pool_conections.Pool_conections) *AppHandlers {
 }
 
 func (a *AppHandlers) SetHandlers() {
-	http.Handle("/", JWT.JWTMiddleware(handler_functions.OpenFirstPage(a.Pool)))
+	http.Handle("/", JWT.JWTMiddleware(handler_functions.OpenFirstPage()))
 	http.Handle("/popular-routes", JWT.JWTMiddleware(handler_functions.PopularRoutesHandler(a.Pool)))
 	http.Handle("/create-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
 	http.Handle("/client-routes", JWT.JWTMiddleware(handler_functions.ClientRoutesHandler(a.Pool)))
@@ -26,6 +31,9 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/registration", handler_functions.Registration(a.Pool))
 	http.Handle("/save-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
 	http.Handle("/route", JWT.JWTMiddleware(handler_functions.OpenRoutePage(a.Pool)))
+
+	http.Handle("/check/email", handler_functions.CheckEmailIntoDB(a.Pool))
+	http.Handle("/send_to_email/pass_code", JWT.JWTMiddleware(handler_functions.SendEmailMessageWithCode()))
 
 }
 

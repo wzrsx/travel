@@ -3,11 +3,10 @@ package handler_functions
 import (
 	"log"
 	"net/http"
-	"travel/internal/repositories/pool_conections"
 )
 
 // Обработчик главной страницы
-func OpenFirstPage(a *pool_conections.Pool_conections) http.Handler {
+func OpenFirstPage() http.Handler {
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
 		tmpl, data, err := check_username(w, r, "web/main.html")
 		if err != nil {
