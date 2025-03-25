@@ -364,20 +364,32 @@ function isNumberKey(evt) {
 function checkAllFilled() {
     const inputs = document.querySelectorAll('#confirmationCode .code-input');//получаем все инпуты внутри блока 
     const allFilled = Array.from(inputs).every(input => input.value.length === 1);
-    
+    resetInputStyles(inputs);
     if (allFilled) {
         const code = Array.from(inputs).map(input => input.value).join('');
         //ТУТ ПРОВЕРКА С СГЕНЕРИРОВАННЫМ КОДОМ
-        if(true){
+        if(false){
             showPassInput();
         }else{
-            showError(codeForgetPassError, "Неверный код.");
-            inputs.forEach(input => {
-                input.style.borderColor = 'red'; 
-                input.style.background = '#ffcccc';
-            });
+            applyErrorStyles(inputs);
         }
     }
     
     return allFilled;
+}
+
+function resetInputStyles(inputs) {
+    inputs.forEach(input => {
+        input.style.borderColor = ''; 
+        input.style.background = '';
+    });
+    codeForgetPassError.style.display = 'none';
+}
+
+function applyErrorStyles(inputs) {
+    showError(codeForgetPassError, "Неверный код.");
+    inputs.forEach(input => {
+        input.style.borderColor = 'red';
+        input.style.background = '#ffcccc';
+    });
 }
