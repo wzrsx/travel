@@ -23,18 +23,18 @@ func CheckEmailIntoDB(pool *pool_conections.Pool_conections) http.Handler {
 				return
 			}
 			err = queries.ExistsEmail(creds.Email, pool.PoolConns)
-			switch err.Error() {
-			case "email exists":
-				w.WriteHeader(http.StatusOK)
-				return
-			case "":
-				w.WriteHeader(409)
-				return
-			default:
+			if err != nil {
+				if err.Error() == "email exists" {
+					w.WriteHeader(http.StatusOK)
+					return
+				}
 				w.WriteHeader(http.StatusBadRequest)
 				log.Printf("error checking exist email: %v", err)
 				http.Error(w, "error checking exist email", http.StatusBadRequest)
+				return
 			}
+
+			w.WriteHeader(409)
 		}
 	}
 	return http.HandlerFunc(fn)

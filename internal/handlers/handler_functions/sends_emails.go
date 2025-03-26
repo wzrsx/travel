@@ -98,10 +98,6 @@ func SendEmailMessageWithCode() http.Handler {
 				message += fmt.Sprintf("%s: %s\r\n", k, v)
 			}
 			message += "\r\n" + body
-			log.Println(EmailData.SmtpHost + ":" + EmailData.SmtpPort)
-			log.Println(auth)
-			log.Println(EmailData.Sender)
-			log.Println(EmailData.Password)
 
 			// Отправка письма
 			err = smtp.SendMail(
