@@ -45,6 +45,7 @@ func CheckPassCode() http.Handler {
 				w.WriteHeader(http.StatusConflict)
 				return
 			}
+			canChange[creds.Email] = true
 			w.WriteHeader(http.StatusOK)
 			return
 		}

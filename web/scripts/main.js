@@ -266,12 +266,28 @@ function showCodeInput() {
   document.getElementById("resetPassButton").style.display = "none";
 }
 
-function showPassInput() {
+function showPassInput(email) {
   confirmationCode.style.display = "none";
   document.getElementById("supportTextforgetPassForm").innerText =
     "Введите новый пароль";
   newPass.style.display = "block";
   document.getElementById("setNewPassButton").style.display = "block";
+
+  const data = {
+    email: email
+  };
+  fetch('http://localhost:5050/change/password',{
+    method: 'POST',
+    headers: {
+      'Content-Type':'application/json'
+    },
+    body: data
+  })
+  .then(response =>{
+    if (response.status == ){
+      
+    }
+  })
 }
 function setNewPass() {
   event.preventDefault();

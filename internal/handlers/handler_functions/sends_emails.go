@@ -14,6 +14,7 @@ import (
 var (
 	codeCache    = make(map[string]codeInfo)
 	attemptCache = make(map[string]attemptInfo)
+	canChange = make(map[string]bool)
 )
 
 type codeInfo struct {
@@ -48,7 +49,7 @@ func SendEmailMessageWithCode() http.Handler {
 				expiresAt: time.Now().Add(3 * time.Minute),
 			}
 			attemptCache[ip] = attemptInfo{
-				attempts: attemptCache[ip].attempts + 1,
+				attempts: 1,
 				lastTry:  time.Now(),
 			}
 
@@ -110,7 +111,6 @@ func SendEmailMessageWithCode() http.Handler {
 			if err != nil {
 				log.Printf("Error sending email: %v", err)
 			}
-
 		}
 	}
 	return http.HandlerFunc(fn)
