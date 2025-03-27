@@ -355,7 +355,7 @@ function isPassValid(value, field, input) {
 function showError(field, text) {
   field.innerText = text;
   field.style.display = "block";
-  field.style.borderColor = "red";
+  field.style.color = "red";
 }
 
 //переход к некст инпуту кода
@@ -480,19 +480,26 @@ function applyErrorStyles(inputs) {
     input.style.background = "#ffcccc";
   });
 }
+function resetErrorStyles(inputs){
+  codeForgetPassError.style.display = 'none';
+  inputs.forEach((input) => {
+    input.style.borderColor = "green";
+    input.style.background = "#e9f7d6";
+  });
+}
 
 function showCanField(field, text, inputs) {
   field.innerText = text;
-  field.style.сolor = "green";
-  field.style.display = "block";
+  field.style.color = 'green';
+  field.style.display = 'block';
 
   inputs.forEach((input) => {
     input.style.borderColor = "black"
     input.style.backgroundColor = "#e9f7d6";
-    input.style.color = "black";
+    input.style.color = 'black';
     input.disabled = false; // Блокируем ввод
     input.style.opacity = "1"; // Затемняем
-    input.style.cursor = "allowed"; // Меняем курсор
+    input.style.cursor = 'auto'; // Меняем курсор
   });
 }
 function showBlockInput(inputs) {
@@ -504,4 +511,23 @@ function showBlockInput(inputs) {
     input.style.backgroundColor = "#f5f5f5"; // Серый фон
     input.style.color = "#999"; // Серый текст
   });
+}
+function handleKeyDown(event, inputElement) {
+  if (event.key === 'Backspace') {
+      const currentIndex = parseInt(inputElement.id.replace('inputCode', ''));
+      if (inputElement.value === '') {  // только если input уже пустой
+          inputElement.value = ''; 
+          const previousInput = document.getElementById('inputCode' + (currentIndex - 1));
+          if (previousInput) {
+              previousInput.focus(); 
+          }
+          checkAllFilled(); 
+      } else {
+        if(currentIndex == 6){
+          const inputs = document.querySelectorAll("#confirmationCode .code-input"); 
+          resetErrorStyles(inputs);
+        }
+          inputElement.value = '';  // если есть значение - просто очищаем, не переходим
+      }
+  }
 }
