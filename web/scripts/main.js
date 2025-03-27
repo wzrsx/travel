@@ -570,3 +570,28 @@ function handleKeyDown(event, inputElement) {
       }
   }
 }
+//обработка вставки
+confirmationCode.addEventListener('paste', function(e) {
+  e.preventDefault(); // Отменяем стандартное поведение
+  
+  // Получаем текст из буфера обмена
+  const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+  
+  // Оставляем только цифры и обрезаем до 6 символов
+  const digitsOnly = pastedText.replace(/\D/g, '').substring(0, 6);
+  
+  // Если длина не 6 символов, игнорируем
+  if (digitsOnly.length !== 6) return;
+  
+  // Заполняем поля посимвольно
+  for (let i = 0; i < 6; i++) {
+      const input = document.getElementById(`inputCode${i+1}`);
+      if (input) {
+          input.value = digitsOnly[i];
+      }
+  }
+  
+  // Вызываем проверку заполненности
+  checkAllFilled();
+  document.getElementById('inputCode6').focus();
+});
