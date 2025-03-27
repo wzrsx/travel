@@ -271,42 +271,54 @@ function showPassInput(email) {
   document.getElementById("supportTextforgetPassForm").innerText =
     "Введите новый пароль";
   newPass.style.display = "block";
-  document.getElementById("setNewPassButton").style.display = "block";
 
-  const data = {
-    email: email,
-    password: newPass.textContent,
-  };
+  setNewPassButton = document.getElementById("setNewPassButton");
+  setNewPassButton.style.display = "block";
+
+  setNewPassButton.addEventListener('click', (event) => {
+    event.preventDefault(); // Предотвращаем стандартное поведение
+    
+    const data = {
+      email: email,
+      password: newPass.value
+    };
+    setNewPass(data, event);
+  });
+}
+function setNewPass(data, event) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  if (!isPassValid(newPass.value, passForgetPassError, newPass)) {
+    console.log("asdasdasd");
+    return;
+  }
   fetch("http://localhost:5050/change/password", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: data,
-  }).then((response) => {
+    body: JSON.stringify(data),
+  })
+  .then((response) => {
     switch(response.status){
       case (409):
         console.log("Код не был введен.");
         break;
       case (423):
+        showError(passForgetPassError, "Время кода было просрочено.");
         console.log("Время кода было просрочено.");
         break;
       case (408):
         console.log("Попытка сменить пароль при блокировке.");
         break;
       default:
-        // WHATS NEED
-        break;
+        forgetPassDialog.close();
+        break;  
     }
   });
-}
-function setNewPass() {
-  event.preventDefault();
-  if (!isPassValid(newPass.value, passForgetPassError, newPass)) {
-    return;
-  }
-  //ОТПРАВКА ЗАПРОСА В БД НА ОБНОВЛЕНИЕ
-  forgetPassDialog.close();
+  
 }
 // Закрытие диалогов и удаление размытия
 signInDialog.addEventListener("close", () => {
@@ -438,7 +450,7 @@ function checkAllFilled() {
         }
         if (response.ok) {
           resetInputStyles(inputs);
-          showPassInput();
+          showPassInput(email);
         }
         return Promise.reject();
       })

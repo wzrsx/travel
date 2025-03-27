@@ -41,7 +41,9 @@ func SendEmailMessageWithCode() http.Handler {
 				return
 			}
 
-			if(codeCache[creds.Email].expiresAt.Before(time.Now())){
+			if(codeCache[creds.Email].expiresAt.IsZero() || canChange[creds.Email]){
+				canChange[creds.Email] = false
+
 				ip := r.RemoteAddr
 				confirmationCode := generateSecureCode()
 				codeCache[creds.Email] = codeInfo{
