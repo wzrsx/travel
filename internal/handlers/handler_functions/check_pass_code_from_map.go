@@ -46,6 +46,10 @@ func CheckPassCode() http.Handler {
 				return
 			}
 			canChange[creds.Email] = true
+			codeCache[creds.Email] = codeInfo{
+				code: codeCache[creds.Email].code,
+				expiresAt: time.Now().Add(time.Minute * 10),
+			}
 			w.WriteHeader(http.StatusOK)
 			return
 		}

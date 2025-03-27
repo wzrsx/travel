@@ -274,20 +274,31 @@ function showPassInput(email) {
   document.getElementById("setNewPassButton").style.display = "block";
 
   const data = {
-    email: email
+    email: email,
+    password: newPass.textContent,
   };
-  fetch('http://localhost:5050/change/password',{
-    method: 'POST',
+  fetch("http://localhost:5050/change/password", {
+    method: "POST",
     headers: {
-      'Content-Type':'application/json'
+      "Content-Type": "application/json",
     },
-    body: data
-  })
-  .then(response =>{
-    if (response.status == ){
-      
+    body: data,
+  }).then((response) => {
+    switch(response.status){
+      case (409):
+        console.log("Код не был введен.");
+        break;
+      case (423):
+        console.log("Время кода было просрочено.");
+        break;
+      case (408):
+        console.log("Попытка сменить пароль при блокировке.");
+        break;
+      default:
+        // WHATS NEED
+        break;
     }
-  })
+  });
 }
 function setNewPass() {
   event.preventDefault();
@@ -503,7 +514,7 @@ function showCanField(field, text, inputs) {
   field.style.display = "block";
 
   inputs.forEach((input) => {
-    input.style.borderColor = "black"
+    input.style.borderColor = "black";
     input.style.backgroundColor = "#e9f7d6";
     input.style.color = "black";
     input.disabled = false; // Блокируем ввод
