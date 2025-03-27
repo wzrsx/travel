@@ -35,7 +35,7 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/check/email", handler_functions.CheckEmailIntoDB(a.Pool))
 	http.Handle("/send_to_email/pass_code", handler_functions.SendEmailMessageWithCode())
 	http.Handle("/check/pass_code", handler_functions.CheckPassCode())
-
+	http.Handle("/change/password", handler_functions.ChangePassword(a.Pool))
 
 }
 

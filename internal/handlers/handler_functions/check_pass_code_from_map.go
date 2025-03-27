@@ -2,6 +2,7 @@ package handler_functions
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 )
@@ -18,6 +19,7 @@ func CheckPassCode() http.Handler {
 			var creds CredentialsSendEmail
 			err := json.NewDecoder(r.Body).Decode(&creds)
 			if err != nil {
+				log.Printf("Failed to decode JSON: %v", err)
 				http.Error(w, "Failed to decode JSON", http.StatusBadRequest)
 				return
 			}
@@ -44,6 +46,11 @@ func CheckPassCode() http.Handler {
 				}
 				w.WriteHeader(http.StatusConflict)
 				return
+			}
+			canChange[creds.Email] = true
+			codeCache[creds.Email] = codeInfo{
+				code:      codeCache[creds.Email].code,
+				expiresAt: time.Now().Add(time.Minute * 10),
 			}
 			w.WriteHeader(http.StatusOK)
 			return
