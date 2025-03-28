@@ -88,3 +88,16 @@ modal.addEventListener('click', function(event) {
 modal.addEventListener('close', () => {
     blurDiv.classList.remove('blur'); 
 });
+let isOpen = false;
+
+function openProfil() {
+    if(!isOpen){
+      document.getElementById("strelka").classList.add("rotate-strelka");
+      isOpen = true;
+    }
+    else{
+      document.getElementById("strelka").classList.remove("rotate-strelka");
+      isOpen = false;
+    }
+  }
+  

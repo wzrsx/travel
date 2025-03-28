@@ -960,3 +960,17 @@ h2{
     text-align: center;
     margin: 0 3px;
 }
+.profil{
+    display: flex;
+}
+.profil img{
+    width: 20px;
+    margin-right: 5px;
+}
+#strelka{
+    display: block;
+    transition: all 0.5s ease;
+}
+.rotate-strelka{
+    transform: rotate(180deg);
+}
