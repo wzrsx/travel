@@ -27,10 +27,10 @@
                 <li><a class="nav-item" href="/client-routes">Мои маршруты</a></li>
                 <li><a class="nav-item" href="/contacts">Контакты</a></li>
                 <li><a class="nav-item current-page">О нас</a></li>
-                <li>
-                    <img src="style/logo/strelka.svg" alt="">
+                <li class="profil">
+                    <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                     {{if .Username}}
-                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                        <a class="nav-item" href="#" id="profilUser" onclick="openProfil()">{{.Username}}</a>
                     {{else}}
                     <a class="nav-item" href="#" id="profilUser" onclick="openSignInDialog()">Войти</a>
                     {{end}}
@@ -48,5 +48,19 @@
             Здесь вы найдете самые популярные и самые интересные маршруты в россии!
         </span>
     </main>
+    <script>
+        let isOpen = false;
+
+        function openProfil() {
+            if(!isOpen){
+            document.getElementById("strelka").classList.add("rotate-strelka");
+            isOpen = true;
+            }
+            else{
+            document.getElementById("strelka").classList.remove("rotate-strelka");
+            isOpen = false;
+            }
+        }
+    </script>
 </body>
 </html>

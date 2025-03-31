@@ -37,6 +37,7 @@ const emailForgetPassError = document.getElementById("emailForgetPassError");
 const codeForgetPassError = document.getElementById("codeForgetPassError");
 const passForgetPassError = document.getElementById("passForgetPassError");
 
+let isOpen = false;
 function openSignInDialog() {
   if (registrationDialog.open) {
     registrationDialog.close(); // Закрываем диалог регистрации, если он открыт
@@ -297,12 +298,12 @@ function showPassInput(email) {
   setNewPassButton = document.getElementById("setNewPassButton");
   setNewPassButton.style.display = "block";
 
-  setNewPassButton.addEventListener('click', (event) => {
+  setNewPassButton.addEventListener("click", (event) => {
     event.preventDefault(); // Предотвращаем стандартное поведение
-    
+
     const data = {
       email: email,
-      password: newPass.value
+      password: newPass.value,
     };
     setNewPass(data, event);
   });
@@ -322,25 +323,23 @@ function setNewPass(data, event) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-  .then((response) => {
-    switch(response.status){
-      case (409):
+  }).then((response) => {
+    switch (response.status) {
+      case 409:
         console.log("Код не был введен.");
         break;
-      case (423):
+      case 423:
         showError(passForgetPassError, "Время кода было просрочено.");
         console.log("Время кода было просрочено.");
         break;
-      case (408):
+      case 408:
         console.log("Попытка сменить пароль при блокировке.");
         break;
       default:
         forgetPassDialog.close();
-        break;  
+        break;
     }
   });
-  
 }
 // Закрытие диалогов и удаление размытия
 signInDialog.addEventListener("close", () => {
@@ -541,8 +540,8 @@ function applyErrorStyles(inputs) {
     input.style.background = "#ffcccc";
   });
 }
-function resetErrorStyles(inputs){
-  codeForgetPassError.style.display = 'none';
+function resetErrorStyles(inputs) {
+  codeForgetPassError.style.display = "none";
   inputs.forEach((input) => {
     input.style.borderColor = "green";
     input.style.background = "#e9f7d6";
@@ -551,16 +550,16 @@ function resetErrorStyles(inputs){
 
 function showCanField(field, text, inputs) {
   field.innerText = text;
-  field.style.color = 'green';
-  field.style.display = 'block';
+  field.style.color = "green";
+  field.style.display = "block";
 
   inputs.forEach((input) => {
     input.style.borderColor = "black";
     input.style.backgroundColor = "#e9f7d6";
-    input.style.color = 'black';
+    input.style.color = "black";
     input.disabled = false; // Блокируем ввод
     input.style.opacity = "1"; // Затемняем
-    input.style.cursor = 'auto'; // Меняем курсор
+    input.style.cursor = "auto"; // Меняем курсор
   });
 }
 function showBlockInput(inputs) {
@@ -574,46 +573,61 @@ function showBlockInput(inputs) {
   });
 }
 function handleKeyDown(event, inputElement) {
-  if (event.key === 'Backspace') {
-      const currentIndex = parseInt(inputElement.id.replace('inputCode', ''));
-      if (inputElement.value === '') {  // только если input уже пустой
-          inputElement.value = ''; 
-          const previousInput = document.getElementById('inputCode' + (currentIndex - 1));
-          if (previousInput) {
-              previousInput.focus(); 
-          }
-          checkAllFilled(); 
-      } else {
-        if(currentIndex == 6){
-          const inputs = document.querySelectorAll("#confirmationCode .code-input"); 
-          resetErrorStyles(inputs);
-        }
-          inputElement.value = '';  // если есть значение - просто очищаем, не переходим
+  if (event.key === "Backspace") {
+    const currentIndex = parseInt(inputElement.id.replace("inputCode", ""));
+    if (inputElement.value === "") {
+      // только если input уже пустой
+      inputElement.value = "";
+      const previousInput = document.getElementById(
+        "inputCode" + (currentIndex - 1)
+      );
+      if (previousInput) {
+        previousInput.focus();
       }
+      checkAllFilled();
+    } else {
+      if (currentIndex == 6) {
+        const inputs = document.querySelectorAll(
+          "#confirmationCode .code-input"
+        );
+        resetErrorStyles(inputs);
+      }
+      inputElement.value = ""; // если есть значение - просто очищаем, не переходим
+    }
   }
 }
 //обработка вставки
-confirmationCode.addEventListener('paste', function(e) {
+confirmationCode.addEventListener("paste", function (e) {
   e.preventDefault(); // Отменяем стандартное поведение
-  
+
   // Получаем текст из буфера обмена
-  const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-  
+  const pastedText = (e.clipboardData || window.clipboardData).getData("text");
+
   // Оставляем только цифры и обрезаем до 6 символов
-  const digitsOnly = pastedText.replace(/\D/g, '').substring(0, 6);
-  
+  const digitsOnly = pastedText.replace(/\D/g, "").substring(0, 6);
+
   // Если длина не 6 символов, игнорируем
   if (digitsOnly.length !== 6) return;
-  
+
   // Заполняем поля посимвольно
   for (let i = 0; i < 6; i++) {
-      const input = document.getElementById(`inputCode${i+1}`);
-      if (input) {
-          input.value = digitsOnly[i];
-      }
+    const input = document.getElementById(`inputCode${i + 1}`);
+    if (input) {
+      input.value = digitsOnly[i];
+    }
   }
-  
+
   // Вызываем проверку заполненности
   checkAllFilled();
-  document.getElementById('inputCode6').focus();
+  document.getElementById("inputCode6").focus();
 });
+function openProfil() {
+  if(!isOpen){
+    document.getElementById("strelka").classList.add("rotate-strelka");
+    isOpen = true;
+  }
+  else{
+    document.getElementById("strelka").classList.remove("rotate-strelka");
+    isOpen = false;
+  }
+}

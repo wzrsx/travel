@@ -232,3 +232,5 @@ function saveRoute(routeLink, route_name, route_place, route_description) {
         alert('Ошибка при сохранении маршрута: ' + error.message);
     });
 }
+
+  

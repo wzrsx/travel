@@ -22,10 +22,10 @@
                 <li><a class="nav-item" href="/client-routes">Мои маршруты</a></li>
                 <li><a class="nav-item" href="/contacts">Контакты</a></li>
                 <li><a class="nav-item" href="/about-us">О нас</a></li>
-                <li>
-                    <img src="style/logo/strelka.svg" alt="">
+                <li class="profil">
+                    <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                     {{if .Username}}
-                        <a class="nav-item" href="#" id="profilUser">{{.Username}}</a>
+                        <a class="nav-item" href="#" id="profilUser" onclick="openProfil()">{{.Username}}</a>
                     {{else}}
                         <a class="nav-item" href="#" id="profilUser" onclick="openSignInDialog()">Войти</a>
                     {{end}}
@@ -110,6 +110,7 @@
                 
             </form>
         </dialog>
+
     </main> 
     
     <script src="scripts/main.js"></script>
