@@ -25,7 +25,13 @@
                 <li class="profil">
                     <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                     {{if .Username}}
-                        <a class="nav-item" href="#" id="profilUser" onclick="openProfil()">{{.Username}}</a>
+                        <div class="profile-dropdown">
+                            <a class="nav-item" href="#" id="profilUser" onclick="toggleProfileMenu()">{{.Username}}</a>
+                            <div class="dropdown-content" id="profileDropdown">
+                                <a onclick="changePass()">Изменить пароль</a>
+                                <a href="/logout" class="logout-text">Выйти</a>
+                            </div>
+                        </div>
                     {{else}}
                         <a class="nav-item" href="#" id="profilUser" onclick="openSignInDialog()">Войти</a>
                     {{end}}
@@ -110,7 +116,21 @@
                 
             </form>
         </dialog>
-
+        <dialog class="sign-in-dialog" id="changePassDialog">
+            <form class="sign-in-dialog-form" id="changePassForm">
+                <img class="logo-tree" src="style/logo/tree.svg" alt="">
+                <span class="form-text">Изменение пароля</span>
+                <input class="input-field password" type="password" name="" id="changePassLastPassInput" placeholder="Введите старый пароль">
+                <span class="error-message" id="lastPassChangePassError" style="color: red; display: none;">error message</span>
+                <input class="input-field password" type="password" name="" id="changePassNewPassInput" placeholder="Введите новый пароль">
+                <span class="error-message" id="newPassChangePassError" style="color: red; display: none;">error message</span>
+                
+                <section class="register-autorize">
+                    <button class="button-authorize" type="submit" id="changePassButton" onclick="changePassSave()">Изменить</button>
+                </section>
+                
+            </form>
+        </dialog>
     </main> 
     
     <script src="scripts/main.js"></script>

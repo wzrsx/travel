@@ -1,6 +1,7 @@
 const signInDialog = document.getElementById("signInDialog");
 const registrationDialog = document.getElementById("registrationDialog");
 const forgetPassDialog = document.getElementById("forgetPassDialog");
+const changePassDialog = document.getElementById("changePassDialog");
 const blurDiv = document.getElementById("blurDiv");
 const EMAIL_REGEXP =
   /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
@@ -18,6 +19,8 @@ const usernameRegistration = document.getElementById("registrationNameInput");
 const emailForgetPass = document.getElementById("forgetPassEmailInput");
 const confirmationCode = document.getElementById("confirmationCode");
 const newPass = document.getElementById("newPassInput");
+const changePassLast = document.getElementById("changePassLastPassInput");
+const changePassNew = document.getElementById("changePassNewPassInput");
 //ошибки регистрации
 const nameRegistrationError = document.getElementById("nameRegistrationError");
 const emailRegistrationError = document.getElementById(
@@ -36,6 +39,9 @@ const passwordSignInError = document.getElementById("passwordSignInError");
 const emailForgetPassError = document.getElementById("emailForgetPassError");
 const codeForgetPassError = document.getElementById("codeForgetPassError");
 const passForgetPassError = document.getElementById("passForgetPassError");
+//ошибки изменения пароля
+const lastPassChangePassError = document.getElementById("lastPassChangePassError");
+const newPassChangePassError = document.getElementById("newPassChangePassError");
 
 let isOpen = false;
 function openSignInDialog() {
@@ -386,6 +392,12 @@ function resetSignInErrors() {
   emailSignInError.style.display = "none";
   passwordSignInError.style.display = "none";
 }
+function resetChangePassErrors() {
+  newPassChangePassError.style.display = "none";
+  lastPassChangePassError.style.display = "none";
+  changePassNew.style.borderColor = 'black';
+  changePassLast.style.borderColor = 'black';
+}
 //проверка пароля
 function isPassValid(value, field, input) {
   const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
@@ -630,4 +642,50 @@ function openProfil() {
     document.getElementById("strelka").classList.remove("rotate-strelka");
     isOpen = false;
   }
+}
+
+function toggleProfileMenu() {
+  event.preventDefault();
+  openProfil();
+  document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+// Закрытие меню при клике вне его области
+window.onclick = function(event) {
+  if (!event.target.matches('#profilUser') && !event.target.matches('#strelka')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+          }
+      }
+  }
+}
+
+function changePass(){
+  changePassDialog.showModal();
+  blurDiv.classList.add("blur");
+}
+changePassDialog.addEventListener("close", () => {
+  blurDiv.classList.remove("blur");
+});
+function changePassSave(){
+    event.preventDefault();
+    resetChangePassErrors();
+    const lastPassValue = changePassLast.value;
+    const newPassValue = changePassNew.value;
+    if(!isPassValid(lastPassValue, lastPassChangePassError, changePassLast)){
+      return;
+    }
+    if(!isPassValid(newPassValue, newPassChangePassError, changePassNew)){
+      return;
+    }
+    //проверить с текущим паролем юзера
+    if (lastPassValue !== user_pass) {
+      showError(lastPassChangePassError, "Пароль не соовпадает с текущим.");
+      changePassLast.style.borderColor = 'red';
+      return;
+    }
+    //если совпадает то отправляем update
 }

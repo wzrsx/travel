@@ -41,23 +41,86 @@
                 <br>
                 <p>(Вы можете ввести город или любое другое место)</p>
                 <input type="text" id="route-place" class="input-route" />
+                <span class="error-message-create-route" id="placeRouteError">error message</span>
             </section>
 
             <section class="map-select-points">
                 <p>2. Карта с маршрутом:</p>
-                <div id="map" style="width: 100%; height: 400px;"></div>
+                <div id="map" style="width: 70%; height: 600px; margin: 0 auto; margin-top: 1.15vh;"></div>
+                <span class="error-message-create-route" id="mapRouteError">error message</span>
             </section>
     
             <section class="name-route">
                 <p>3. Укажем название маршрута</p>
-                <input type="text" id="route-name" class="input-route" placeholder="Название маршрута" required />
+                <input type="text" id="route-name" class="input-route" placeholder="Название маршрута"/>
+                <span class="error-message-create-route" id="nameRouteError">error message</span>
             </section>
     
             <section class="about-route">
                 <p>4. Кратко опишите маршрут (не более 150 символов)</p>
-                <textarea id="route-description" class="input-route description" maxlength="150" placeholder="Описание маршрута" required></textarea>
+                <textarea id="route-description" class="input-route description" maxlength="150" placeholder="Описание маршрута"></textarea>
+                <span class="error-message-create-route" id="descriptionRouteError">error message</span>
             </section>
-    
+
+            <section class="photos-route">
+                <p>5. Добавьте фото маршрута</p>
+                <div class="photos-route-item-photos" id="scrollable">
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                    <div class="photo-item">
+                        <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
+                        <span class="delete-photo">&times;</span>
+                    </div>
+                </div>
+                <div class="file-input-wrapper">
+                    <input type="file" id="route-photo" accept="image/*" class="input-route photos" multiple>
+                    <label for="route-photo" class="custom-file-input">Выберите файлы</label>
+                </div>
+                <span class="error-message-create-route" id="photosRouteError">error message</span>
+                <p class="file-hint">(Можно выбрать несколько фото)</p>        
+            </section>
             <button type="submit" class="create-route-btn">
                 Создать маршрут
             </button>
