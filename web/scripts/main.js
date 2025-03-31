@@ -198,15 +198,37 @@ function registration() {
   })
     .then((response) => {
       if (response.ok) {
-        location.reload();
-      } else if (response.status === 409) {
-        //email уже есть
+        data = {
+          email: email,
+        };
+        fetch("http://localhost:5050/send_to_email/pass_code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }) 
+        .then((response) => {
+          if(!response.ok){
+            showError(repeatPasswordRegistrationError, "Ошибка отправки письма.");
+            console.log();
+            return;
+          }
+          // ОТКРЫТИЕ ОКНА С ВВОДОМ КОДА ДЛЯ РЕГИСТРАЦИИ.
+
+        })
+        return;
+      }
+      if (response.status == 409) {
         showError(
           emailRegistrationError,
           "Пользователь с таким email уже зарегистрирован."
         );
         emailRegistration.style.borderColor = "red";
-      } else {
+        return;
+      } 
+
+      if (response.status == 400) {
         throw new Error("Network response was not ok " + response.statusText);
       }
     })
