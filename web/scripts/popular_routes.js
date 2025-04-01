@@ -45,16 +45,3 @@ document.addEventListener('DOMContentLoaded', function() {
 function openSignInDialog(){
     location.href = "http://localhost:5050/?openLoginDialog=true";
 }
-let isOpen = false;
-
-function openProfil() {
-    if(!isOpen){
-      document.getElementById("strelka").classList.add("rotate-strelka");
-      isOpen = true;
-    }
-    else{
-      document.getElementById("strelka").classList.remove("rotate-strelka");
-      isOpen = false;
-    }
-  }
-  

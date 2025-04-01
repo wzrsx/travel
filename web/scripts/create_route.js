@@ -385,7 +385,29 @@ function onInput(event) {
     const errorMessageElement = event.target.nextElementSibling;
     if (field.value) {
         showError(field, '', errorMessageElement);
+        findCity(field.value);
     } else {
         showError(field, 'Это поле обязательно для заполнения', errorMessageElement);
     }
   }
+  /*Подсказки при выборе места */
+function findCity(query){
+    var url = "http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
+    var token = "6edd25e46a970c5f63c88a772177b0e4cf5a57b7";
+
+    var options = {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Token " + token
+        },
+        body: JSON.stringify({query: query})
+    }
+
+    fetch(url, options)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log("error", error));
+}

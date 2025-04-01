@@ -1023,10 +1023,12 @@ h2{
     text-align: center;
     margin: 0 3px;
 }
-.profil{
+.profile-dropdown{
     display: flex;
+    position: relative;
+    align-items: center;
 }
-.profil img{
+.profile-dropdown img{
     width: 20px;
     margin-right: 5px;
 }
@@ -1037,14 +1039,11 @@ h2{
 .rotate-strelka{
     transform: rotate(180deg);
 }
-.profile-dropdown {
-    position: relative;
-    display: inline-block;
-}
 
 .dropdown-content {
     display: none;
     position: absolute;
+    top: 100%; /* Размещаем ниже родительского элемента */
     right: 0;
     background-color: #f9f9f9;
     min-width: 160px;

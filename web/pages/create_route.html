@@ -23,11 +23,17 @@
                 <li><a class="nav-item" href="/contacts">Контакты</a></li>
                 <li><a class="nav-item" href="/about-us">О нас</a></li>
                 <li class="profil">
-                    <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                     {{if .Username}}
-                        <a class="nav-item" href="#" id="profilUser" onclick="openProfil()">{{.Username}}</a>
+                        <div class="profile-dropdown">
+                            <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
+                            <a class="nav-item" href="#" id="profilUser" onclick="toggleProfileMenu()">{{.Username}}</a>
+                            <div class="dropdown-content" id="profileDropdown">
+                                <a onclick="changePass()">Изменить пароль</a>
+                                <a href="/deauthorize" class="logout-text">Выйти</a>
+                            </div>
+                        </div>
                     {{else}}
-                        <a class="nav-item" href="#" id="profilUser">Войти</a>
+                        <a class="nav-item" href="#" id="profilUser" onclick="openSignInDialog()">Войти</a>
                     {{end}}
                 </li>
             </ul>
@@ -127,19 +133,5 @@
         </form>
     </main>
     <script src="scripts/create_route.js"></script>
-    <script>
-        let isOpen = false;
-
-        function openProfil() {
-            if(!isOpen){
-            document.getElementById("strelka").classList.add("rotate-strelka");
-            isOpen = true;
-            }
-            else{
-            document.getElementById("strelka").classList.remove("rotate-strelka");
-            isOpen = false;
-            }
-        }
-    </script>
-</body>
+    <script src="scripts/user_menu.js"></script>
 </html>

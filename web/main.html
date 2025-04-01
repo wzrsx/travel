@@ -23,9 +23,9 @@
                 <li><a class="nav-item" href="/contacts">Контакты</a></li>
                 <li><a class="nav-item" href="/about-us">О нас</a></li>
                 <li class="profil">
-                    <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                     {{if .Username}}
                         <div class="profile-dropdown">
+                            <img src="style/logo/strelka.svg" alt="" style="cursor: hand;" id="strelka">
                             <a class="nav-item" href="#" id="profilUser" onclick="toggleProfileMenu()">{{.Username}}</a>
                             <div class="dropdown-content" id="profileDropdown">
                                 <a onclick="changePass()">Изменить пароль</a>
@@ -132,7 +132,7 @@
             </form>
         </dialog>
     </main> 
-    
+    <script src="scripts/user_menu.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 </html>
