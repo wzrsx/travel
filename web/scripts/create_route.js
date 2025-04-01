@@ -6,10 +6,11 @@ window.onload = function () {
     route_place.addEventListener("input", onInput);
     route_description.addEventListener("input", onInput);
 }
+let myMap; // Делаем карту глобальной переменной
 ymaps.ready(init);
 
 function init() {
-    const map = new ymaps.Map('map', {
+    myMap = new ymaps.Map('map', {
         center: [55.76, 37.64], // Центр карты (Москва)
         zoom: 10
     });
@@ -22,7 +23,7 @@ function init() {
     // Функция для создания маршрута
     function updateRoute() {
         if (multiRoute) {
-            map.geoObjects.remove(multiRoute);
+            myMap.geoObjects.remove(multiRoute);
         }
 
         if (startPoint && endPoint) {
@@ -43,7 +44,7 @@ function init() {
             });
 
             // Добавляем маршрут на карту
-            map.geoObjects.add(multiRoute);
+            myMap.geoObjects.add(multiRoute);
 
             // Обработка кликов на точках маршрута
             multiRoute.model.events.add('requestsuccess', function () {
@@ -53,10 +54,10 @@ function init() {
 
                         // Проверка на удаление начальной точки
                         if (startPoint && startPoint.geometry.getCoordinates().join(',') === coords.join(',')) {
-                            map.geoObjects.remove(startPoint);
+                            myMap.geoObjects.remove(startPoint);
                             if (waypoints.length > 0) {
                                 startPoint = waypoints[0];
-                                map.geoObjects.add(startPoint);
+                                myMap.geoObjects.add(startPoint);
                                 waypoints.shift();
                             } else {
                                 startPoint = null;
@@ -66,10 +67,10 @@ function init() {
 
                         // Проверка на удаление конечной точки
                         if (endPoint && endPoint.geometry.getCoordinates().join(',') === coords.join(',')) {
-                            map.geoObjects.remove(endPoint);
+                            myMap.geoObjects.remove(endPoint);
                             if (waypoints.length > 0) {
                                 endPoint = waypoints[waypoints.length - 1];
-                                map.geoObjects.add(endPoint);
+                                myMap.geoObjects.add(endPoint);
                                 waypoints.pop();
                             } else {
                                 endPoint = null;
@@ -80,7 +81,7 @@ function init() {
                         // Проверка на удаление контрольной точки
                         const waypointToRemove = waypoints.find(w => w.geometry.getCoordinates().join(',') === coords.join(','));
                         if (waypointToRemove) {
-                            map.geoObjects.remove(waypointToRemove);
+                            myMap.geoObjects.remove(waypointToRemove);
                             waypoints = waypoints.filter(w => w !== waypointToRemove);
                             updateRoute();
                         }
@@ -91,7 +92,7 @@ function init() {
     }
 
     // Обработчик клика на карте
-    map.events.add('click', function (e) {
+    myMap.events.add('click', function (e) {
         const coords = e.get('coords');
 
         if (!startPoint) {
@@ -102,11 +103,11 @@ function init() {
                 preset: 'islands#greenDotIcon', // Зеленая точка
                 draggable: true // Разрешить перемещение
             });
-            map.geoObjects.add(startPoint);
+            myMap.geoObjects.add(startPoint);
 
             // Удаление начальной точки при клике
             startPoint.events.add('click', function () {
-                map.geoObjects.remove(startPoint);
+                myMap.geoObjects.remove(startPoint);
                 startPoint = null;
                 updateRoute();
             });
@@ -120,11 +121,11 @@ function init() {
                 preset: 'islands#redDotIcon', // Красная точка
                 draggable: true // Разрешить перемещение
             });
-            map.geoObjects.add(endPoint);
+            myMap.geoObjects.add(endPoint);
 
             // Удаление конечной точки при клике
             endPoint.events.add('click', function () {
-                map.geoObjects.remove(endPoint);
+                myMap.geoObjects.remove(endPoint);
                 endPoint = null;
                 updateRoute();
             });
@@ -139,7 +140,7 @@ function init() {
                 preset: 'islands#blueDotIcon', // Синяя точка
                 draggable: true // Разрешить перемещение
             });
-            map.geoObjects.add(waypoint);
+            myMap.geoObjects.add(waypoint);
             waypoints.push(waypoint);
 
             // Обновление маршрута при перемещении контрольной точки
@@ -149,7 +150,7 @@ function init() {
 
             // Удаление контрольной точки при клике
             waypoint.events.add('click', function () {
-                map.geoObjects.remove(waypoint);
+                myMap.geoObjects.remove(waypoint);
                 waypoints = waypoints.filter(w => w !== waypoint);
                 updateRoute();
             });
@@ -161,6 +162,7 @@ function init() {
         if (startPoint && endPoint) {
             showError(document.getElementById('map'), '', document.getElementById('mapRouteError'));
             document.getElementById('map').style.border = 'none';
+            route_name.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
 
@@ -385,9 +387,14 @@ function onInput(event) {
     const errorMessageElement = event.target.nextElementSibling;
     if (field.value) {
         showError(field, '', errorMessageElement);
-        findCity(field.value);
+        if(field.value.length > 1){
+            findCity(field.value);
+            field.classList.add('delete-border-radius');
+        }
     } else {
         showError(field, 'Это поле обязательно для заполнения', errorMessageElement);
+        document.getElementById('suggestions-container').style.display = 'none';
+        field.classList.remove('delete-border-radius');
     }
   }
   /*Подсказки при выборе места */
@@ -403,11 +410,64 @@ function findCity(query){
             "Accept": "application/json",
             "Authorization": "Token " + token
         },
-        body: JSON.stringify({query: query})
+        body: JSON.stringify({
+            query: query,
+            "from_bound": { "value": "country" },
+            "to_bound": { "value": "settlement" },
+            "locations": [{ "country": "Россия" }]
+        })
     }
 
     fetch(url, options)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log("error", error));
+    .then(response => response.json())
+    .then(result => 
+    {
+        if (!result.suggestions) return;
+        // Фильтруем и обрабатываем подсказки
+        console.log(result.suggestions);
+        const filtered = result.suggestions.filter(suggestion => {
+            return suggestion.data && suggestion.data.settlement_type !== "тер";
+        });
+        showSuggestions(filtered);
+    })
+    .catch(error => console.log("Ошибка:", error));
+}
+function showSuggestions(suggestions) {
+    const container = document.getElementById('suggestions-container');
+    container.innerHTML = '';
+    
+    if (suggestions.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    suggestions.forEach(suggestion => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = suggestion.value;
+
+        div.addEventListener('click', () => {
+            document.getElementById('route-place').value = suggestion.value;
+            container.style.display = 'none';
+            route_place.classList.remove('delete-border-radius');
+            document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            handleSuggestionSelect(suggestion);
+        });
+        container.appendChild(div);
+    });
+    
+    container.style.display = 'block';
+}
+//при выборе места из списка -> установить карту в эту точку
+function handleSuggestionSelect(selectedSuggestion) {
+    const coords = [
+        parseFloat(selectedSuggestion.data.geo_lat),
+        parseFloat(selectedSuggestion.data.geo_lon)
+    ];
+    console.log(coords);
+    if (!myMap) {
+        console.error('Карта не инициализирована');
+        return;
+    }
+    myMap.setCenter(coords, 10);
 }

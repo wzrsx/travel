@@ -46,8 +46,13 @@
                 <p>1. Для начала узнаем, где находится маршрут</p>
                 <br>
                 <p>(Вы можете ввести город или любое другое место)</p>
-                <input type="text" id="route-place" class="input-route" />
+                <input type="text" id="route-place" class="input-route" name="noautocomplete-route-place"
+                        autocomplete="off" 
+                        autocorrect="off" 
+                        autocapitalize="off" 
+                        spellcheck="false" />
                 <span class="error-message-create-route" id="placeRouteError">error message</span>
+                <div id="suggestions-container" class="suggestions-container"></div>
             </section>
 
             <section class="map-select-points">
