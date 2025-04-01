@@ -630,8 +630,11 @@ h2{
     justify-content: center;
     margin-top: 15px;
 }
-.location-route{
-
+.location-route {
+    position: relative;
+}
+.input-route.delete-border-radius{
+    border-radius: 20px 20px 0 0;
 }
 .map-select-points{
 
@@ -658,6 +661,33 @@ h2{
     margin: 0 auto;
     padding-left: 10px;
     margin-top: 15px;
+}
+.suggestions-container {
+    position: absolute;
+    width: 70%;
+    background-color: #9aa6ad;
+    border-radius: 0 0 20px 20px;
+    border-left: 3px solid #506C56;
+    border-right: 3px solid #506C56;
+    border-bottom: 3px solid #506C56;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;     
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
+    margin-top: -3px;   
+    left: 50%;         
+    transform: translateX(-50%); 
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+.suggestion-item:hover {
+    background-color: #7d9a98;
 }
 .input-route.description {
     height: 150px;
@@ -1023,10 +1053,12 @@ h2{
     text-align: center;
     margin: 0 3px;
 }
-.profil{
+.profile-dropdown{
     display: flex;
+    position: relative;
+    align-items: center;
 }
-.profil img{
+.profile-dropdown img{
     width: 20px;
     margin-right: 5px;
 }
@@ -1037,14 +1069,11 @@ h2{
 .rotate-strelka{
     transform: rotate(180deg);
 }
-.profile-dropdown {
-    position: relative;
-    display: inline-block;
-}
 
 .dropdown-content {
     display: none;
     position: absolute;
+    top: 100%; /* Размещаем ниже родительского элемента */
     right: 0;
     background-color: #f9f9f9;
     min-width: 160px;

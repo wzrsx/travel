@@ -16,6 +16,7 @@ func DeAuthorize() http.Handler {
 			Secure:   false,
 		}
 		http.SetCookie(w, cookies.JWT)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	return http.HandlerFunc(fn)
 }
