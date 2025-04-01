@@ -23,11 +23,7 @@ func (ur *UserRegistrationResult) RegistrationQuery(username string, email strin
 	}
 	defer conn.Release()
 
-	// Проверка наличия почты в базе данных
-	err = ExistsEmail(email, pool)
-	if err != nil{
-		return err
-	}
+	
 
 	err = conn.QueryRow(context.Background(), "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id_user", username, email, password).Scan(&ur.UserID)
 	if err != nil {

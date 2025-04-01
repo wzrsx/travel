@@ -80,7 +80,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 
 			// Если параметры уже есть, продолжаем обработку GET-запроса
 			tmpl := template.Must(template.New("route.html").Funcs(funcMap).ParseFiles("web/pages/route.html"))
-			data, err := check_username_data(w, r)
+			data, err := check_username_data(r)
 			if err != nil {
 				log.Printf("Failed to check username: %v", err)
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)

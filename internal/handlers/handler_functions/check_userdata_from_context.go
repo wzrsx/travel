@@ -36,7 +36,7 @@ func check_username(w http.ResponseWriter, r *http.Request, web_file string) (*t
 	return tmpl, &data, nil
 }
 
-func check_username_data(w http.ResponseWriter, r *http.Request) (*PageData, error) {
+func check_username_data(r *http.Request) (*PageData, error) {
 	username, ok := r.Context().Value("username").(string)
 	if !ok {
 		username = ""
@@ -52,5 +52,17 @@ func check_username_data(w http.ResponseWriter, r *http.Request) (*PageData, err
 	}
 
 	return &data, nil
+}
 
+func check_if_authorize(r *http.Request) (int, bool) {
+	_, ok := r.Context().Value("username").(string)
+	if !ok {
+		return 0, false
+	}
+	userid, ok := r.Context().Value("userID").(int)
+	if !ok {
+		return 0, false
+	}
+
+	return userid, true
 }

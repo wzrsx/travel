@@ -34,11 +34,13 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/registration", handler_functions.Registration(a.Pool))
 	http.Handle("/deauthorize", handler_functions.DeAuthorize())
 
-	
+	http.Handle("/send_to_email/pass_code_recovery", handler_functions.SendEmailMessageWithCodeRecovery())
+	http.Handle("/send_to_email/pass_code_registration", handler_functions.SendEmailMessageWithCodeRecovery())
+
 	http.Handle("/check/email", handler_functions.CheckEmailIntoDB(a.Pool))
-	http.Handle("/send_to_email/pass_code", handler_functions.SendEmailMessageWithCode())
 	http.Handle("/check/pass_code", handler_functions.CheckPassCode())
-	http.Handle("/change/password", handler_functions.ChangePassword(a.Pool))
+
+	http.Handle("/change/password", JWT.JWTMiddleware(handler_functions.ChangePassword(a.Pool)))
 
 }
 

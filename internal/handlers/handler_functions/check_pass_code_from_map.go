@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"travel/internal/handlers/JWT"
+	"travel/internal/repositories/queries"
 )
 
 func CheckPassCode() http.Handler {
@@ -13,6 +15,7 @@ func CheckPassCode() http.Handler {
 			type CredentialsSendEmail struct {
 				Email string `json:"email"`
 				Code  string `json:"code"`
+				IsReg bool   `json:"isreg"`
 			}
 			ip := r.RemoteAddr
 
@@ -46,6 +49,33 @@ func CheckPassCode() http.Handler {
 				}
 				w.WriteHeader(http.StatusConflict)
 				return
+			}
+			if creds.IsReg {
+				registrationMutex.Lock()
+				pending, exists := pendingRegistrations[creds.Email]
+				registrationMutex.Unlock()
+
+				if !exists {
+					http.Error(w, "No pending registration for this email", http.StatusNotFound)
+					return
+				}
+
+				user_reg_res := queries.NewUserRegistrationResult()
+				err = user_reg_res.RegistrationQuery(pending.Username, pending.Email, pending.Password, pending.Pool.PoolConns)
+				if err != nil {
+					if err.Error() == "email exists" {
+						http.Error(w, "Email exists", http.StatusConflict)
+					}
+					log.Printf("Registration Querry returns error: %v", err)
+					http.Error(w, "Registration Querry error", http.StatusBadRequest)
+					return
+				}
+
+				// Устанавливаем куку
+				err = JWT.SetCookeJWT(w, user_reg_res.UserID, user_reg_res.Username)
+				if err != nil {
+					http.Error(w, "Error set cookie JWT", http.StatusUnauthorized)
+				}
 			}
 			canChange[creds.Email] = true
 			codeCache[creds.Email] = codeInfo{
