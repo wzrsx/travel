@@ -16,7 +16,6 @@ func JWTMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-
 		// Парсим токен
 		token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
 			return []byte("secret"), nil
