@@ -1,3 +1,11 @@
+const route_name = document.getElementById('route-name');
+const route_place = document.getElementById('route-place');
+const route_description = document.getElementById('route-description');
+window.onload = function () {
+    route_name.addEventListener("input", onInput);
+    route_place.addEventListener("input", onInput);
+    route_description.addEventListener("input", onInput);
+}
 ymaps.ready(init);
 
 function init() {
@@ -149,26 +157,34 @@ function init() {
             // Создание маршрута
             updateRoute();
         }
+        // После добавления точек скрываем ошибку
+        if (startPoint && endPoint) {
+            showError(document.getElementById('map'), '', document.getElementById('mapRouteError'));
+            document.getElementById('map').style.border = 'none';
+        }
     });
 
     // Обработчик кнопки "Создать маршрут"
     document.getElementById('create-route-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const route_name = document.getElementById('route-name').value;
-        const route_place = document.getElementById('route-place').value;
-        const route_description = document.getElementById('route-description').value;
-
-        if (route_name.length <= 1 || route_place.length <= 1) {
-            alert("Ошибка: поле имени или места маршрута должно быть не меньше двух символов.");
-            return;
+        if(!validateField(route_place, document.getElementById('placeRouteError'))){
+            return; 
         }
-
         if (!startPoint || !endPoint) {
-            alert('Пожалуйста, укажите начальную и конечную точки на карте.');
+            showError(document.getElementById('map'), 'Пожалуйста, укажите начальную и конечную точки на карте.', document.getElementById('mapRouteError'));
             return;
+        }else{
+            showError(document.getElementById('map'), '', document.getElementById('mapRouteError'));
         }
-
+        if(!validateField(route_name, document.getElementById('nameRouteError'))){
+            return; 
+        }
+    
+        if(!validateField(route_description, document.getElementById('descriptionRouteError'))){
+            return; 
+        }
+    
         // Получаем координаты точек
         const startCoords = startPoint.geometry.getCoordinates().join(',');
         const endCoords = endPoint.geometry.getCoordinates().join(',');
@@ -233,4 +249,143 @@ function saveRoute(routeLink, route_name, route_place, route_description) {
     });
 }
 
-  
+const scrollable = document.getElementById('scrollable');
+let isDown = false;
+//Слайдер фоток
+scrollable.addEventListener('mousedown', (e) => {
+    isDown = true;
+    e.preventDefault();
+    scrollable.classList.add('active');
+    startX = e.pageX - scrollable.offsetLeft;
+    scrollLeft = scrollable.scrollLeft;
+});
+scrollable.addEventListener('mouseleave', () => {
+    isDown = false;
+    scrollable.classList.remove('active');
+});
+
+scrollable.addEventListener('mouseup', () => {
+    isDown = false;
+    scrollable.classList.remove('active');
+});
+scrollable.addEventListener('mousemove', (e) => {
+    if (!isDown) return; 
+    e.preventDefault();
+    const x = e.pageX - scrollable.offsetLeft;
+    const walk = (x - startX) * 2; 
+    scrollable.scrollLeft = scrollLeft - walk;
+});
+
+scrollable.addEventListener('wheel', (e) => {
+    e.preventDefault(); 
+    scrollable.scrollLeft += e.deltaY; 
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('route-photo');
+    const photosContainer = document.getElementById('scrollable');
+    let filesQueue = 0; // Счетчик файлов в обработке
+    
+    fileInput.addEventListener('change', function(e) {
+        if (this.files && this.files.length > 0) {
+            filesQueue = this.files.length; // Устанавливаем общее количество файлов
+            
+            Array.from(this.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        createPhotoItem(e.target.result);
+                        filesQueue--; // Уменьшаем счетчик после загрузки
+                        
+                        // Обновляем счетчик только когда все файлы обработаны
+                        if (filesQueue === 0) {
+                            updateCounter();
+                        }
+                    }
+                    
+                    reader.onerror = function() {
+                        filesQueue--; // Учитываем ошибки загрузки
+                        if (filesQueue === 0) {
+                            updateCounter();
+                        }
+                    }
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    filesQueue--; // Пропускаем не-изображения
+                }
+            });
+        }
+    });
+    
+    function createPhotoItem(imageSrc) {
+        const photoItem = document.createElement('div');
+        photoItem.className = 'photo-item';
+        
+        photoItem.innerHTML = `
+            <img src="${imageSrc}" alt="" class="thumbnail">
+            <span class="delete-photo">&times;</span>
+        `;
+        
+        photosContainer.appendChild(photoItem);
+        
+        photoItem.querySelector('.delete-photo').addEventListener('click', function() {
+            photoItem.remove();
+            updateCounter();
+        });
+    }
+    
+    function updateCounter() {
+        const totalPhotos = photosContainer.querySelectorAll('.photo-item').length;
+        document.querySelector('.custom-file-input').textContent = 
+            totalPhotos > 0 ? `Выбрано ${totalPhotos} фото` : 'Выберите файлы';
+    }
+    
+    // Инициализация существующих элементов
+    document.querySelectorAll('#scrollable .photo-item .delete-photo').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.photo-item').remove();
+            updateCounter();
+        });
+    });
+    
+    updateCounter();
+});
+
+function validateField(field, errorMessageElement) {
+    const value = field.value;
+    let isValid = true;
+    let errorMessage = '';
+    
+    if (!value) {
+        errorMessage = 'Это поле обязательно для заполнения';
+        isValid = false;
+    }
+    showError(field, errorMessage, errorMessageElement);
+    
+    return isValid;
+}
+function showError(field, message, errorElement) {
+    if (message) {
+        //Показываем ошибку
+        errorElement.style.display = 'block';
+        errorElement.innerText = message;
+        field.style.border = '3px solid #752828';
+        //прокрутка к полю
+        field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        // Убираем ошибку
+        errorElement.style.display = 'none';
+        field.style.borderColor = '#506C56';
+    }
+}
+function onInput(event) {
+    const field = event.target;
+    const errorMessageElement = event.target.nextElementSibling;
+    if (field.value) {
+        showError(field, '', errorMessageElement);
+    } else {
+        showError(field, 'Это поле обязательно для заполнения', errorMessageElement);
+    }
+  }
