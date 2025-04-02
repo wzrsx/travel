@@ -47,7 +47,6 @@ const newPassChangePassError = document.getElementById(
   "newPassChangePassError"
 );
 
-let isOpen = false;
 let isReg = false;
 
 function openSignInDialog() {
