@@ -25,7 +25,7 @@ func PopularRoutesHandler(p *pool_conections.Pool_conections) http.Handler {
 		tmpl := template.Must(template.New("popular_routes.html").Funcs(funcMap).ParseFiles("web/pages/popular_routes.html"))
 
 		// Получаем данные пользователя
-		data, err := check_username_data(w, r)
+		data, err := check_username_data(r)
 		if err != nil {
 			log.Printf("Failed to check username: %v", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)

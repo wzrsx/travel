@@ -40,8 +40,15 @@ const emailForgetPassError = document.getElementById("emailForgetPassError");
 const codeForgetPassError = document.getElementById("codeForgetPassError");
 const passForgetPassError = document.getElementById("passForgetPassError");
 //ошибки изменения пароля
-const lastPassChangePassError = document.getElementById("lastPassChangePassError");
-const newPassChangePassError = document.getElementById("newPassChangePassError");
+const lastPassChangePassError = document.getElementById(
+  "lastPassChangePassError"
+);
+const newPassChangePassError = document.getElementById(
+  "newPassChangePassError"
+);
+
+let isOpen = false;
+let isReg = false;
 
 function openSignInDialog() {
   if (registrationDialog.open) {
@@ -117,6 +124,26 @@ function authorize() {
         emailSignIn.style.borderColor = "red";
       } else {
         // Обработка других ошибок
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+    })
+    .catch((error) => {
+      console.log("Error:", error);
+    });
+}
+
+function deAuthorize() {
+  fetch("/deauthorize", {
+    method: "POST", // Метод запроса
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {}, 
+  })
+    .then((response) => {
+      if (response.ok) {
+        location.href = "/";
+      } else {
         throw new Error("Network response was not ok " + response.statusText);
       }
     })
@@ -204,25 +231,29 @@ function registration() {
   })
     .then((response) => {
       if (response.ok) {
-        data = {
+        const data = {
           email: email,
         };
-        fetch("http://localhost:5050/send_to_email/pass_code", {
+        fetch("http://localhost:5050/send_to_email/pass_code_registration", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }) 
-        .then((response) => {
-          if(!response.ok){
-            showError(repeatPasswordRegistrationError, "Ошибка отправки письма.");
-            console.log();
+        }).then((response) => {
+          if (!response.ok) {
+            showError(
+              repeatPasswordRegistrationError,
+              "Ошибка отправки письма."
+            );
+            console.Error("Ошибка отправки письма");
             return;
           }
+          isReg = true;
+          openForgetPassDialog();
+          showCodeInput();
           // ОТКРЫТИЕ ОКНА С ВВОДОМ КОДА ДЛЯ РЕГИСТРАЦИИ.
-
-        })
+        });
         return;
       }
       if (response.status == 409) {
@@ -232,7 +263,7 @@ function registration() {
         );
         emailRegistration.style.borderColor = "red";
         return;
-      } 
+      }
 
       if (response.status == 400) {
         throw new Error("Network response was not ok " + response.statusText);
@@ -265,7 +296,7 @@ function resetPass() {
     body: JSON.stringify(data), // Преобразуем объект в JSON-строку
   }).then((response) => {
     if (response.ok) {
-      fetch("http://localhost:5050/send_to_email/pass_code", {
+      fetch("http://localhost:5050/send_to_email/pass_code_recovery", {
         method: "POST", // Метод запроса
         headers: {
           "Content-Type": "application/json",
@@ -319,7 +350,6 @@ function setNewPass(data, event) {
   }
 
   if (!isPassValid(newPass.value, passForgetPassError, newPass)) {
-    console.log("asdasdasd");
     return;
   }
   fetch("http://localhost:5050/change/password", {
@@ -394,8 +424,8 @@ function resetSignInErrors() {
 function resetChangePassErrors() {
   newPassChangePassError.style.display = "none";
   lastPassChangePassError.style.display = "none";
-  changePassNew.style.borderColor = 'black';
-  changePassLast.style.borderColor = 'black';
+  changePassNew.style.borderColor = "black";
+  changePassLast.style.borderColor = "black";
 }
 //проверка пароля
 function isPassValid(value, field, input) {
@@ -458,11 +488,18 @@ function checkAllFilled() {
     const code = Array.from(inputs)
       .map((input) => input.value)
       .join("");
-    const email = emailForgetPass.value.trim();
+    let email;
+    if(isReg){
+      email = emailRegistration.value.trim();
+    }
+    else{
+      email = emailForgetPass.value.trim();
+    }
     console.log("email:", email);
     body = {
       email: email,
       code: code,
+      isreg: isReg,
     };
     fetch("http://localhost:5050/check/pass_code", {
       method: "POST",
@@ -482,7 +519,13 @@ function checkAllFilled() {
         }
         if (response.ok) {
           resetInputStyles(inputs);
+          if(isReg){
+            location.href = "/";
+            isReg = false;
+            return;
+          }
           showPassInput(email);
+          return;
         }
         return Promise.reject();
       })
@@ -632,30 +675,77 @@ confirmationCode.addEventListener("paste", function (e) {
   checkAllFilled();
   document.getElementById("inputCode6").focus();
 });
+function openProfil() {
+  if (!isOpen) {
+    document.getElementById("strelka").classList.add("rotate-strelka");
+    isOpen = true;
+  } else {
+    document.getElementById("strelka").classList.remove("rotate-strelka");
+    isOpen = false;
+  }
+}
 
-function changePass(){
+function toggleProfileMenu() {
+  event.preventDefault();
+  openProfil();
+  document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+// Закрытие меню при клике вне его области
+window.onclick = function (event) {
+  if (
+    !event.target.matches("#profilUser") &&
+    !event.target.matches("#strelka")
+  ) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains("show")) {
+        openDropdown.classList.remove("show");
+      }
+    }
+  }
+};
+
+function changePass() {
   changePassDialog.showModal();
   blurDiv.classList.add("blur");
 }
 changePassDialog.addEventListener("close", () => {
   blurDiv.classList.remove("blur");
 });
-function changePassSave(){
-    event.preventDefault();
-    resetChangePassErrors();
-    const lastPassValue = changePassLast.value;
-    const newPassValue = changePassNew.value;
-    if(!isPassValid(lastPassValue, lastPassChangePassError, changePassLast)){
-      return;
+
+function changePassSave() {
+  event.preventDefault();
+  resetChangePassErrors();
+  const lastPassValue = changePassLast.value;
+  const newPassValue = changePassNew.value;
+  if (!isPassValid(newPassValue, newPassChangePassError, changePassNew)) {
+    return;
+  }
+  
+  const data = {
+    password: newPassValue,
+    old_password:  lastPassValue,
+  }
+  fetch ("/change/password", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+    },
+    body: JSON.stringify(data),
+  }).then ((response) => {
+    if (response.ok){
+      location.href = "/"
+    } else if(response.status == 404){
+      showError(lastPassChangePassError, "Старый пароль введен неверно, попробуйте снова.");
+    } else if(response.status == 400){
+      showError(lastPassChangePassError, "Какие-то проблемы, попробуйте снова(((");
     }
-    if(!isPassValid(newPassValue, newPassChangePassError, changePassNew)){
-      return;
-    }
-    //проверить с текущим паролем юзера
-    if (lastPassValue !== user_pass) {
-      showError(lastPassChangePassError, "Пароль не соовпадает с текущим.");
-      changePassLast.style.borderColor = 'red';
-      return;
-    }
-    //если совпадает то отправляем update
+  })
+  if (lastPassValue !== user_pass) {
+    changePassLast.style.borderColor = "red";
+    return;
+  }
+  //если совпадает то отправляем update
 }

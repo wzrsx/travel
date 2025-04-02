@@ -29,7 +29,7 @@
                             <a class="nav-item" href="#" id="profilUser" onclick="toggleProfileMenu()">{{.Username}}</a>
                             <div class="dropdown-content" id="profileDropdown">
                                 <a onclick="changePass()">Изменить пароль</a>
-                                <a href="/deauthorize" class="logout-text">Выйти</a>
+                                <a onclick="deAuthorize()" class="logout-text">Выйти</a>
                             </div>
                         </div>
                     {{else}}

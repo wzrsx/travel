@@ -4,10 +4,22 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"travel/internal/handlers/JWT"
+	"sync"
 	"travel/internal/repositories/pool_conections"
 	"travel/internal/repositories/queries"
 )
+
+var (
+	pendingRegistrations = make(map[string]pendingRegistration)
+	registrationMutex    sync.Mutex
+)
+
+type pendingRegistration struct {
+	Username string
+	Password string
+	Email    string
+	Pool     *pool_conections.Pool_conections
+}
 
 func Registration(p *pool_conections.Pool_conections) http.Handler {
 	registration := func(w http.ResponseWriter, r *http.Request) {
@@ -41,23 +53,22 @@ func Registration(p *pool_conections.Pool_conections) http.Handler {
 			return
 		}
 
-		// Делаем запрос в БД
-		user_reg_res := queries.NewUserRegistrationResult()
-		err = user_reg_res.RegistrationQuery(creds.Username, creds.Email, creds.Password, p.PoolConns)
+		// Проверка наличия почты в базе данных
+		err = queries.ExistsEmail(creds.Email, p.PoolConns)
 		if err != nil {
 			if err.Error() == "email exists" {
 				http.Error(w, "Email exists", http.StatusConflict)
 			}
-			log.Printf("Registration Querry returns error: %v", err)
-			http.Error(w, "Registration Querry error", http.StatusBadRequest)
-			return
 		}
 
-		// устанавливаем Cookie с JWT
-		err = JWT.SetCookeJWT(w, user_reg_res.UserID, user_reg_res.Username)
-		if err != nil {
-			http.Error(w, "Error set cookie JWT", http.StatusUnauthorized)
+		registrationMutex.Lock()
+		pendingRegistrations[creds.Email] = pendingRegistration{
+			Username: creds.Username,
+			Password: creds.Password,
+			Email:    creds.Email,
+			Pool:     p,
 		}
+		registrationMutex.Unlock()
 
 		w.WriteHeader(http.StatusOK)
 	}
