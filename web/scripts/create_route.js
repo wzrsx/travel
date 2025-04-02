@@ -1,6 +1,10 @@
 const route_name = document.getElementById('route-name');
 const route_place = document.getElementById('route-place');
 const route_description = document.getElementById('route-description');
+const routeLinkDialog = document.getElementById('routeLinkDialog');
+const blurDiv = document.getElementById("blurDiv");
+const linkRouteToCopyBlock = document.getElementById("linkRouteToCopyBlock");
+const linkRouteToCopy = document.getElementById("linkRouteToCopy");
 window.onload = function () {
     route_name.addEventListener("input", onInput);
     route_place.addEventListener("input", onInput);
@@ -194,7 +198,7 @@ function init() {
 
         // Генерация ссылки на маршрут
         const routeLink = generateRouteLink(startCoords, endCoords, waypointsCoords);
-        alert('Ссылка на маршрут: ' + routeLink);
+        openRouteLinkDialog(routeLink);
 
         // Сохранение ссылки в базу данных (пример)
         saveRoute(routeLink, route_name, route_place, route_description);
@@ -389,12 +393,12 @@ function onInput(event) {
         showError(field, '', errorMessageElement);
         if(field.value.length > 1){
             findCity(field.value);
-            field.classList.add('delete-border-radius');
+            document.getElementById('route-place').classList.add('delete-border-radius');
         }
     } else {
         showError(field, 'Это поле обязательно для заполнения', errorMessageElement);
         document.getElementById('suggestions-container').style.display = 'none';
-        field.classList.remove('delete-border-radius');
+        document.getElementById('route-place').classList.remove('delete-border-radius');
     }
   }
   /*Подсказки при выборе места */
@@ -470,4 +474,29 @@ function handleSuggestionSelect(selectedSuggestion) {
         return;
     }
     myMap.setCenter(coords, 10);
+}
+
+function openRouteLinkDialog(routeLink){
+    routeLinkDialog.showModal();
+    blurDiv.classList.add("blur");
+    document.getElementById('linkRouteToCopy').innerText = routeLink;
+}
+function closeRouteLinkDialog(){
+    routeLinkDialog.close();
+}
+routeLinkDialog.addEventListener("close", () => {
+      blurDiv.classList.remove("blur"); 
+});
+linkRouteToCopyBlock.addEventListener("click", () =>
+{
+    copyToClipboard(linkRouteToCopy.innerText);
+});
+
+async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('Текст скопирован в буфер обмена');
+    } catch (err) {
+      console.error('Ошибка при копировании: ', err);
+    }
 }

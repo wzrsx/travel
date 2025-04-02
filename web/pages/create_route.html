@@ -11,6 +11,7 @@
     <title>Создать маршрут</title>
 </head>
 <body>
+    <div id="blurDiv"></div>
     <header>
         <nav>
             <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
@@ -136,7 +137,22 @@
                 Создать маршрут
             </button>
         </form>
+        <dialog class="sign-in-dialog" id="routeLinkDialog">
+            <div class="route-link-dialog-content"> 
+                <img class="logo-tree" src="style/logo/tree.svg" alt="">
+                <span class="form-text">Ссылка на маршрут</span>
+                <p class="subtitle-form-text">Ваш маршрут сохранен, вы можете скопировать ссылку на него</p>
+                <div class="link-block" id="linkRouteToCopyBlock">
+                    <span id="linkRouteToCopy"></span>
+                    <img src="style/logo/copy.png" alt="">
+                </div>
+                <section class="register-autorize">
+                    <button class="button-authorize" type="submit" id="changePassButton" onclick="closeRouteLinkDialog()">Закрыть</button>
+                </section>
+            </div>                
+        </dialog>
     </main>
+    
     <script src="scripts/create_route.js"></script>
     <script src="scripts/user_menu.js"></script>
 </html>

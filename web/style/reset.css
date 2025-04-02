@@ -85,3 +85,11 @@ label {
 legend {
 	display: block;
 }
+
+dialog {
+    display: revert; /* Возвращает стандартное поведение браузера */
+    position: revert;
+    margin: revert;
+    padding: revert;
+    border: revert;
+}
