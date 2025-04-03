@@ -27,8 +27,9 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/client-routes", JWT.JWTMiddleware(handler_functions.ClientRoutesHandler(a.Pool)))
 	http.Handle("/contacts", JWT.JWTMiddleware(handler_functions.ContactsHandler(a.Pool)))
 	http.Handle("/about-us", JWT.JWTMiddleware(handler_functions.AboutUsHandler(a.Pool)))
-	http.Handle("/save-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
 	http.Handle("/route", JWT.JWTMiddleware(handler_functions.OpenRoutePage(a.Pool)))
+
+	http.Handle("/save-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
 
 	http.Handle("/authorize", handler_functions.Authorize(a.Pool))
 	http.Handle("/registration", handler_functions.Registration(a.Pool))

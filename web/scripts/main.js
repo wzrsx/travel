@@ -164,7 +164,37 @@ function openRegistrationDialog() {
   }
 }
 
+function openResetInputEmail(){
+  const inputs = document.querySelectorAll("#confirmationCode .code-input"); //получаем все инпуты внутри блока
+  resetInputStyles(inputs);
+  resetInputCodeText(inputs);
+
+  const confirmCode = document.getElementById("confirmationCode");
+  confirmCode.style.display = "none";
+  codeForgetPassError.style.display = "none";
+
+  const supportTextforgetPassForm = document.getElementById("supportTextforgetPassForm");
+  supportTextforgetPassForm.innerText = "Для восстановления пароля введите свою электронную почту";
+
+  emailForgetPass.style.display = "block";
+
+  const passCodeFormText = document.getElementById("passCodeFormText");
+  passCodeFormText.innerText = "Восстановление пароля";
+
+  emailForgetPassError.style.display = "block";
+  emailForgetPassError.innerText = "";
+
+  const resetPassButton = document.getElementById("resetPassButton");
+  resetPassButton.style.display = "block";
+
+  
+}
+
 function openForgetPassDialog() {
+  if (isReg){
+    openResetInputEmail();
+    isReg = false;
+  }
   // Закрываем диалог авторизации, если он открыт
   if (signInDialog.open) {
     signInDialog.close();
@@ -249,8 +279,18 @@ function registration() {
             return;
           }
           isReg = true;
+          const inputs = document.querySelectorAll("#confirmationCode .code-input"); //получаем все инпуты внутри блока
+          resetInputStyles(inputs);
+          resetInputCodeText(inputs)
+
+          const form_text = document.getElementById("passCodeFormText");
+          form_text.innerText = "Подтверждение регистрации";
+
+          isReg = false;
           openForgetPassDialog();
           showCodeInput();
+          isReg = true;
+          
           // ОТКРЫТИЕ ОКНА С ВВОДОМ КОДА ДЛЯ РЕГИСТРАЦИИ.
         });
         return;
@@ -274,7 +314,6 @@ function registration() {
 }
 function resetPass() {
   emailForgetPassError.style.display = "none";
-  event.preventDefault();
   const email = emailForgetPass.value.trim();
   if (!email) {
     showError(emailForgetPassError, "Пожалуйста, введите почту.");
@@ -306,6 +345,10 @@ function resetPass() {
           showError(emailForgetPassError, "Ошибка отправки письма");
           return;
         }
+        const inputs = document.querySelectorAll("#confirmationCode .code-input"); //получаем все инпуты внутри блока
+        resetInputStyles(inputs);
+        const form_text = document.getElementById("passCodeFormText");
+        form_text.innerText = "Восстановление пароля";
         showCodeInput();
       });
     } else if (response.status == 409) {
@@ -578,6 +621,11 @@ function checkAllFilled() {
   return allFilled;
 }
 
+function resetInputCodeText(inputs){
+  inputs.forEach((input) => {
+    input.value = ""
+  });
+}
 function resetInputStyles(inputs) {
   inputs.forEach((input) => {
     input.style.borderColor = "";
