@@ -1,4 +1,19 @@
-CREATE TABLE photos
+BEGIN;
+
+
+ALTER TABLE IF EXISTS public.photos DROP CONSTRAINT IF EXISTS fk_photos_routes;
+
+ALTER TABLE IF EXISTS public.reviews DROP CONSTRAINT IF EXISTS fk_reviews_routes;
+
+ALTER TABLE IF EXISTS public.reviews DROP CONSTRAINT IF EXISTS fk_user;
+
+ALTER TABLE IF EXISTS public.routes DROP CONSTRAINT IF EXISTS fk_routes_users;
+
+
+
+DROP TABLE IF EXISTS public.photos;
+
+CREATE TABLE IF NOT EXISTS public.photos
 (
     id_photo serial NOT NULL,
     path_to_photo character varying(200) COLLATE pg_catalog."default",
@@ -6,7 +21,9 @@ CREATE TABLE photos
     CONSTRAINT photos_pkey PRIMARY KEY (id_photo)
 );
 
-CREATE TABLE reviews
+DROP TABLE IF EXISTS public.reviews;
+
+CREATE TABLE IF NOT EXISTS public.reviews
 (
     id_review serial NOT NULL,
     description text COLLATE pg_catalog."default",
@@ -18,7 +35,9 @@ CREATE TABLE reviews
     CONSTRAINT reviews_id_user_key UNIQUE (id_user)
 );
 
-CREATE TABLE routes
+DROP TABLE IF EXISTS public.routes;
+
+CREATE TABLE IF NOT EXISTS public.routes
 (
     id_route serial NOT NULL,
     route_name character varying(100) COLLATE pg_catalog."default",
@@ -31,7 +50,9 @@ CREATE TABLE routes
     CONSTRAINT routes_pkey PRIMARY KEY (id_route)
 );
 
-CREATE TABLE users
+DROP TABLE IF EXISTS public.users;
+
+CREATE TABLE IF NOT EXISTS public.users
 (
     id_user serial NOT NULL,
     username character varying(20) COLLATE pg_catalog."default" NOT NULL,
@@ -41,6 +62,7 @@ CREATE TABLE users
     CONSTRAINT unq_user UNIQUE (id_user),
     CONSTRAINT users_email_key UNIQUE (email)
 );
+
 ALTER TABLE IF EXISTS public.photos
     ADD CONSTRAINT fk_photos_routes FOREIGN KEY (id_route)
     REFERENCES public.routes (id_route) MATCH SIMPLE
@@ -62,6 +84,7 @@ ALTER TABLE IF EXISTS public.reviews
     ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS reviews_id_user_key
     ON public.reviews(id_user);
+
 
 ALTER TABLE IF EXISTS public.routes
     ADD CONSTRAINT fk_routes_users FOREIGN KEY (id_user)
@@ -103,3 +126,5 @@ INSERT INTO photos (path_to_photo, id_route) VALUES
 ('routes/sochi/photo1.jpg', 4),
 ('routes/kazan/photo1.jpg', 5),
 ('routes/kazan/photo2.jpg', 5);
+
+COMMIT;

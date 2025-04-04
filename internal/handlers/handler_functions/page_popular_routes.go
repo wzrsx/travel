@@ -11,15 +11,21 @@ import (
 func PopularRoutesHandler(p *pool_conections.Pool_conections) http.Handler {
 	// Определяем функцию seq
 	funcMap := template.FuncMap{
-		"seq": func(n int) []int {
-			var sequence []int
-			for i := 1; i <= n; i++ {
+		"seq": func(n float64) []float64 {
+			var sequence []float64
+			for i := 1.00; i <= n; i++ {
 				sequence = append(sequence, i)
 			}
 			return sequence
 		},
+		"sub": func(a, b float64) float64 {
+			return a - b
+		},
+		"toFloat": func(x int) float64 {  // New conversion function
+        	return float64(x)
+    	},
 	}
-
+	
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
 		// Парсим шаблон с функцией seq
 		tmpl := template.Must(template.New("popular_routes.html").Funcs(funcMap).ParseFiles("web/pages/popular_routes.html"))

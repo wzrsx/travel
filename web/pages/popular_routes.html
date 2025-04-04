@@ -59,9 +59,11 @@
                             <h2 class="title-route">{{.Name_route}}</h2>
                             <div class="rating">
                                 {{$currentRoute := .}} <!-- Сохраняем текущий маршрут в переменную -->
-                                {{range $i := seq 5}}
-                                    {{if le $i $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
+                                {{range $i := seq 5.0}}
+                                    {{if le (sub $i 0.2) $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
                                         <span class="star filled">★</span>
+                                    {{else if le (sub $i 1) (sub $currentRoute.Estimation 0.5)}}
+                                        <span class="star filled-half">★</span>
                                     {{else}}
                                         <span class="star">★</span>
                                     {{end}}

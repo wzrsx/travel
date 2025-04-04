@@ -3,6 +3,7 @@ package handler_functions
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -19,7 +20,7 @@ type DataRoute struct {
 	Route_name        string
 	Route_place       string
 	Route_description string
-	Route_estimation  string
+	Route_estimation  float64
 	Route_photos      []queries.Photo
 	Route_reviews     []queries.Review
 	ShowEditBtn       bool // Показывать ли кнопку редактирования
@@ -33,6 +34,12 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				sequence = append(sequence, i)
 			}
 			return sequence
+		},
+		"formatRating": func(f float64) string {
+			return strconv.FormatFloat(f, 'f', 1, 64) // Форматируем с 1 знаком после запятой
+		},
+		"roundRating": func(f float64) int {
+			return int(math.Round(f)) // Округляем для отображения звезд
 		},
 	}
 
@@ -69,7 +76,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 					url.QueryEscape(queryTakeRoute.Route_place),
 					url.QueryEscape(queryTakeRoute.Yandex_route),
 					url.QueryEscape(queryTakeRoute.Route_description),
-					url.QueryEscape(strconv.Itoa(queryTakeRoute.Route_estimation)),
+					url.QueryEscape(strconv.FormatFloat(queryTakeRoute.Route_estimation, 'f', 1, 64)),
 					url.QueryEscape(strconv.Itoa(queryTakeRoute.UserID)),
 				)
 
@@ -117,6 +124,15 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				http.Error(w, "Failed to decode map link", http.StatusInternalServerError)
 				return
 			}
+			// Получаем параметр "route_estimation" из URL
+			routeEstimationStr := r.URL.Query().Get("route_estimation")
+
+			// Преобразуем строку в float64
+			routeEstimation, err := strconv.ParseFloat(routeEstimationStr, 64)
+			if err != nil {
+				http.Error(w, "Неверное значение route_estimation", http.StatusBadRequest)
+				return
+			}
 
 			// Получение параметров маршрута из URL
 			dataRoute := DataRoute{
@@ -127,7 +143,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				Route_name:        r.URL.Query().Get("route_name"),
 				Route_place:       r.URL.Query().Get("route_place"),
 				Route_description: r.URL.Query().Get("route_description"),
-				Route_estimation:  r.URL.Query().Get("route_estimation"),
+				Route_estimation:  routeEstimation,
 				Route_photos:      photos,
 				Route_reviews:     reviews,
 				ShowEditBtn:       r.URL.Query().Get("userid") == strconv.Itoa(data.UserID),
@@ -167,7 +183,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 				url.QueryEscape(queryTakeRoute.Route_place),
 				url.QueryEscape(queryTakeRoute.Yandex_route),
 				url.QueryEscape(queryTakeRoute.Route_description),
-				url.QueryEscape(strconv.Itoa(queryTakeRoute.Route_estimation)),
+				url.QueryEscape(strconv.FormatFloat(queryTakeRoute.Route_estimation, 'f', 1, 64)),
 				url.QueryEscape(strconv.Itoa(queryTakeRoute.UserID)),
 			)
 

@@ -409,10 +409,22 @@ h2{
 .star {
     font-size: 24px;
     color: #ccc;
+    position: relative;
+    display: inline-block;
 }
 
 .star.filled {
     color: #ffcc00;
+}
+.star.filled-half::before {
+    content: '★'; /* Звезда */
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00; /* Цвет заполненной части */
+    width: 50%; /* Заполняем половину */
+    overflow: hidden; /* Скрываем остальную часть */
+    white-space: nowrap; /* Не переносим текст */
 }
 
 .title-route {
