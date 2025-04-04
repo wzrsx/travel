@@ -34,6 +34,7 @@ func TakeReviews(id_route int, pool *pgxpool.Pool) ([]Review, error) {
 	rows, err := conn.Query(context.Background(), `
 		SELECT username, description, estimation, date_review
 		FROM reviews
+		INNER JOIN users ON reviews.id_user = users.id_user
 		WHERE id_route = $1`, id_route)
 	if err != nil {
 		return nil, err

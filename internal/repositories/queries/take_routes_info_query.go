@@ -15,7 +15,7 @@ type RoutesInfoResults struct {
 	Place_route       string
 	Description_route string
 	Yandex_route      string
-	Estimation        int
+	Estimation        float64
 	// Reviews            []Reviews
 	// Photos             []Photo
 	PathToPhotoPreview string
@@ -45,7 +45,7 @@ func TakeRoutesInfoQueryPopular(pool *pgxpool.Pool) ([]RoutesInfoResults, error)
 		var place_route string
 		var yandex_route string
 		var route_description string
-		var estimation int
+		var estimation float64
 		var path_to_photo_preview sql.NullString
 
 		if err := rows.Scan(&id_route, &name_route, &place_route, &yandex_route, &route_description, &estimation, &path_to_photo_preview); err != nil {
@@ -101,7 +101,7 @@ func TakeUsersRoutesInfoQuery(pool *pgxpool.Pool, userID int) ([]RoutesInfoResul
 		var place_route string
 		var yandex_route string
 		var route_description string
-		var estimation int
+		var estimation float64
 		var path_to_photo_preview sql.NullString
 
 		if err := rows.Scan(&id_route, &name_route, &place_route, &yandex_route, &route_description, &estimation, &path_to_photo_preview); err != nil {

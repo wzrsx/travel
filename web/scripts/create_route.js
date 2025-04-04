@@ -190,7 +190,7 @@ function init() {
         if(!validateField(route_description, document.getElementById('descriptionRouteError'))){
             return; 
         }
-    
+        const photos_route = document.getElementById('route-photos').files;
         // Получаем координаты точек
         const startCoords = startPoint.geometry.getCoordinates().join(',');
         const endCoords = endPoint.geometry.getCoordinates().join(',');
@@ -199,9 +199,17 @@ function init() {
         // Генерация ссылки на маршрут
         const routeLink = generateRouteLink(startCoords, endCoords, waypointsCoords);
         openRouteLinkDialog(routeLink);
-
+        const formData = new FormData();
+        formData.append('routeLink', routeLink);
+        formData.append('route_name', route_name);
+        formData.append('route_place', route_place);
+        formData.append('route_description', route_description);
+        for (let i = 0; i < photos_route.length; i++) {
+            formData.append('photos', photos_route[i]);
+        }
+    
         // Сохранение ссылки в базу данных (пример)
-        saveRoute(routeLink, route_name, route_place, route_description);
+        saveRoute(formData);
     });
 }
 
@@ -223,18 +231,10 @@ function generateRouteLink(startCoords, endCoords, waypointsCoords) {
 
 }
 
-function saveRoute(routeLink, route_name, route_place, route_description) {
+function saveRoute(formData) {
     fetch('/save-route', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            routeLink: routeLink,
-            route_name: route_name,
-            route_place: route_place,
-            route_description: route_description
-        })
+        body: formData
     })
     .then(response => {
         if (!response.ok) {

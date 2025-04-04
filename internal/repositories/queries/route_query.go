@@ -11,7 +11,7 @@ type Route struct {
 	Route_name        string
 	Route_place       string
 	Route_description string
-	Route_estimation  int
+	Route_estimation  float64
 	UserID            int
 }
 

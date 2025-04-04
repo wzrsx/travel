@@ -409,12 +409,44 @@ h2{
 .star {
     font-size: 24px;
     color: #ccc;
+    position: relative;
+    display: inline-block;
 }
 
 .star.filled {
     color: #ffcc00;
 }
+.star.filled-half::before {
+    content: '★'; /* Звезда */
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00; /* Цвет заполненной части */
+    width: 50%; /* Заполняем половину */
+    overflow: hidden; /* Скрываем остальную часть */
+    white-space: nowrap; /* Не переносим текст */
+}
 
+.star.quater::before {
+    content: '★'; 
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00;
+    width: 60%; 
+    overflow: hidden;
+    white-space: nowrap;
+}
+.star.quater-small::before {
+    content: '★'; 
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00;
+    width: 40%; 
+    overflow: hidden;
+    white-space: nowrap;
+}
 .title-route {
     font-size: 20px;
     font-weight: 600;
@@ -850,6 +882,8 @@ h2{
 }
 .itcss-2{
    margin-top: 25px;
+   padding-left: 0px;
+   padding-right: 0px;
 }
 .item-review{
     position: relative;
@@ -857,8 +891,12 @@ h2{
     height: 300px;
     border-radius: 20px;
     border: 3px solid #F6F3D8;
-    color: #53595A;
+    color: #F6F3D8;
     padding: 25px;
+}
+.user-name{
+    margin-top: 5px;
+    margin-left: 15px;
 }
 .user-photo{
     border-radius: 50%;
