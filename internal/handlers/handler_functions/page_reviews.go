@@ -1,7 +1,6 @@
 package handler_functions
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,11 +9,23 @@ import (
 	"travel/internal/repositories/queries"
 )
 
-func ReviewHandler(p *pool_conections.Pool_conections) http.Handler {
+func ReviewsHandler(p *pool_conections.Pool_conections) http.Handler {
+	funcMap := template.FuncMap{
+		"seq": func(n float64) []float64 {
+			var sequence []float64
+			for i := 1.00; i <= n; i++ {
+				sequence = append(sequence, i)
+			}
+			return sequence
+		},
+		"sub": func(a, b float64) float64 {
+			return a - b
+		},
+	}
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			tmpl := template.Must(template.New("review.html").ParseFiles("web/pages/review.html"))
+			tmpl := template.Must(template.New("reviews.html").Funcs(funcMap).ParseFiles("web/pages/reviews.html"))
 
 			// Получаем данные пользователя
 			data, err := check_username_data(r)
@@ -31,33 +42,27 @@ func ReviewHandler(p *pool_conections.Pool_conections) http.Handler {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
-
-			reviewID := r.URL.Query().Get("review_id")
-			if reviewID == "" {
-				// Если route_id отсутствует, перенаправляем на страницу маршрута
-				http.Redirect(w, r, fmt.Sprintf("/route?route_id=%s", routeID), http.StatusSeeOther)
-				return
-			}
-			reviewIdINT, err := strconv.Atoi(reviewID)
+			routeIdINT, err := strconv.Atoi(routeID)
 			if err != nil {
 				http.Error(w, "Invalid route_id format", http.StatusBadRequest)
 				return
-			}
+			} 
 
-			review, err := queries.TakeReviewById(reviewIdINT, p.PoolConns)
-			if err != nil {
+			reviews, err := queries.TakeReviews(routeIdINT, p.PoolConns)
+			if err != nil{
 				log.Printf("Error query review: %v", err)
+				return
 			}
-
+			
 			// Подготавливаем данные для шаблона
 			dataWithReviews := struct {
 				Username string
 				UserID   int
-				Review   *queries.Review
+				Reviews  []queries.Review
 			}{
 				Username: data.Username,
 				UserID:   data.UserID,
-				Review:   review,
+				Reviews:  reviews,
 			}
 
 			// Рендерим шаблон

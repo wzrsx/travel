@@ -50,44 +50,41 @@
                     <option value="asc">Сначала отрицательные</option>
                 </select>
             </div>
+            {{range .Reviews}}
             <div class="review-item">
                 <div class="review-item-user-info">
                     <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
                     <div class="review-item-user-info-mark">
-                        <span class="user-name">username</span>
-                        <div>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
-                        </div>
+                        <span class="user-name">{{.Username}}</span>
+                        <div class="rating">
+                            {{$currentReview := .}} <!-- Сохраняем текущий маршрут в переменную -->
+                            {{range $i := seq 5.0}}
+                                {{if le $i $currentReview.Estimation}} <!-- Используем $currentRoute.Estimation -->
+                                    <span class="star filled">★</span>
+                                {{else if le (sub $i 0.25) $currentReview.Estimation}} <!-- Заполнение на 75% -->
+                                    <span class="star quater">★</span>
+                                {{else if le (sub $i 1) (sub $currentReview.Estimation 0.5)}} <!-- Заполнение на 50% -->
+                                    <span class="star filled-half">★</span>
+                                {{else if le (sub $i 0.75)  $currentReview.Estimation}} <!-- Заполнение на 25% -->
+                                    <span class="star quater-small">★</span>
+                                {{else}}
+                                    <span class="star">★</span>
+                                {{end}}
+                            {{end}}
+                        </div>  
                     </div>
                     <p class="review-item-date">
-                        dd-mm-yyyy
+                        {{.Date}}
                     </p>
                 </div>
                 <p class="review-item-text">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
+                    {{.Description}}    
                 </p>
                <div class="review-item-photos" id="scrollable">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-               </div>
+                    {{range .Photos}}
+                    <img src="{{.PhotoPath}}" alt="" class="thumbnail">
+                    {{end}}
+                </div>
                <dialog id="modal" class="modal-img">
                 <div class="close" id="closeButtonModalImg">&times;</div>
                 <div class="prev" id="prevButtonModalImg">
@@ -100,107 +97,7 @@
                 <div id="caption"></div>
                 </dialog>
             </div>
-            <div class="review-item">
-                <div class="review-item-user-info">
-                    <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
-                    <div class="review-item-user-info-mark">
-                        <span class="user-name">username</span>
-                        <div>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                    <p class="review-item-date">
-                        dd-mm-yyyy
-                    </p>
-                </div>
-                <p class="review-item-text">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
-                </p>
-               <div class="review-item-photos" id="scrollable">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-               </div>
-               <dialog id="modal" class="modal-img">
-                <div class="close" id="closeButtonModalImg">&times;</div>
-                <div class="prev" id="prevButtonModalImg">
-                    <img src="../style/logo/arrow.svg" alt="Предыдущий">
-                </div>
-                <img class="modal-content" id="modal-img">
-                <div class="next" id="nextButtonModalImg">
-                    <img src="../style/logo/arrow.svg" alt="Следующий">
-                </div>
-                <div id="caption"></div>
-                </dialog>
-            </div>
-            <div class="review-item">
-                <div class="review-item-user-info">
-                    <img src="../style/photo/user-test.png" alt="" class="user-photo" width="75px"/>
-                    <div class="review-item-user-info-mark">
-                        <span class="user-name">username</span>
-                        <div>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                    <p class="review-item-date">
-                        dd-mm-yyyy
-                    </p>
-                </div>
-                <p class="review-item-text">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti cumque, consequuntur, asperiores veniam autem totam, aut non dolor explicabo vero neque tempore recusandae suscipit. Ratione odio illo maiores esse dolores.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam quos officiis mollitia amet dolor fugiat distinctio, nisi, facere rerum ab deserunt velit est nihil expedita. Optio debitis aut adipisci autem.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae beatae pariatur sapiente minima. Tenetur, ratione, tempora ducimus voluptatem soluta provident molestias autem, culpa voluptates deserunt fugit. Vitae iure recusandae ut.
-                </p>
-               <div class="review-item-photos" id="scrollable">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/fon.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-                    <img src="../style/photo/photo-route-test.jpg" alt="" class="thumbnail">
-               </div>
-               <dialog id="modal" class="modal-img">
-                <div class="close" id="closeButtonModalImg">&times;</div>
-                <div class="prev" id="prevButtonModalImg">
-                    <img src="../style/logo/arrow.svg" alt="Предыдущий">
-                </div>
-                <img class="modal-content" id="modal-img">
-                <div class="next" id="nextButtonModalImg">
-                    <img src="../style/logo/arrow.svg" alt="Следующий">
-                </div>
-                <div id="caption"></div>
-                </dialog>
-            </div>
-        </div>
+            {{end}}
     </main>
     <script src="scripts/reviews.js" ></script>
     <script src="scripts/user_menu.js"></script>

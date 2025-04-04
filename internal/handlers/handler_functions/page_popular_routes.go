@@ -27,7 +27,7 @@ func PopularRoutesHandler(p *pool_conections.Pool_conections) http.Handler {
 	}
 	
 	check_auth := func(w http.ResponseWriter, r *http.Request) {
-		// Парсим шаблон с функцией seq
+		// Парсим шаблон с функциями
 		tmpl := template.Must(template.New("popular_routes.html").Funcs(funcMap).ParseFiles("web/pages/popular_routes.html"))
 
 		// Получаем данные пользователя

@@ -12,7 +12,7 @@ type Photo struct {
 	PhotoPath string
 }
 
-func CreatePhotos(id_route int, pool *pgxpool.Pool) ([]Photo, error) {
+func TakePhotos(id_route int, pool *pgxpool.Pool) ([]Photo, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
 		return nil, err

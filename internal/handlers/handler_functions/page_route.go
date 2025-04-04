@@ -28,12 +28,15 @@ type DataRoute struct {
 
 func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 	funcMap := template.FuncMap{
-		"seq": func(n int) []int {
-			var sequence []int
-			for i := 1; i <= n; i++ {
+		"seq": func(n float64) []float64 {
+			var sequence []float64
+			for i := 1.00; i <= n; i++ {
 				sequence = append(sequence, i)
 			}
 			return sequence
+		},
+		"sub": func(a, b float64) float64 {
+			return a - b
 		},
 		"formatRating": func(f float64) string {
 			return strconv.FormatFloat(f, 'f', 1, 64) // Форматируем с 1 знаком после запятой
@@ -95,7 +98,7 @@ func OpenRoutePage(p *pool_conections.Pool_conections) http.Handler {
 			}
 
 			// Получение данных маршрута
-			photos, err := queries.CreatePhotos(routeIDInt, p.PoolConns)
+			photos, err := queries.TakePhotos(routeIDInt, p.PoolConns)
 			if err != nil {
 				log.Printf("Error getting photos: %s", err.Error())
 				http.Error(w, "Error getting photos", http.StatusInternalServerError)

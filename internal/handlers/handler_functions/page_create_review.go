@@ -76,7 +76,7 @@ func NewReviewHandler(p *pool_conections.Pool_conections) http.Handler {
 				http.Error(w, "Invalid route ID", http.StatusBadRequest)
 				return
 			}
-			review := queries.ConstructReview(creds.Username, creds.Description, est_int, creds.Date)
+			review := queries.ConstructReview(creds.Username, creds.Description, float64(est_int), creds.Date)
 
 			routeID := r.URL.Query().Get("route_id")
 			if routeID == "" {
