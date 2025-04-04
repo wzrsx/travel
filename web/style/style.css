@@ -882,6 +882,8 @@ h2{
 }
 .itcss-2{
    margin-top: 25px;
+   padding-left: 0px;
+   padding-right: 0px;
 }
 .item-review{
     position: relative;
@@ -889,8 +891,12 @@ h2{
     height: 300px;
     border-radius: 20px;
     border: 3px solid #F6F3D8;
-    color: #53595A;
+    color: #F6F3D8;
     padding: 25px;
+}
+.user-name{
+    margin-top: 5px;
+    margin-left: 15px;
 }
 .user-photo{
     border-radius: 50%;
