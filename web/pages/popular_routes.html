@@ -60,15 +60,19 @@
                             <div class="rating">
                                 {{$currentRoute := .}} <!-- Сохраняем текущий маршрут в переменную -->
                                 {{range $i := seq 5.0}}
-                                    {{if le (sub $i 0.2) $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
+                                    {{if le $i $currentRoute.Estimation}} <!-- Используем $currentRoute.Estimation -->
                                         <span class="star filled">★</span>
-                                    {{else if le (sub $i 1) (sub $currentRoute.Estimation 0.5)}}
+                                    {{else if le (sub $i 0.25) $currentRoute.Estimation}} <!-- Заполнение на 75% -->
+                                        <span class="star quater">★</span>
+                                    {{else if le (sub $i 1) (sub $currentRoute.Estimation 0.5)}} <!-- Заполнение на 50% -->
                                         <span class="star filled-half">★</span>
+                                    {{else if le (sub $i 0.75)  $currentRoute.Estimation}} <!-- Заполнение на 25% -->
+                                        <span class="star quater-small">★</span>
                                     {{else}}
                                         <span class="star">★</span>
                                     {{end}}
                                 {{end}}
-                            </div>
+                            </div>                            
                         </div>
                         <h3 class="title-some-description">Краткое описание</h3>
                         <p class="description-route">{{.Description_route}}</p>

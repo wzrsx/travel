@@ -427,6 +427,26 @@ h2{
     white-space: nowrap; /* Не переносим текст */
 }
 
+.star.quater::before {
+    content: '★'; 
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00;
+    width: 60%; 
+    overflow: hidden;
+    white-space: nowrap;
+}
+.star.quater-small::before {
+    content: '★'; 
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffcc00;
+    width: 40%; 
+    overflow: hidden;
+    white-space: nowrap;
+}
 .title-route {
     font-size: 20px;
     font-weight: 600;
