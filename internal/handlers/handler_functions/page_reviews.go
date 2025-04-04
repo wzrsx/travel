@@ -46,14 +46,14 @@ func ReviewsHandler(p *pool_conections.Pool_conections) http.Handler {
 			if err != nil {
 				http.Error(w, "Invalid route_id format", http.StatusBadRequest)
 				return
-			} 
+			}
 
 			reviews, err := queries.TakeReviews(routeIdINT, p.PoolConns)
-			if err != nil{
+			if err != nil {
 				log.Printf("Error query review: %v", err)
 				return
 			}
-			
+
 			// Подготавливаем данные для шаблона
 			dataWithReviews := struct {
 				Username string
@@ -72,12 +72,6 @@ func ReviewsHandler(p *pool_conections.Pool_conections) http.Handler {
 				http.Error(w, "Failed to render template", http.StatusInternalServerError)
 				return
 			}
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				http.Error(w, "Failed to render template", http.StatusInternalServerError)
-				log.Printf("Failed to render template: %s", err.Error())
-			}
-			return
 		}
 	}
 
