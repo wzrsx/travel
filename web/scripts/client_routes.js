@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = url;
         });
     });
+    
+    const reviewsButtons = document.querySelectorAll('.reviews-btn');
+    reviewsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const routeId = this.getAttribute('data-route-id');
+
+            const url = `/route/reviews?route_id=${routeId}`;
+            window.location.href = url;
+        });
+    });
 });
 
   

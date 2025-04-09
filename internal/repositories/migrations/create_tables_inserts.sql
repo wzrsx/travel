@@ -14,8 +14,8 @@ CREATE TABLE reviews
     date_review timestamp without time zone,
     id_route integer,
     id_user integer NOT NULL,
-    CONSTRAINT reviews_pkey PRIMARY KEY (id_review),
-    CONSTRAINT reviews_id_user_key UNIQUE (id_user)
+    photos_review JSON,
+    CONSTRAINT reviews_pkey PRIMARY KEY (id_review)
 );
 
 CREATE TABLE routes

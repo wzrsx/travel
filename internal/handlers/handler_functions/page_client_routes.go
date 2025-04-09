@@ -12,12 +12,15 @@ import (
 func ClientRoutesHandler(p *pool_conections.Pool_conections) http.Handler {
 	// Определяем функцию seq
 	funcMap := template.FuncMap{
-		"seq": func(n int) []int {
-			var sequence []int
-			for i := 1; i <= n; i++ {
+		"seq": func(n float64) []float64 {
+			var sequence []float64
+			for i := 1.00; i <= n; i++ {
 				sequence = append(sequence, i)
 			}
 			return sequence
+		},
+		"sub": func(a, b float64) float64 {
+			return a - b
 		},
 	}
 
