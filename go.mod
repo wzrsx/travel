@@ -4,6 +4,8 @@ go 1.22.2
 
 require github.com/jackc/pgx/v5 v5.7.2
 
+require github.com/google/uuid v1.6.0 // indirect
+
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jackc/pgpassfile v1.0.0 // indirect

@@ -190,24 +190,24 @@ function init() {
         if(!validateField(route_description, document.getElementById('descriptionRouteError'))){
             return; 
         }
-        const photos_route = document.getElementById('route-photos').files;
+        const photos_route = document.getElementById('route-photo').files;
         // Получаем координаты точек
         const startCoords = startPoint.geometry.getCoordinates().join(',');
         const endCoords = endPoint.geometry.getCoordinates().join(',');
         const waypointsCoords = waypoints.map(w => w.geometry.getCoordinates().join(',')).join('|');
 
         // Генерация ссылки на маршрут
-        const routeLink = generateRouteLink(startCoords, endCoords, waypointsCoords);
+        const {routeLinkSafe, routeLink}  = generateRouteLink(startCoords, endCoords, waypointsCoords);
         openRouteLinkDialog(routeLink);
         const formData = new FormData();
-        formData.append('routeLink', routeLink);
-        formData.append('route_name', route_name);
-        formData.append('route_place', route_place);
-        formData.append('route_description', route_description);
+        formData.append('routeLink', routeLinkSafe);
+        formData.append('route_name', route_name.value);
+        formData.append('route_place', route_place.value);
+        formData.append('route_description', route_description.value);
         for (let i = 0; i < photos_route.length; i++) {
             formData.append('photos', photos_route[i]);
         }
-    
+        console.log(formData);
         // Сохранение ссылки в базу данных (пример)
         saveRoute(formData);
     });
@@ -223,12 +223,14 @@ function generateRouteLink(startCoords, endCoords, waypointsCoords) {
     if (waypointsCoords) {
         params.set('rtext', `${startCoords}~${waypointsCoords.split('|').join('~')}~${endCoords}`);
     }
-    const url = `${baseUrl}&${params.toString()}`;
+    const urlString = `${baseUrl}&${params.toString()}`;
 
-    const urlSafeString = encodeURIComponent(url);
+    const urlSafeString = encodeURIComponent(urlString);
 
-    return urlSafeString
-
+    return {
+        routeLink: urlString,       // Готовая ссылка для использования
+        routeLinkSafe: urlSafeString // Закодированная ссылка для безопасной передачи
+    };
 }
 
 function saveRoute(formData) {
@@ -246,12 +248,9 @@ function saveRoute(formData) {
     })
     .then(data => {
         console.log('Ссылка сохранена:', data);
-        alert('Маршрут успешно создан!');
-        location.reload();
     })
     .catch(error => {
         console.error('Ошибка:', error);
-        alert('Ошибка при сохранении маршрута: ' + error.message);
     });
 }
 
@@ -477,9 +476,11 @@ function handleSuggestionSelect(selectedSuggestion) {
 }
 
 function openRouteLinkDialog(routeLink){
+    const linkElement = document.getElementById('linkRouteToCopy');
+    linkElement.textContent = routeLink;
+    
     routeLinkDialog.showModal();
     blurDiv.classList.add("blur");
-    document.getElementById('linkRouteToCopy').innerText = routeLink;
 }
 function closeRouteLinkDialog(){
     routeLinkDialog.close();

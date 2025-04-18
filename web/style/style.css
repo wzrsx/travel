@@ -1214,11 +1214,17 @@ h2{
     background-color: rgba(128, 128, 128, 0.15);
     padding-left: 10px;
     cursor: pointer;
+    text-align: left;
 }
 .link-block img{
     height: 90%;
     object-fit: cover;
     margin-left: auto;
+}
+#linkRouteToCopy{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .subtitle-form-text{
     margin-top: 1.25vh;
