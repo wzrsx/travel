@@ -46,6 +46,11 @@ func SendEmailMessageWithCodeRecovery() http.Handler {
 
 				ip := r.RemoteAddr
 				confirmationCode := generateSecureCode()
+
+				// 🔹 ЛОГИРОВАНИЕ КОДА (для разработки/отладки)
+				log.Printf("[RECOVERY] Email: %s, Code: %s, Expires: %s",
+					creds.Email, confirmationCode, time.Now().Add(3*time.Minute).Format(time.RFC3339))
+
 				codeCache[creds.Email] = codeInfo{
 					code:      confirmationCode,
 					expiresAt: time.Now().Add(3 * time.Minute),
@@ -63,7 +68,6 @@ func SendEmailMessageWithCodeRecovery() http.Handler {
 				auth := smtp.PlainAuth("", EmailData.Sender, EmailData.Password, EmailData.SmtpHost)
 
 				// Формируем красивое HTML-письмо
-
 				subject := "Ваш код подтверждения"
 				body := fmt.Sprintf(`
 				<html>
@@ -114,7 +118,6 @@ func SendEmailMessageWithCodeRecovery() http.Handler {
 					log.Printf("Error sending email: %v", err)
 				}
 			}
-
 		}
 	}
 	return http.HandlerFunc(fn)
@@ -139,6 +142,11 @@ func SendEmailMessageWithCodeRegistration() http.Handler {
 
 				ip := r.RemoteAddr
 				confirmationCode := generateSecureCode()
+
+				// 🔹 ЛОГИРОВАНИЕ КОДА (для разработки/отладки)
+				log.Printf("[REGISTRATION] Email: %s, Code: %s, Expires: %s",
+					creds.Email, confirmationCode, time.Now().Add(3*time.Minute).Format(time.RFC3339))
+
 				codeCache[creds.Email] = codeInfo{
 					code:      confirmationCode,
 					expiresAt: time.Now().Add(3 * time.Minute),
@@ -156,14 +164,13 @@ func SendEmailMessageWithCodeRegistration() http.Handler {
 				auth := smtp.PlainAuth("", EmailData.Sender, EmailData.Password, EmailData.SmtpHost)
 
 				// Формируем красивое HTML-письмо
-
 				subject := "Ваш код подтверждения"
 				body := fmt.Sprintf(`
 				<html>
 				<body style="font-family: Arial, sans-serif; line-height: 1.6;">
 					<div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
 						<h2 style="color: #444;">Регистрация</h2>
-						<p>Для завершение регистрации введите следующий код подтверждения:</p>
+						<p>Для завершения регистрации введите следующий код подтверждения:</p>
 						
 						<div style="background: #f5f5f5; padding: 15px; text-align: center; 
 									margin: 20px 0; font-size: 24px; letter-spacing: 2px;
@@ -207,7 +214,6 @@ func SendEmailMessageWithCodeRegistration() http.Handler {
 					log.Printf("Error sending email: %v", err)
 				}
 			}
-
 		}
 	}
 	return http.HandlerFunc(fn)
@@ -218,7 +224,10 @@ func generateSecureCode() string {
 	_, err := rand.Read(b)
 	if err != nil {
 		// Fallback если криптографический генератор не сработал
-		return fmt.Sprintf("%06d", time.Now().Nanosecond()%1000000)
+		code := fmt.Sprintf("%06d", time.Now().Nanosecond()%1000000)
+		log.Printf("[DEBUG] Fallback code generated: %s", code)
+		return code
 	}
-	return fmt.Sprintf("%06d", uint32(b[0])<<16|uint32(b[1])<<8|uint32(b[2]))[:6]
+	code := fmt.Sprintf("%06d", (uint32(b[0])<<16|uint32(b[1])<<8|uint32(b[2]))%1000000)
+	return code
 }

@@ -7,21 +7,23 @@ import (
 )
 
 type Route struct {
-	Yandex_route      string
-	Route_name        string
-	Route_place       string
-	Route_description string
-	Route_estimation  float64
-	UserID            int
+	Yandex_route       string
+	Route_name         string
+	Route_place        string
+	Route_description  string
+	Route_estimation   float64
+	PathToPhotoPreview string
+	UserID             int
 }
 
-func ConstructRoute(yandex_route string, route_name string, route_place string, route_description string, userID int) *Route {
+func ConstructRoute(yandex_route string, route_name string, route_place string, route_description string, photoPreview string, userID int) *Route {
 	return &Route{
-		Yandex_route:      yandex_route,
-		Route_name:        route_name,
-		Route_place:       route_place,
-		Route_description: route_description,
-		UserID:            userID,
+		Yandex_route:       yandex_route,
+		Route_name:         route_name,
+		Route_place:        route_place,
+		Route_description:  route_description,
+		PathToPhotoPreview: photoPreview,
+		UserID:             userID,
 	}
 }
 
@@ -34,8 +36,8 @@ func (r *Route) CreateNewRoute(pool *pgxpool.Pool) error {
 
 	_, err = conn.Exec(context.Background(), `
 	INSERT INTO routes (route_name, yandex_route, 
-	estimation, route_place, route_description, id_user)
-	VALUES ($1, $2, $3, $4, $5, $6)`, r.Route_name, r.Yandex_route, 0, r.Route_place, r.Route_description, r.UserID)
+	estimation, route_place, route_description, id_user, path_to_photo_preview)
+	VALUES ($1, $2, $3, $4, $5, $6, $7)`, r.Route_name, r.Yandex_route, 0, r.Route_place, r.Route_description, r.UserID, r.PathToPhotoPreview)
 	if err != nil {
 		return err
 	}
