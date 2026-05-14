@@ -91,7 +91,7 @@ func NewReviewHandler(p *pool_conections.Pool_conections) http.Handler {
 				return
 			}
 
-			err = review.CreateReview(routeIDInt, p.PoolConns)
+			err = review.CreateReview(routeIDInt, data.UserID, p.PoolConns)
 			if err != nil {
 				log.Printf("Error query CreateNewRoute: %s", err.Error())
 				http.Error(w, "Failed to create route", http.StatusInternalServerError)

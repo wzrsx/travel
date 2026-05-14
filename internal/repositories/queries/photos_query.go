@@ -12,40 +12,33 @@ type Photo struct {
 	PhotoPath string
 }
 
-func TakePhotos(id_route int, pool *pgxpool.Pool) ([]Photo, error) {
+func TakePhotos(routeID int, pool *pgxpool.Pool) ([]Photo, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("acquire conn: %w", err)
 	}
 	defer conn.Release()
 
 	rows, err := conn.Query(context.Background(), `
 		SELECT id_photo, path_to_photo
 		FROM photos
-		WHERE id_route = $1`, id_route)
+		WHERE id_route = $1
+		ORDER BY id_photo`,
+		routeID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("query photos: %w", err)
 	}
 	defer rows.Close()
 
 	var photos []Photo
-
 	for rows.Next() {
-		var id_photo int
-		var path_to_photo string
-		if err := rows.Scan(&id_photo, &path_to_photo); err != nil {
-			return nil, fmt.Errorf("Error scan Reviews: %s", err.Error())
+		var p Photo
+		// Scan только в существующие поля: IdPhoto, PhotoPath
+		if err := rows.Scan(&p.IdPhoto, &p.PhotoPath); err != nil {
+			return nil, fmt.Errorf("scan photo: %w", err)
 		}
-		photos = append(photos, Photo{
-			IdPhoto:   id_photo,
-			PhotoPath: path_to_photo,
-		})
+		photos = append(photos, p)
+		// ❌ Не пытайтесь делать: p.IdRoute = routeID — такого поля нет!
 	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return photos, nil
-
+	return photos, rows.Err()
 }

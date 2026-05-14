@@ -8,16 +8,17 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// Review — структура отзыва (оставляем как есть)
 type Review struct {
 	Id_Review   int
 	Username    string
 	Description string
 	Estimation  float64
 	Date        string
-	Photos      []Photo
+	// Photos []Photo — ❌ удалите это поле, отзывы не содержат фото маршрута
 }
 
-func ConstructReview(username string, description string, estimation float64, date string) *Review {
+func ConstructReview(username, description string, estimation float64, date string) *Review {
 	return &Review{
 		Username:    username,
 		Description: description,
@@ -26,93 +27,83 @@ func ConstructReview(username string, description string, estimation float64, da
 	}
 }
 
-func TakeReviews(id_route int, pool *pgxpool.Pool) ([]Review, error) {
+// TakeReviews — получает отзывы маршрута
+func TakeReviews(routeID int, pool *pgxpool.Pool) ([]Review, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("acquire conn: %w", err)
 	}
 	defer conn.Release()
 
 	rows, err := conn.Query(context.Background(), `
-		SELECT id_review, username, description, estimation, date_review
-		FROM reviews
-		INNER JOIN users ON reviews.id_user = users.id_user
-		WHERE id_route = $1`, id_route)
+		SELECT r.id_review, u.username, r.description, r.estimation, r.date_review
+		FROM reviews r
+		INNER JOIN users u ON r.id_user = u.id_user
+		WHERE r.id_route = $1
+		ORDER BY r.date_review DESC`,
+		routeID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("query reviews: %w", err)
 	}
 	defer rows.Close()
 
 	var reviews []Review
-
 	for rows.Next() {
-		var review Review
-		var date time.Time
-		if err := rows.Scan(
-			&review.Id_Review,
-			&review.Username,
-			&review.Description,
-			&review.Estimation,
-			&date,
-		); err != nil {
-			return nil, fmt.Errorf("Error scan Reviews: %s", err.Error())
+		var rev Review
+		var dateRaw time.Time
+		// Scan в порядке полей вашей структуры:
+		// Id_Review (с подчёркиванием!), Username, Description, Estimation, Date
+		if err := rows.Scan(&rev.Id_Review, &rev.Username, &rev.Description, &rev.Estimation, &dateRaw); err != nil {
+			return nil, fmt.Errorf("scan review: %w", err)
 		}
-		photos, err := TakePhotos(id_route, pool)
-		if err != nil {
-			return nil, fmt.Errorf("Error getting Photos: %s", err.Error())
-		}
-		review.Photos = photos
-		review.Date = date.Format("02.01.2006")
-
-		reviews = append(reviews, review)
+		rev.Date = dateRaw.Format("02.01.2006")
+		// ❌ Не добавляем rev.Photos = ... — отзывы не содержат фото маршрута
+		reviews = append(reviews, rev)
 	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return reviews, nil
+	return reviews, rows.Err()
 }
 
-func TakeReviewById(id_review int, pool *pgxpool.Pool) (*Review, error) {
+// TakeReviewById — получает отзыв по ID (исправлено: фильтр по id_review)
+func TakeReviewById(reviewID int, pool *pgxpool.Pool) (*Review, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("acquire conn: %w", err)
 	}
 	defer conn.Release()
-	var review Review
 
+	var rev Review
+	var dateRaw time.Time
 	err = conn.QueryRow(context.Background(), `
-		SELECT id_review, username, description, estimation, date_review
-		FROM reviews
-		INNER JOIN users ON reviews.id_user = users.id_user
-		WHERE id_route = $1`, id_review).Scan(&review.Id_Review, &review.Username, &review.Description, &review.Estimation, &review.Date)
-	if err != nil {
-		return nil, err
-	}
+		SELECT r.id_review, u.username, r.description, r.estimation, r.date_review
+		FROM reviews r
+		INNER JOIN users u ON r.id_user = u.id_user
+		WHERE r.id_review = $1`,
+		reviewID).Scan(&rev.Id_Review, &rev.Username, &rev.Description, &rev.Estimation, &dateRaw)
 
-	return &review, nil
+	if err != nil {
+		return nil, fmt.Errorf("scan review: %w", err)
+	}
+	rev.Date = dateRaw.Format("02.01.2006")
+	return &rev, nil
 }
 
-func (rev *Review) CreateReview(id_route int, pool *pgxpool.Pool) error {
+// CreateReview — создаёт отзыв (исправлено: Exec вместо Query)
+func (rev *Review) CreateReview(routeID, userID int, pool *pgxpool.Pool) error {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		return err
+		return fmt.Errorf("acquire conn: %w", err)
 	}
 	defer conn.Release()
 
-	rows, err := conn.Query(context.Background(), `
-		INSERT INTO reviews 
-		(username, description, estimation, date_review, id_route) 
-		VALUES ($1, $2, $3, $4, $5);`, rev.Username, rev.Description, rev.Estimation, rev.Date, id_route)
+	// ❌ Было: conn.Query(...) — неправильно для INSERT
+	// ✅ Стало:
+	_, err = conn.Exec(context.Background(), `
+		INSERT INTO reviews (id_user, id_route, description, estimation, date_review)
+		VALUES ($1, $2, $3, $4, $5)`,
+		userID, routeID, rev.Description, rev.Estimation, time.Now())
+
 	if err != nil {
-		return err
+		return fmt.Errorf("insert review: %w", err)
 	}
-	defer rows.Close()
-
-	if err := rows.Err(); err != nil {
-		return err
-	}
-
 	return nil
 }
