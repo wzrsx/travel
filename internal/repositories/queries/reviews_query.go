@@ -3,6 +3,7 @@ package queries
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -106,4 +107,80 @@ func (rev *Review) CreateReview(routeID, userID int, pool *pgxpool.Pool) error {
 		return fmt.Errorf("insert review: %w", err)
 	}
 	return nil
+}
+
+// CheckReviewExists — проверяет, оставлял ли пользователь отзыв на этот маршрут
+// Возвращает true, если отзыв уже есть (для предотвращения дубликатов)
+func CheckReviewExists(routeID, userID int, pool *pgxpool.Pool) (bool, error) {
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		return false, fmt.Errorf("acquire conn: %w", err)
+	}
+	defer conn.Release()
+
+	var exists bool
+	err = conn.QueryRow(context.Background(), `
+		SELECT EXISTS(
+			SELECT 1 FROM reviews 
+			WHERE id_route = $1 AND id_user = $2
+		)`, routeID, userID).Scan(&exists)
+
+	if err != nil {
+		return false, fmt.Errorf("check review exists: %w", err)
+	}
+	return exists, nil
+}
+
+func UpdateRouteEstimation(routeID int, pool *pgxpool.Pool) error {
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		return fmt.Errorf("acquire conn: %w", err)
+	}
+	defer conn.Release()
+
+	result, err := conn.Exec(context.Background(), `
+		UPDATE routes 
+		SET estimation = COALESCE((
+			SELECT ROUND(AVG(estimation)::numeric, 1)
+			FROM reviews
+			WHERE id_route = $1
+		), 0)
+		WHERE id_route = $1`,
+		routeID)
+
+	if err != nil {
+		return fmt.Errorf("update route estimation: %w", err)
+	}
+
+	// Логируем, сколько строк было обновлено
+	rowsAffected := result.RowsAffected()
+	log.Printf("📊 Route #%d: estimation updated, rows affected: %d", routeID, rowsAffected)
+
+	if rowsAffected == 0 {
+		log.Printf("⚠️ Warning: no rows updated for route #%d", routeID)
+	}
+
+	return nil
+}
+
+// GetRouteAverageEstimation — вспомогательная функция: получает текущий средний рейтинг маршрута
+// Может пригодиться для отладки или дополнительной логики
+func GetRouteAverageEstimation(routeID int, pool *pgxpool.Pool) (float64, error) {
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		return 0, fmt.Errorf("acquire conn: %w", err)
+	}
+	defer conn.Release()
+
+	var avgEstimation float64
+	err = conn.QueryRow(context.Background(), `
+		SELECT COALESCE(ROUND(AVG(estimation)::numeric, 1), 0)
+		FROM reviews 
+		WHERE id_route = $1`,
+		routeID).Scan(&avgEstimation)
+
+	if err != nil {
+		return 0, fmt.Errorf("get average estimation: %w", err)
+	}
+	return avgEstimation, nil
 }

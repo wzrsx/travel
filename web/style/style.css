@@ -601,13 +601,14 @@ h2{
     margin: 0 auto;
 }
 
-.about-us-text a{
+.about-us-text p{
+    display: inline;
     position: relative;
     color: #FCF890;
     text-decoration: none;
 }
 
-.about-us-text a::after {
+.about-us-text p::after {
     position: absolute;
     content: '';
     left: 0;
@@ -617,11 +618,11 @@ h2{
     height: 2px;
     background: #FCF890;
 }
-.about-us-text a::after {
+.about-us-text p::after {
     width: 0;
     transition: 0.3s ease-in;
 }
-.about-us-text a:hover:after {
+.about-us-text p:hover:after {
     width: 100%;
 }
 /*create_route*/

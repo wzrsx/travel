@@ -28,10 +28,9 @@ func (a *AppHandlers) SetHandlers() {
 	http.Handle("/contacts", JWT.JWTMiddleware(handler_functions.ContactsHandler(a.Pool)))
 	http.Handle("/about-us", JWT.JWTMiddleware(handler_functions.AboutUsHandler(a.Pool)))
 	http.Handle("/route", JWT.JWTMiddleware(handler_functions.OpenRoutePage(a.Pool)))
+	http.Handle("/add-review", JWT.JWTMiddleware(handler_functions.AddReviewHandler(a.Pool)))
 	http.Handle("/route/reviews", JWT.JWTMiddleware(handler_functions.ReviewsHandler(a.Pool)))
 	http.Handle("/route/review", JWT.JWTMiddleware(handler_functions.ReviewHandler(a.Pool)))
-
-
 
 	http.Handle("/save-route", JWT.JWTMiddleware(handler_functions.CreateRouteHandler(a.Pool)))
 

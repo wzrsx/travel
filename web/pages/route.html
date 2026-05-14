@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../style/simple-adaptive-slider.css" />
   <link rel="stylesheet" href="../style/style.css" />
+  <link rel="stylesheet" href="../style/dialog.css" />
   <link rel="stylesheet" href="../style/adaptiv.css" />
   <link rel="stylesheet" href="../style/reset.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -19,34 +20,7 @@
     }
   </style>
   <script defer src="scripts/simple-adaptive-slider.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const sliderElement = document.querySelector(".itcss-1");
-      const items = sliderElement.querySelectorAll(".itcss__item");
-
-      if (items.length > 1) {
-        // Инициализация слайдера только если элементов больше одного
-        new ItcSimpleSlider(".itcss-1", {
-          loop: true,
-          autoplay: true,
-          swipe: true,
-        });
-      } else {
-        // Если элемент только один, отключаем автопереключение и другие функции
-        const item = items[0];
-        item.style.opacity = 1; // Убедимся, что изображение видно
-        item.style.transform = "translate3D(0px, 0px, 0.1px)"; // Устанавливаем начальное положение
-      }
-    });
-    document.addEventListener("DOMContentLoaded", () => {
-      // активация слайдера
-      new ItcSimpleSlider(".itcss-2", {
-        loop: false,
-        autoplay: true,
-        swipe: true,
-      });
-    });
-  </script>
+  
   <script>
     // Передаем данные из Go в JavaScript
     const yandexRoute = {
@@ -56,129 +30,7 @@
     console.log("Yandex Route Points:", yandexRoute.points); // Отладочный вывод
   </script>
   <script src="https://api-maps.yandex.ru/2.1/?apikey=921d0de2-2f0b-41fb-924e-b07e4c7d230a&lang=ru_RU"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      ymaps.ready(init);
-
-      function init() {
-        // Разбираем ссылку
-        const urlParams = new URLSearchParams(
-          yandexRoute.points.split("?")[1]
-        );
-        const rtext = urlParams.get("rtext"); // Координаты точек
-        const rtt = urlParams.get("rtt"); // Тип маршрута
-
-        if (!rtext) {
-          console.error("Не удалось извлечь координаты из ссылки.");
-          return;
-        }
-
-        // Разделяем координаты на все точки
-        const points = rtext.split("~").map((point) => {
-          const [lat, lon] = point.split(",");
-          return [parseFloat(lat), parseFloat(lon)];
-        });
-
-        if (points.length < 2) {
-          console.error("Для построения маршрута нужно минимум две точки.");
-          return;
-        }
-
-        // Создаем карту
-        const map = new ymaps.Map("map", {
-          center: points[0], // Центр карты (первая точка)
-          zoom: 10, // Масштаб
-        });
-
-        // Создаем маршрут с указанием типа (пешеходный)
-        const multiRoute = new ymaps.multiRouter.MultiRoute(
-          {
-            referencePoints: points, // Все точки маршрута
-            params: {
-              routingMode: "pedestrian", // Тип маршрута (пешеходный)
-            },
-          },
-          {
-            boundsAutoApply: true, // Автоматически подгонять карту под маршрут
-          }
-        );
-
-        // Добавляем маршрут на карту
-
-        console.log("Координаты точек:", points);
-        console.log("Yandex Route Points:", yandexRoute.points);
-        console.log("Тип маршрута (rtt):", rtt);
-        console.log("Карта инициализирована:", map);
-        multiRoute.model.events.add("requestsuccess", function () {
-          console.log("Событие 'requestsuccess' сработало.");
-          const routes = multiRoute.getRoutes();
-          console.log(
-            "Количество маршрутов:",
-            routes ? routes.length : "undefined"
-          );
-        });
-        multiRoute.model.events.add("requestfail", function (error) {
-          console.error("Ошибка при построении маршрута:", error);
-        });
-        // Обрабатываем успешное построение маршрута
-        multiRoute.model.events.add("requestsuccess", function () {
-          console.log("Маршрут успешно построен.");
-
-          // Получаем активный маршрут (не через getRoutes())
-          const activeRoute = multiRoute.getActiveRoute();
-
-          if (!activeRoute) {
-            console.error("Активный маршрут не найден.");
-            return;
-          }
-
-          // Получаем свойства маршрута
-          const properties = activeRoute.properties.getAll();
-
-          // Проверяем наличие данных
-          if (!properties.distance || !properties.duration) {
-            console.error("Данные о расстоянии или времени отсутствуют.");
-            return;
-          }
-
-          // Расстояние в метрах (преобразуем в км)
-          const distanceMeters = properties.distance.value;
-          const distanceKm = (distanceMeters / 1000).toFixed(2);
-
-          // Время в секундах (преобразуем в часы:минуты)
-          const durationSeconds = properties.duration.value;
-          const hours = Math.floor(durationSeconds / 3600);
-          const minutes = Math.floor((durationSeconds % 3600) / 60);
-          const timeString = `${hours.toString().padStart(2, "0")}:${minutes
-            .toString()
-            .padStart(2, "0")}`;
-
-          // Обновляем DOM
-          const distanceElement = document.querySelector(
-            ".about.distance-route .about-route-text p:last-child"
-          );
-          const timeElement = document.querySelector(
-            ".about.time-route .about-route-text p:last-child"
-          );
-
-          if (distanceElement && timeElement) {
-            distanceElement.textContent = `${distanceKm} км`;
-            timeElement.textContent = timeString;
-          } else {
-            console.error(
-              "Элементы для отображения расстояния или времени не найдены."
-            );
-          }
-        });
-
-        // Обрабатываем ошибки при построении маршрута
-        multiRoute.model.events.add("requestfail", function () {
-          console.error("Ошибка при построении маршрута.");
-        });
-        map.geoObjects.add(multiRoute);
-      }
-    });
-  </script>
+  <script src="scripts/route.js"></script>
 </head>
 
 <body>
@@ -292,6 +144,14 @@
                   <p class="date-review">{{.Date}}</p>
                 </div>
               </div>
+              {{else}}
+                <div class="itcss__item">
+                  <div class="item-review no-reviews">
+                    <p class="text-review" style="text-align: center; font-style: italic; color: #666;">
+                      Пока нет отзывов. Будьте первым, кто оставит отзыв!
+                    </p>
+                  </div>
+                </div>
               {{end}}
             </div>
           </div>
@@ -314,7 +174,59 @@
       {{end}}
     </div>
   </main>
+<!-- Диалог для написания отзыва -->
+<dialog id="review-dialog">
+  <div style="padding: 20px; max-width: 500px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+      <h3 style="margin: 0; font-size: 1.25rem;">Написать отзыв</h3>
+      <button type="button" id="closeReviewDialog" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <form id="review-form" enctype="multipart/form-data">
+      <input type="hidden" name="route_id" value="{{.RouteID}}">      
+      <!-- Оценка -->
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Ваша оценка:</label>
+        <div style="display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px;">
+          <input type="radio" name="rating" id="star5" value="5" style="display: none;">
+          <label for="star5" style="font-size: 2rem; color: #ddd; cursor: pointer;">★</label>
+          <input type="radio" name="rating" id="star4" value="4" style="display: none;">
+          <label for="star4" style="font-size: 2rem; color: #ddd; cursor: pointer;">★</label>
+          <input type="radio" name="rating" id="star3" value="3" style="display: none;">
+          <label for="star3" style="font-size: 2rem; color: #ddd; cursor: pointer;">★</label>
+          <input type="radio" name="rating" id="star2" value="2" style="display: none;">
+          <label for="star2" style="font-size: 2rem; color: #ddd; cursor: pointer;">★</label>
+          <input type="radio" name="rating" id="star1" value="1" style="display: none;">
+          <label for="star1" style="font-size: 2rem; color: #ddd; cursor: pointer;">★</label>
+        </div>
+        <span id="rating-error" style="display: none; color: #e74c3c; font-size: 0.9em;">Пожалуйста, поставьте оценку</span>
+      </div>
+
+      <!-- Текст отзыва -->
+      <div style="margin-bottom: 20px;">
+        <label for="review-text" style="display: block; margin-bottom: 8px; font-weight: 500;">Текст отзыва:</label>
+        <textarea id="review-text" name="description" rows="5" placeholder="Расскажите о ваших впечатлениях..." required minlength="10" maxlength="1000" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: inherit; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
+        <div style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 4px;"><span id="charCount">0</span>/1000</div>
+      </div>
+
+      <!-- Фотографии 
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Фотографии (необязательно):</label>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <input type="file" id="review-photos" name="photos" multiple accept="image/*" style="display: none;">
+          <label for="review-photos" style="display: inline-block; padding: 8px 16px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Выбрать фото</label>
+          <span id="file-names" style="font-size: 0.9rem; color: #666;">Файлы не выбраны</span>
+        </div>
+      </div>-->
+
+      <!-- Кнопки -->
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee;">
+        <button type="button" id="cancelReview" style="padding: 10px 24px; border-radius: 6px; font-weight: 500; cursor: pointer; border: 1px solid #ccc; background: transparent; font-size: 1rem;">Отмена</button>
+        <button type="submit" style="padding: 10px 24px; border-radius: 6px; font-weight: 500; cursor: pointer; border: none; background: #4A90E2; color: white; font-size: 1rem;">Отправить отзыв</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 </body>
 <script src="scripts/user_menu.js"></script>
-
 </html>
